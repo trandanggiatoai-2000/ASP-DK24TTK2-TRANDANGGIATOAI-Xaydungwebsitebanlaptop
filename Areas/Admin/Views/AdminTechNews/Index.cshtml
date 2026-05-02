@@ -1,0 +1,38 @@
+@model websitebanlaptop.Models.AdminTechNewsPageViewModel
+@{
+    ViewData["Title"] = "Tin công nghệ";
+    Layout = "_AdminLayout";
+}
+<section class="admin-page-header card-surface">
+    <div>
+        <div class="eyebrow">TECH NEWS</div>
+        <h1>Quản lý tin công nghệ</h1>
+    </div>
+    <a class="btn-outline" asp-controller="TechNews" asp-action="Index" target="_blank">Xem chuyên mục</a>
+</section>
+<form asp-action="Save" method="post" class="policy-admin-form">
+    @for (var i = 0; i < Model.Posts.Count; i++)
+    {
+        <input type="hidden" asp-for="Posts[i].PostId" />
+        <input type="hidden" asp-for="Posts[i].Slug" />
+        <input type="hidden" asp-for="Posts[i].DisplayOrder" />
+        <section class="card-surface policy-admin-card">
+            <div class="policy-admin-card__head">
+                <div><div class="policy-admin-card__kicker">BÀI VIẾT @(i+1)</div><h2>@Model.Posts[i].Title</h2></div>
+                <a class="btn-outline" target="_blank" asp-controller="TechNews" asp-action="Details" asp-route-slug="@Model.Posts[i].Slug">Xem bài</a>
+            </div>
+            <div class="policy-admin-grid">
+                <label><span>Chuyên mục</span><input asp-for="Posts[i].CategoryName" /></label>
+                <label><span>Ngày hiển thị</span><input asp-for="Posts[i].PublishedAtText" /></label>
+                <label class="policy-admin-grid__full"><span>Tiêu đề</span><input asp-for="Posts[i].Title" /></label>
+                <label class="policy-admin-grid__full"><span>Mô tả ngắn</span><textarea asp-for="Posts[i].Summary" rows="3"></textarea></label>
+                <label><span>Ảnh đại diện</span><input asp-for="Posts[i].ThumbnailUrl" /></label>
+                <label><span>SEO title</span><input asp-for="Posts[i].SeoTitle" /></label>
+                <label class="policy-admin-grid__full"><span>Meta description</span><textarea asp-for="Posts[i].MetaDescription" rows="3"></textarea></label>
+                <label class="policy-admin-grid__full"><span>Nội dung chi tiết</span><textarea asp-for="Posts[i].ContentHtml" rows="12" class="policy-editor"></textarea></label>
+            </div>
+        </section>
+    }
+    <div class="policy-admin-actions"><button type="submit" class="btn-primary">Lưu tin công nghệ</button></div>
+</form>
+

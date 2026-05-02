@@ -1,0 +1,129 @@
+@model List<InventoryItemViewModel>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý kho laptop";
+    var summary = ((int products, int totalStock, int lowStock, int orders))ViewBag.Summary;
+    var canManageInventory = (bool)(ViewBag.CanManageInventory ?? false);
+    var canDeleteInventory = (bool)(ViewBag.CanDeleteInventory ?? false);
+    var canImportInventory = (bool)(ViewBag.CanImportInventory ?? false);
+    var returnUrl = Context.Request.Path + Context.Request.QueryString;
+}
+<div class="admin-page-hero">
+    <div>
+        <div class="page-kicker">ADMIN DASHBOARD</div>
+        <h1>Quản lý kho thiết bị laptop</h1>
+    </div>
+    <div class="admin-actions-row">
+        <a class="btn-secondary" asp-area="Admin" asp-controller="AdminCatalog" asp-action="Index">Danh mục / Hãng</a>
+        @if (canImportInventory)
+        {
+            <a class="btn-secondary" asp-area="Admin" asp-controller="AdminInventory" asp-action="Import">Import Excel</a>
+        }
+        @if (canManageInventory)
+        {
+            <a class="btn-primary" asp-area="Admin" asp-controller="AdminInventory" asp-action="Create" asp-route-returnUrl="@returnUrl">+ Thêm sản phẩm</a>
+        }
+    </div>
+</div>
+<div class="card-surface admin-surface admin-filter-surface">
+    <form method="get" asp-area="Admin" asp-controller="AdminInventory" asp-action="Index" class="catalog-admin-filter">
+        <div>
+            <label>Tìm theo sản phẩm</label>
+            <input type="text" name="keyword" value="@((string?)ViewBag.InventoryKeyword ?? string.Empty)" placeholder="Nhập tên sản phẩm..." />
+        </div>
+        <div>
+            <label>Tên hãng</label>
+            <select name="brand">
+                <option value="">Tất cả hãng</option>
+                @foreach (var b in (IEnumerable<string>)(ViewBag.InventoryBrands ?? Array.Empty<string>()))
+                {
+                    <option value="@b" selected="@((((string?)ViewBag.InventoryBrand) ?? string.Empty) == b ? "selected" : null)">@b</option>
+                }
+            </select>
+        </div>
+        <div>
+            <label>Danh mục</label>
+            <select name="category">
+                <option value="">Tất cả danh mục</option>
+                @foreach (var c in (IEnumerable<string>)(ViewBag.InventoryCategories ?? Array.Empty<string>()))
+                {
+                    <option value="@c" selected="@((((string?)ViewBag.InventoryCategory) ?? string.Empty) == c ? "selected" : null)">@c</option>
+                }
+            </select>
+        </div>
+        <div class="admin-filter-actions">
+            <button type="submit" class="btn-primary">Lọc dữ liệu</button>
+            <a class="btn-secondary" asp-area="Admin" asp-controller="AdminInventory" asp-action="Index">Đặt lại</a>
+        </div>
+    </form>
+</div>
+<div class="admin-summary-grid admin-summary-grid-v2">
+    <div class="admin-summary-card"><span>Tổng model</span><strong>@summary.products</strong></div>
+    <div class="admin-summary-card"><span>Tổng tồn kho</span><strong>@summary.totalStock</strong></div>
+    <div class="admin-summary-card"><span>Sắp hết hàng</span><strong>@summary.lowStock</strong></div>
+    <div class="admin-summary-card"><span>Tổng đơn hàng</span><strong>@summary.orders</strong></div>
+</div>
+<div class="card-surface admin-surface">
+    <div class="admin-table-wrap">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Ảnh</th>
+                    <th>Sản phẩm</th>
+                    <th>Danh mục</th>
+                    <th>Cấu hình</th>
+                    <th>Giá bán</th>
+                    <th>Tồn kho</th>
+                    <th>Nổi bật</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><img class="admin-thumb" src="@item.Thumbnail" alt="@item.ProductName" data-fallback="/images/products/placeholder-generic.svg" /></td>
+                    <td><strong>@item.ProductName</strong><div class="order-items-inline">@item.Brand • Mã SP: @item.ProductId</div></td>
+                    <td>@item.CategoryName</td>
+                    <td>@item.Cpu<br />@item.Ram • @item.Ssd</td>
+                    <td>@item.Price.ToString("N0") đ</td>
+                    <td>
+                        @if (canManageInventory)
+                        {
+                            <form asp-area="Admin" asp-controller="AdminInventory" asp-action="UpdateStock" method="post" class="stock-form-inline">
+                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                <input type="number" name="stockQty" value="@item.StockQty" min="0" class="stock-input" />
+                                <button type="submit" class="btn-mini">Lưu</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="admin-readonly-stock">@item.StockQty</span>
+                        }
+                    </td>
+                    <td><span class="feature-pill @(item.IsFeatured ? "on" : "off")">@(item.IsFeatured ? "Có" : "Không")</span></td>
+                    <td>
+                        @if (canManageInventory)
+                        {
+                            <div class="table-actions">
+                                <a class="btn-mini" asp-area="Admin" asp-controller="AdminInventory" asp-action="Edit" asp-route-id="@item.ProductId" asp-route-returnUrl="@returnUrl">Sửa</a>
+                                @if (canDeleteInventory)
+                                {
+                                    <form asp-area="Admin" asp-controller="AdminInventory" asp-action="Delete" asp-route-id="@item.ProductId" method="post" onsubmit="return confirm('Xóa sản phẩm này?');">
+                                        <button type="submit" class="btn-mini btn-danger">Xóa</button>
+                                    </form>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <span class="review-date">Chỉ xem</span>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+

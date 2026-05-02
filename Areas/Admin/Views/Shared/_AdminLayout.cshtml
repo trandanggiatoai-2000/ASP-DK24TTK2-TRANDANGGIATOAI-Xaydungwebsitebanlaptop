@@ -1,0 +1,188 @@
+@using websitebanlaptop.Extensions
+@using websitebanlaptop.Services.Contracts
+@inject ILayoutContentService LayoutContentService
+@{
+    var site = await LayoutContentService.GetWebsiteSettingsAsync();
+    var adminUser = Context.Session.GetString("AdminFullName") ?? Context.Session.GetString("AdminUser") ?? "admin";
+    var canViewOrders = Context.Session.CanViewOrders();
+    var canViewReviews = Context.Session.CanViewReviews();
+    var canManageInventory = Context.Session.CanManageInventory();
+    var canImport = Context.Session.CanImportInventory();
+    var canUsers = Context.Session.CanManageUsers();
+    var canManageWebsite = Context.Session.CanManageWebsite();
+    var currentController = (ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty).ToLowerInvariant();
+    var currentAction = (ViewContext.RouteData.Values["action"]?.ToString() ?? string.Empty).ToLowerInvariant();
+    var currentCategory = (Context.Request.Query["category"].ToString() ?? string.Empty).ToLowerInvariant();
+    string NavClass(string controller, string? action = null, string? category = null)
+    {
+        var active = currentController == controller.ToLowerInvariant();
+        if (!string.IsNullOrWhiteSpace(action))
+        {
+            active = active && currentAction == action.ToLowerInvariant();
+        }
+        if (!string.IsNullOrWhiteSpace(category))
+        {
+            active = active && currentCategory == category.ToLowerInvariant();
+        }
+        return active ? "active" : string.Empty;
+    }
+
+    var dashboardOpen = currentController is "admindashboard";
+    var inventoryGroupOpen = currentController is "admininventory" or "admincatalog";
+    var accessoriesGroupOpen = currentController is "admincatalog" && (currentCategory is "phụ kiện" or "linh kiện" or "máy tính bộ");
+    var websiteGroupOpen = currentController is "adminwebsite" or "adminpolicy" or "admintechnews" or "adminreviews";
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Quản trị @site.StoreName</title>
+    @if (!string.IsNullOrWhiteSpace(site.FaviconUrl))
+    {
+        <link rel="icon" type="image/png" href="@site.FaviconUrl" />
+    }
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="admin-body admin-app-body" data-admin-layout>
+    <div class="admin-app-shell">
+        <aside class="admin-app-sidebar" id="adminSidebar">
+            <div class="admin-sidebar-head">
+                <a asp-area="Admin" asp-controller="AdminDashboard" asp-action="Index" class="admin-brand admin-brand-sidebar">
+                @if (!string.IsNullOrWhiteSpace(site.AdminLogoUrl ?? site.WebsiteLogoUrl))
+                {
+                    <div class="logo-media @((site.AdminLogoCropMode == "landscape" ? "logo-media-landscape" : "logo-media-square"))"><img src="@(site.AdminLogoUrl ?? site.WebsiteLogoUrl)" alt="@site.StoreName" /></div>
+                }
+                else
+                {
+                    <div class="logo-mark">@site.LogoText</div>
+                }
+                <div>
+                    <div class="logo-title">@site.StoreName</div>
+                    <div class="logo-sub">Bảng điều khiển quản trị giao diện mới</div>
+                </div>
+                </a>
+                <button type="button" class="admin-sidebar-toggle admin-sidebar-toggle-inline" id="adminSidebarToggle" aria-controls="adminSidebar" aria-expanded="true" title="Đóng / mở danh mục quản lý">
+                    <span class="admin-sidebar-toggle-icon">☰</span>
+                </button>
+            </div>
+
+            <div class="admin-app-sidebar-group">
+                <div class="admin-sidebar-label">Quản trị hệ thống</div>
+                <nav class="admin-sidebar-nav admin-sidebar-nav-compact">
+                    <a class="@NavClass("AdminDashboard")" asp-area="Admin" asp-controller="AdminDashboard" asp-action="Index">Dashboard tổng quan</a>
+
+                    <details class="admin-nav-group" @(inventoryGroupOpen ? "open" : null)>
+                        <summary class="admin-nav-group-title @(inventoryGroupOpen ? "active" : null)">Quản lý thiết bị</summary>
+                        <div class="admin-nav-sublist">
+                            <a class="@NavClass("AdminInventory", "Index")" asp-area="Admin" asp-controller="AdminInventory" asp-action="Index">Tổng quan kho</a>
+                            <details class="admin-nav-subgroup" @(accessoriesGroupOpen ? "open" : null)>
+                                <summary class="admin-nav-subgroup-title @(accessoriesGroupOpen ? "active" : null)">Quản lý Phụ kiện</summary>
+                                <div class="admin-nav-sublist nested">
+                                    <a class="@NavClass("AdminCatalog", "Index", "Linh kiện")" asp-area="Admin" asp-controller="AdminCatalog" asp-action="Index" asp-route-category="Linh kiện">Quản lý Linh kiện</a>
+                                    <a class="@NavClass("AdminCatalog", "Index", "Máy tính bộ")" asp-area="Admin" asp-controller="AdminCatalog" asp-action="Index" asp-route-category="Máy tính bộ">Quản lý Máy tính bộ</a>
+                                </div>
+                            </details>
+                            <a class="@NavClass("AdminCatalog", "Index", "Phụ kiện")" asp-area="Admin" asp-controller="AdminCatalog" asp-action="Index" asp-route-category="Phụ kiện">Danh sách Phụ kiện</a>
+                            @if (canManageInventory)
+                            {
+                                <a class="@NavClass("AdminInventory", "Create")" asp-area="Admin" asp-controller="AdminInventory" asp-action="Create">Thêm / sửa thiết bị</a>
+                            }
+                            @if (canImport)
+                            {
+                                <a class="@NavClass("AdminInventory", "Import")" asp-area="Admin" asp-controller="AdminInventory" asp-action="Import">Import thiết bị</a>
+                            }
+                        </div>
+                    </details>
+
+                    @if (canViewOrders)
+                    {
+                        <a class="@NavClass("AdminSales")" asp-area="Admin" asp-controller="AdminSales" asp-action="Index">Đơn hàng</a>
+                    }
+
+                    <details class="admin-nav-group" @(websiteGroupOpen ? "open" : null)>
+                        <summary class="admin-nav-group-title @(websiteGroupOpen ? "active" : null)">Quản lý website</summary>
+                        <div class="admin-nav-sublist">
+                            @if (canManageWebsite)
+                            {
+                                <a class="@NavClass("AdminWebsite")" asp-area="Admin" asp-controller="AdminWebsite" asp-action="Index">Giao diện website</a>
+                                <a class="@NavClass("AdminPolicy")" asp-area="Admin" asp-controller="AdminPolicy" asp-action="Index">Nội dung hỗ trợ</a>
+                                <a class="@NavClass("AdminTechNews")" asp-area="Admin" asp-controller="AdminTechNews" asp-action="Index">Tin công nghệ</a>
+                            }
+                            @if (canViewReviews)
+                            {
+                                <a class="@NavClass("AdminReviews")" asp-area="Admin" asp-controller="AdminReviews" asp-action="Index">Bình luận</a>
+                            }
+                        </div>
+                    </details>
+
+                    @if (canUsers)
+                    {
+                        <a class="@NavClass("AdminUsers")" asp-area="Admin" asp-controller="AdminUsers" asp-action="Index">Tài khoản admin</a>
+                    }
+                </nav>
+            </div>
+
+            <div class="admin-app-sidebar-foot">
+                <div class="admin-user-badge wide">@adminUser</div>
+                @if (Context.Session.IsSuperAdmin())
+                {
+                    <span class="admin-role-pill">Super Admin</span>
+                }
+                else
+                {
+                    <span class="admin-role-pill subtle">Admin phân quyền</span>
+                }
+                <a class="btn-outline sidebar-btn" asp-area="" asp-controller="Home" asp-action="Index">Về trang bán hàng</a>
+                <a class="btn-primary sidebar-btn" asp-area="Admin" asp-controller="AdminAuth" asp-action="Logout">Đăng xuất</a>
+            </div>
+        </aside>
+
+        <div class="admin-app-main">
+            <header class="admin-mobile-header">
+                <div class="container admin-mobile-top">
+                    <span class="admin-mobile-title">Quản trị hệ thống</span>
+                    <div class="admin-mobile-actions">
+                        <a class="btn-outline" asp-area="" asp-controller="Home" asp-action="Index">Website</a>
+                        <a class="btn-primary" asp-area="Admin" asp-controller="AdminAuth" asp-action="Logout">Đăng xuất</a>
+                    </div>
+                </div>
+            </header>
+            <main class="admin-main">
+                <div class="container">
+                    <section class="admin-topbar-panel">
+                        <div>
+                            <div class="page-kicker">ADMIN PANEL</div>
+                            <div class="admin-topbar-heading-row">
+                                <button type="button" class="admin-sidebar-toggle admin-sidebar-toggle-topbar" id="adminSidebarToggleTopbar" aria-controls="adminSidebar" aria-expanded="true" title="Đóng / mở danh mục quản lý">
+                                    <span class="admin-sidebar-toggle-icon">☰</span>
+                                    <span>Danh mục quản lý</span>
+                                </button>
+                                <h2>@(ViewData["Title"] ?? "Bảng điều khiển")</h2>
+                            </div>
+                        </div>
+                        <div class="admin-topbar-actions">
+                            <span class="admin-topbar-chip">@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</span>
+                            <a class="btn-outline" asp-area="" asp-controller="Home" asp-action="Index">Xem website</a>
+                        </div>
+                    </section>
+                    @if (TempData["CartMessage"] != null)
+                    {
+                        <div class="toast-success">@TempData["CartMessage"]</div>
+                    }
+                    @RenderBody()
+                </div>
+            </main>
+        </div>
+    </div>
+    <button type="button" class="admin-sidebar-float-toggle" id="adminSidebarFloatToggle" aria-controls="adminSidebar" aria-expanded="true" title="Mở danh mục quản lý">
+        <span class="admin-sidebar-toggle-icon">☰</span>
+    </button>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+

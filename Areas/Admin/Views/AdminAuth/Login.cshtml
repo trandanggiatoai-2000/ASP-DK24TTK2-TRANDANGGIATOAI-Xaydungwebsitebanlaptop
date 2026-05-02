@@ -1,0 +1,64 @@
+@model AdminLoginViewModel
+@using websitebanlaptop.Services.Contracts
+@inject ILayoutContentService LayoutContentService
+@{
+    Layout = null;
+    ViewData["Title"] = "Đăng nhập Admin";
+    var site = await LayoutContentService.GetWebsiteSettingsAsync();
+    var returnUrl = ViewBag.ReturnUrl as string;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - @site.StoreName</title>
+    @if (!string.IsNullOrWhiteSpace(site.FaviconUrl))
+    {
+        <link rel="icon" type="image/png" href="@site.FaviconUrl" />
+    }
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="admin-login-page">
+    <div class="admin-login-shell">
+        <div class="admin-login-showcase">
+            <div class="admin-login-overlay"></div>
+            <div class="admin-login-content">
+                <div class="page-kicker">ADMIN ACCESS</div>
+                <h1>Trang đăng nhập quản trị riêng cho user admin</h1>
+            </div>
+        </div>
+
+        <div class="admin-login-panel">
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="admin-login-back">← Về website bán hàng</a>
+            <div class="admin-auth-card premium">
+                <div class="admin-auth-badge">@site.LogoText</div>
+                <h2>Đăng nhập Admin</h2>
+                <p class="admin-auth-sub">Tài khoản demo: <strong>admin</strong> · Mật khẩu: <strong>123456</strong></p>
+
+                <form asp-action="Login" method="post" class="admin-auth-form">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="returnUrl" value="@returnUrl" />
+                    <div>
+                        <label asp-for="Username">Tài khoản</label>
+                        <input asp-for="Username" placeholder="Nhập tài khoản admin" autocomplete="username" />
+                        <span asp-validation-for="Username"></span>
+                    </div>
+                    <div>
+                        <label asp-for="Password">Mật khẩu</label>
+                        <input asp-for="Password" placeholder="Nhập mật khẩu" autocomplete="current-password" />
+                        <span asp-validation-for="Password"></span>
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+                    {
+                        <div class="admin-auth-error">@Model.ErrorMessage</div>
+                    }
+                    <button type="submit" class="btn-primary wide admin-login-submit">Đăng nhập vào trang quản trị</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <partial name="_ValidationScriptsPartial" />
+</body>
+</html>
+

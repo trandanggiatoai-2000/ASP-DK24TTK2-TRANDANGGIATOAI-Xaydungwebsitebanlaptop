@@ -1,0 +1,45 @@
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Import sản phẩm Excel";
+}
+<div class="section-head">
+    <h1>Import sản phẩm bằng Excel</h1>
+    <span>Tải template mẫu, điền dữ liệu rồi upload vào hệ thống</span>
+</div>
+
+<div class="card-surface import-card">
+    <div class="import-actions">
+        <a class="btn-secondary" asp-action="DownloadTemplate">Download template mẫu</a>
+    </div>
+    <form asp-action="Import" method="post" enctype="multipart/form-data" class="import-form">
+        <div class="form-grid">
+            <div class="full-row">
+                <label>Chọn file Excel / CSV</label>
+                <input type="file" name="excelFile" accept=".xlsx,.csv" />
+            </div>
+        </div>
+        <button type="submit" class="btn-primary">Import sản phẩm</button>
+    </form>
+
+    <div class="import-note">
+        <h3>Các cột bắt buộc trong file mẫu</h3>
+        <ul>
+            <li>Brand</li>
+            <li>CategoryName</li>
+            <li>ProductName</li>
+            <li>Cpu</li>
+            <li>Ram</li>
+            <li>Ssd</li>
+            <li>Price</li>
+            <li>OldPrice</li>
+            <li>StockQty</li>
+            <li>IsFeatured</li>
+            <li>BadgeText</li>
+            <li>DescriptionText</li>
+            <li>DiscountPercent</li>
+            <li>SortOrder</li>
+            <li>Image1 / Image2 / Image3</li>
+        </ul>
+    </div>
+</div>
+

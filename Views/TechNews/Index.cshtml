@@ -1,0 +1,44 @@
+@model List<websitebanlaptop.Models.TechNewsPostViewModel>
+@{
+    ViewData["Title"] = "Tin công nghệ";
+}
+<div class="lxt-news-layout">
+    <section class="lxt-news-main">
+        <div class="section-head compact-head"><h1>TIN CÔNG NGHỆ</h1></div>
+        @foreach (var post in Model)
+        {
+            <article class="lxt-news-item">
+                <a asp-controller="TechNews" asp-action="Details" asp-route-slug="@post.Slug" class="lxt-news-thumb">
+                    <img src="@post.ThumbnailUrl" alt="@post.Title" data-fallback="/images/banners/campaign-office.jpg" />
+                    <span class="lxt-news-date">@post.PublishedAtText</span>
+                </a>
+                <div class="lxt-news-copy">
+                    <a asp-controller="TechNews" asp-action="Details" asp-route-slug="@post.Slug" class="lxt-news-title">@post.Title</a>
+                    <p>@post.Summary</p>
+                </div>
+            </article>
+        }
+    </section>
+    <aside class="lxt-news-sidebar">
+        <div class="card-surface lxt-news-side-card">
+            <h3>CHUYÊN MỤC</h3>
+            <ul>
+                <li><a asp-controller="Policy" asp-action="Details" asp-route-key="shipping">Chính sách</a></li>
+                <li><a asp-controller="Product" asp-action="Catalog" asp-route-category="Đồ họa">Đồ họa</a></li>
+                <li><a asp-controller="Product" asp-action="Catalog" asp-route-category="Gaming">Games</a></li>
+                <li><a asp-controller="Policy" asp-action="Details" asp-route-key="warranty">Thông tin Laptop – PC</a></li>
+                <li><a asp-controller="TechNews" asp-action="Index">Tin công nghệ</a></li>
+            </ul>
+        </div>
+        <div class="card-surface lxt-news-side-card">
+            <h3>BÀI VIẾT MỚI</h3>
+            <ul>
+                @foreach (var item in Model.Take(5))
+                {
+                    <li><a asp-controller="TechNews" asp-action="Details" asp-route-slug="@item.Slug">@item.Title</a></li>
+                }
+            </ul>
+        </div>
+    </aside>
+</div>
+

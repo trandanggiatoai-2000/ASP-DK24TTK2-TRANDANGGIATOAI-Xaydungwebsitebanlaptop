@@ -1,0 +1,84 @@
+@model List<AdminReviewItemViewModel>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý bình luận";
+    var canReplyReviews = (bool)(ViewBag.CanReplyReviews ?? false);
+    var canDeleteReviews = (bool)(ViewBag.CanDeleteReviews ?? false);
+}
+<div class="admin-page-hero compact">
+    <div>
+        <div class="page-kicker">REVIEW CONTROL</div>
+        <h1>Quản lý bình luận sản phẩm</h1>
+    </div>
+</div>
+
+<div class="card-surface admin-surface">
+    <div class="admin-table-wrap">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th>Người dùng</th>
+                    <th>Số sao</th>
+                    <th>Bình luận</th>
+                    <th>Ảnh</th>
+                    <th>Trả lời admin</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><strong>@item.ProductName</strong><div class="order-items-inline">Mã review: @item.ReviewId</div></td>
+                    <td>@item.ReviewerName<br /><span class="review-date">@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span></td>
+                    <td><span class="feature-pill on">@item.Rating sao</span></td>
+                    <td>@item.CommentText</td>
+                    <td>
+                        @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                        {
+                            <img src="@item.ImageUrl" class="admin-thumb" alt="Review image" data-fallback="/images/products/placeholder-generic.svg" />
+                        }
+                        else
+                        {
+                            <span class="review-date">Không có ảnh</span>
+                        }
+                    </td>
+                    <td>
+                        @if (!string.IsNullOrWhiteSpace(item.ReplyText))
+                        {
+                            <div class="review-reply-admin">@item.ReplyText</div>
+                        }
+                        @if (canReplyReviews)
+                        {
+                            <form asp-action="Reply" method="post" class="admin-reply-form">
+                                <input type="hidden" name="reviewId" value="@item.ReviewId" />
+                                <textarea name="replyText" rows="3" placeholder="Nhập trả lời từ admin..."></textarea>
+                                <button type="submit" class="btn-mini">Gửi trả lời</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="review-date">Chỉ xem, không được trả lời.</span>
+                        }
+                    </td>
+                    <td>
+                        @if (canDeleteReviews)
+                        {
+                            <form asp-action="Delete" method="post" onsubmit="return confirm('Xóa bình luận này?');">
+                                <input type="hidden" name="reviewId" value="@item.ReviewId" />
+                                <button type="submit" class="btn-mini btn-danger">Xóa</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="review-date">Không được xóa</span>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+

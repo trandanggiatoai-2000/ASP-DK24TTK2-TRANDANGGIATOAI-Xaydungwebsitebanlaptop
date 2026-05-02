@@ -1,0 +1,62 @@
+@model websitebanlaptop.Models.AdminPolicyPageViewModel
+@{
+    ViewData["Title"] = "Nội dung hỗ trợ";
+    Layout = "_AdminLayout";
+}
+
+<section class="admin-page-header card-surface">
+    <div>
+        <div class="eyebrow">SUPPORT CONTENT</div>
+        <h1>Nội dung hỗ trợ khách hàng</h1>
+    </div>
+    <a class="btn-outline" asp-area="" asp-controller="Home" asp-action="Index">Xem website</a>
+</section>
+
+<form asp-action="Save" method="post" class="policy-admin-form">
+    @for (var i = 0; i < Model.Policies.Count; i++)
+    {
+        <input type="hidden" asp-for="Policies[i].PolicyId" />
+        <input type="hidden" asp-for="Policies[i].PolicyKey" />
+        <input type="hidden" asp-for="Policies[i].DisplayOrder" />
+        <section class="card-surface policy-admin-card">
+            <div class="policy-admin-card__head">
+                <div>
+                    <div class="policy-admin-card__kicker">TRANG HỖ TRỢ @(i + 1)</div>
+                    <h2>@Model.Policies[i].MenuLabel</h2>
+                </div>
+                <a class="btn-outline" target="_blank" asp-controller="Policy" asp-action="Details" asp-route-key="@Model.Policies[i].PolicyKey">Xem trang</a>
+            </div>
+            <div class="policy-admin-grid">
+                <label>
+                    <span>Tên hiển thị ở menu</span>
+                    <input asp-for="Policies[i].MenuLabel" />
+                </label>
+                <label>
+                    <span>Tiêu đề trang</span>
+                    <input asp-for="Policies[i].Title" />
+                </label>
+                <label class="policy-admin-grid__full">
+                    <span>Mô tả ngắn</span>
+                    <textarea asp-for="Policies[i].Summary" rows="3"></textarea>
+                </label>
+                <label class="policy-admin-grid__full">
+                    <span>Nội dung chi tiết</span>
+                    <textarea asp-for="Policies[i].ContentHtml" rows="14" class="policy-editor"></textarea>
+                    <small>Dùng HTML đơn giản như &lt;h2&gt;, &lt;h3&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;li&gt; để chia block đẹp hơn.</small>
+                </label>
+                <label>
+                    <span>SEO title</span>
+                    <input asp-for="Policies[i].SeoTitle" />
+                </label>
+                <label>
+                    <span>Meta description</span>
+                    <textarea asp-for="Policies[i].MetaDescription" rows="3"></textarea>
+                </label>
+            </div>
+        </section>
+    }
+    <div class="policy-admin-actions">
+        <button type="submit" class="btn-primary">Lưu nội dung hỗ trợ</button>
+    </div>
+</form>
+

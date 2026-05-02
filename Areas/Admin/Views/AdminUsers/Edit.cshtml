@@ -1,0 +1,56 @@
+@model AdminUserFormViewModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Sửa tài khoản admin";
+}
+<div class="admin-page-hero compact">
+    <div>
+        <div class="page-kicker">EDIT ADMIN</div>
+        <h1>Sửa tài khoản admin</h1>
+        <p>Cập nhật thông tin user và điều chỉnh quyền theo từng thao tác.</p>
+    </div>
+</div>
+
+<div class="card-surface admin-surface">
+    <form asp-action="Edit" method="post" class="admin-user-form">
+        <input asp-for="UserId" type="hidden" />
+        <div class="form-grid-two">
+            <div>
+                <label asp-for="Username"></label>
+                <input asp-for="Username" />
+                <span asp-validation-for="Username"></span>
+            </div>
+            <div>
+                <label asp-for="FullName"></label>
+                <input asp-for="FullName" />
+                <span asp-validation-for="FullName"></span>
+            </div>
+        </div>
+        <div class="permission-box">
+            <label class="checkbox-line"><input asp-for="IsSuperAdmin" /> Quản trị toàn hệ thống</label>
+            <div class="permission-subtitle">Đơn hàng</div>
+            <label class="checkbox-line"><input asp-for="CanViewOrders" /> Chỉ xem đơn hàng</label>
+            <label class="checkbox-line"><input asp-for="CanUpdateOrders" /> Cập nhật trạng thái đơn hàng</label>
+            <label class="checkbox-line"><input asp-for="CanCancelOrders" /> Hủy đơn hàng</label>
+            <div class="permission-subtitle">Bình luận</div>
+            <label class="checkbox-line"><input asp-for="CanViewReviews" /> Chỉ xem bình luận</label>
+            <label class="checkbox-line"><input asp-for="CanReplyReviews" /> Trả lời bình luận</label>
+            <label class="checkbox-line"><input asp-for="CanDeleteReviews" /> Xóa bình luận</label>
+            <div class="permission-subtitle">Thiết bị</div>
+            <label class="checkbox-line"><input asp-for="CanManageInventory" /> Thêm / sửa / cập nhật thiết bị</label>
+            <label class="checkbox-line"><input asp-for="CanDeleteInventory" /> Xóa thiết bị</label>
+            <label class="checkbox-line"><input asp-for="CanImportInventory" /> Import thiết bị / danh mục</label>
+            <div class="permission-subtitle">Website</div>
+            <label class="checkbox-line"><input asp-for="CanManageWebsite" /> Chỉnh sửa giao diện website</label>
+        </div>
+        <div class="table-actions">
+            <button type="submit" class="btn-primary">Lưu cập nhật</button>
+            <a asp-action="Index" class="btn-secondary">Quay lại</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

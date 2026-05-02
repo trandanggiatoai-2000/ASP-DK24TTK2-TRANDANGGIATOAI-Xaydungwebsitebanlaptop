@@ -1,0 +1,27 @@
+@{
+    ViewData["Title"] = "Đang xử lý thanh toán";
+}
+<div class="checkout-popup-page">
+    <div class="checkout-popup-overlay">
+        <div class="checkout-popup-box card-surface">
+            <div class="success-icon">✓</div>
+            <h2>@ViewBag.SuccessTitle</h2>
+            <p>@ViewBag.SuccessMessage</p>
+            <div class="popup-meta">
+                <div><span>Mã đơn:</span> <strong>@ViewBag.OrderCode</strong></div>
+                <div><span>Thanh toán:</span> <strong>@ViewBag.PaymentMethod</strong></div>
+                <div><span>Trạng thái:</span> <strong>@ViewBag.PaymentStatusText</strong></div>
+            </div>
+            <div class="popup-waiting">Hệ thống đang chuyển sang trang thành công...</div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    setTimeout(function () {
+        window.location.href = '/Checkout/Success';
+    }, 1400);
+</script>
+}
+

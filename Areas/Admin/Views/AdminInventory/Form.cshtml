@@ -1,0 +1,118 @@
+@model InventoryFormViewModel
+@{
+    Layout = "_AdminLayout";
+    var isEdit = Model.ProductId > 0;
+    ViewData["Title"] = isEdit ? "Sửa sản phẩm" : "Thêm sản phẩm";
+    var returnUrl = (string?)ViewBag.ReturnUrl;
+}
+<div class="section-head"><h1>@ViewData["Title"]</h1><span>Quản lý chi tiết sản phẩm trong kho</span></div>
+<div class="card-surface admin-form-surface">
+    <form method="post" enctype="multipart/form-data" class="admin-product-form">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="ProductId" />
+        <input type="hidden" name="returnUrl" value="@returnUrl" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-grid two-col">
+            <div>
+                <label asp-for="Brand"></label>
+                <input asp-for="Brand" />
+                <span asp-validation-for="Brand"></span>
+            </div>
+            <div>
+                <label asp-for="CategoryName"></label>
+                <input asp-for="CategoryName" />
+                <span asp-validation-for="CategoryName"></span>
+            </div>
+            <div class="full-row">
+                <label asp-for="ProductName"></label>
+                <input asp-for="ProductName" />
+                <span asp-validation-for="ProductName"></span>
+            </div>
+            <div>
+                <label asp-for="Cpu"></label>
+                <input asp-for="Cpu" />
+            </div>
+            <div>
+                <label asp-for="Ram"></label>
+                <input asp-for="Ram" />
+            </div>
+            <div>
+                <label asp-for="Ssd"></label>
+                <input asp-for="Ssd" />
+            </div>
+            <div>
+                <label asp-for="StockQty"></label>
+                <input asp-for="StockQty" type="number" min="0" />
+            </div>
+            <div>
+                <label asp-for="Price"></label>
+                <input asp-for="Price" type="number" min="0" />
+            </div>
+            <div>
+                <label asp-for="OldPrice"></label>
+                <input asp-for="OldPrice" type="number" min="0" />
+            </div>
+            <div>
+                <label asp-for="DiscountPercent"></label>
+                <input asp-for="DiscountPercent" type="number" min="0" max="100" />
+            </div>
+            <div>
+                <label asp-for="SortOrder"></label>
+                <input asp-for="SortOrder" type="number" min="0" />
+            </div>
+            <div>
+                <label asp-for="BadgeText"></label>
+                <input asp-for="BadgeText" />
+            </div>
+            <div class="checkbox-row">
+                <label><input asp-for="IsFeatured" /> Nổi bật</label>
+            </div>
+            <div class="full-row">
+                <label asp-for="DescriptionText"></label>
+                <textarea asp-for="DescriptionText" rows="10" class="rich-editor"></textarea>
+                <span asp-validation-for="DescriptionText"></span>
+                <div class="field-help">Có thể nhập mô tả HTML mẫu: đoạn văn, danh sách, ảnh minh họa, tiêu đề.</div>
+            </div>
+            <div class="full-row">
+                <label asp-for="ImageGalleryText"></label>
+                <textarea asp-for="ImageGalleryText" rows="5" placeholder="Mỗi dòng là 1 URL ảnh. Có thể dán nhiều link ảnh cùng lúc."></textarea>
+                <div class="field-help">Bạn có thể dán không giới hạn URL ảnh, mỗi dòng 1 ảnh. Ảnh upload mới sẽ tự được nối thêm vào danh sách này.</div>
+            </div>
+            <div class="full-row">
+                <label asp-for="NewImageFiles"></label>
+                <input asp-for="NewImageFiles" type="file" accept="image/*,.svg" multiple />
+                <div class="field-help">Chọn nhiều ảnh cùng lúc để thêm vào thư viện sản phẩm.</div>
+            </div>
+            @if (Model.ExistingImages != null && Model.ExistingImages.Any())
+            {
+                <div class="full-row gallery-admin-grid">
+                    @foreach (var image in Model.ExistingImages)
+                    {
+                        <div class="gallery-admin-item">
+                            <img src="@image" alt="Ảnh sản phẩm" />
+                            <div class="gallery-admin-url">@image</div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">@(isEdit ? "Lưu cập nhật" : "Thêm sản phẩm")</button>
+            <a class="btn-secondary" href="@(string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Index", "AdminInventory", new { area = "Admin" }) : returnUrl)">← Quay lại danh sách</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+    <script>
+        window.CKEDITOR_DISABLE_SECURITY_WARNINGS = true;
+        document.addEventListener("DOMContentLoaded", function () {
+            if (window.CKEDITOR && document.getElementById("DescriptionText")) {
+                CKEDITOR.replace("DescriptionText");
+            }
+        });
+    </script>
+}
+

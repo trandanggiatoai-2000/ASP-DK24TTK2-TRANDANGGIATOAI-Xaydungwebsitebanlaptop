@@ -1,0 +1,135 @@
+@model AdminUsersPageViewModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Tài khoản admin";
+}
+<div class="admin-page-hero">
+    <div>
+        <div class="page-kicker">USER PERMISSION</div>
+        <h1>Tạo tài khoản admin và phân quyền chi tiết</h1>
+        <p>Super admin có thể tạo, sửa user admin, reset mật khẩu và phân quyền theo từng hành động cụ thể.</p>
+    </div>
+</div>
+
+<div class="admin-user-grid">
+    <div class="card-surface admin-surface">
+        <h3 class="admin-panel-title">Tạo tài khoản quản trị mới</h3>
+        <form asp-action="Create" method="post" class="admin-user-form">
+            <div class="form-grid-two">
+                <div>
+                    <label asp-for="Form.Username"></label>
+                    <input asp-for="Form.Username" />
+                    <span asp-validation-for="Form.Username"></span>
+                </div>
+                <div>
+                    <label asp-for="Form.FullName"></label>
+                    <input asp-for="Form.FullName" />
+                    <span asp-validation-for="Form.FullName"></span>
+                </div>
+            </div>
+            <div>
+                <label asp-for="Form.Password"></label>
+                <input asp-for="Form.Password" />
+                <span asp-validation-for="Form.Password"></span>
+            </div>
+            <div class="permission-box">
+                <label class="checkbox-line"><input asp-for="Form.IsSuperAdmin" /> Quản trị toàn hệ thống</label>
+                <div class="permission-subtitle">Đơn hàng</div>
+                <label class="checkbox-line"><input asp-for="Form.CanViewOrders" /> Chỉ xem đơn hàng</label>
+                <label class="checkbox-line"><input asp-for="Form.CanUpdateOrders" /> Cập nhật trạng thái đơn hàng</label>
+                <label class="checkbox-line"><input asp-for="Form.CanCancelOrders" /> Hủy đơn hàng</label>
+                <div class="permission-subtitle">Bình luận</div>
+                <label class="checkbox-line"><input asp-for="Form.CanViewReviews" /> Chỉ xem bình luận</label>
+                <label class="checkbox-line"><input asp-for="Form.CanReplyReviews" /> Trả lời bình luận</label>
+                <label class="checkbox-line"><input asp-for="Form.CanDeleteReviews" /> Xóa bình luận</label>
+                <div class="permission-subtitle">Thiết bị</div>
+                <label class="checkbox-line"><input asp-for="Form.CanManageInventory" /> Thêm / sửa / cập nhật thiết bị</label>
+                <label class="checkbox-line"><input asp-for="Form.CanDeleteInventory" /> Xóa thiết bị</label>
+                <label class="checkbox-line"><input asp-for="Form.CanImportInventory" /> Import thiết bị / danh mục</label>
+                <div class="permission-subtitle">Website</div>
+                <label class="checkbox-line"><input asp-for="Form.CanManageWebsite" /> Chỉnh sửa giao diện website</label>
+            </div>
+            <button type="submit" class="btn-primary">Tạo tài khoản</button>
+        </form>
+    </div>
+
+    <div class="card-surface admin-surface">
+        <h3 class="admin-panel-title">Danh sách tài khoản admin</h3>
+        <div class="admin-table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Tài khoản</th>
+                        <th>Quyền</th>
+                        <th>Trạng thái</th>
+                        <th>Reset mật khẩu</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var user in Model.Users)
+                {
+                    <tr>
+                        <td>
+                            <strong>@user.FullName</strong>
+                            <div class="order-items-inline">@user.Username • @user.CreatedAt.ToString("dd/MM/yyyy HH:mm")</div>
+                        </td>
+                        <td>
+                            <div class="permission-tags">
+                                @if (user.IsSuperAdmin)
+                                {
+                                    <span class="feature-pill on">Toàn quyền</span>
+                                }
+                                else
+                                {
+                                    @if (user.CanViewOrders) { <span class="feature-pill on">Xem đơn</span> }
+                                    @if (user.CanUpdateOrders) { <span class="feature-pill on">Cập nhật đơn</span> }
+                                    @if (user.CanCancelOrders) { <span class="feature-pill on">Hủy đơn</span> }
+                                    @if (user.CanViewReviews) { <span class="feature-pill on">Xem BL</span> }
+                                    @if (user.CanReplyReviews) { <span class="feature-pill on">Trả lời BL</span> }
+                                    @if (user.CanDeleteReviews) { <span class="feature-pill on">Xóa BL</span> }
+                                    @if (user.CanManageInventory) { <span class="feature-pill on">Sửa thiết bị</span> }
+                                    @if (user.CanDeleteInventory) { <span class="feature-pill on">Xóa thiết bị</span> }
+                                    @if (user.CanImportInventory) { <span class="feature-pill on">Import</span> }
+                                    @if (user.CanManageWebsite) { <span class="feature-pill on">Website</span> }
+                                }
+                            </div>
+                        </td>
+                        <td>
+                            <span class="feature-pill @(user.IsActive ? "on" : "off")">@(user.IsActive ? "Đang hoạt động" : "Đang khóa")</span>
+                        </td>
+                        <td>
+                            <form asp-action="ResetPassword" method="post" class="stock-form-inline">
+                                <input type="hidden" name="userId" value="@user.UserId" />
+                                <input type="password" name="newPassword" minlength="6" placeholder="Mật khẩu mới" class="stock-input" />
+                                <button type="submit" class="btn-mini">Reset</button>
+                            </form>
+                        </td>
+                        <td>
+                            <div class="table-actions">
+                                <a asp-action="Edit" asp-route-userId="@user.UserId" class="btn-mini">Sửa</a>
+                                @if (!string.Equals(user.Username, "admin", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <form asp-action="Toggle" method="post">
+                                        <input type="hidden" name="userId" value="@user.UserId" />
+                                        <button type="submit" class="btn-mini">@(user.IsActive ? "Khóa" : "Mở khóa")</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span class="review-date">Tài khoản mặc định</span>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

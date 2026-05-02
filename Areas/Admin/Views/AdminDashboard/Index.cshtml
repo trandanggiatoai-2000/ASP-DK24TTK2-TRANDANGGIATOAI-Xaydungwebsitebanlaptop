@@ -1,0 +1,210 @@
+@model AdminDashboardViewModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Dashboard tổng quan";
+    var maxRevenue = Model.RevenueByDay.Any() ? Model.RevenueByDay.Max(x => x.Value) : 0;
+    var maxCategory = Model.StockByCategory.Any() ? Model.StockByCategory.Max(x => x.Value) : 0;
+    var maxBrand = Model.ProductsByBrand.Any() ? Model.ProductsByBrand.Max(x => x.Value) : 0;
+}
+<div class="admin-page-hero compact">
+    <div>
+        <div class="page-kicker">POWER BI STYLE DASHBOARD</div>
+        <h1>Dashboard tổng quan vận hành</h1>
+        <p>Theo dõi nhanh doanh thu, đơn hàng, tồn kho, phân bổ danh mục và các thiết bị sắp hết hàng trong một màn hình tổng hợp.</p>
+    </div>
+    <div class="admin-actions-row">
+        <a class="btn-secondary" asp-area="Admin" asp-controller="AdminInventory" asp-action="Index">Đi tới kho thiết bị</a>
+        <a class="btn-primary" asp-area="Admin" asp-controller="AdminSales" asp-action="Index">Xem đơn hàng</a>
+    </div>
+</div>
+
+<div class="admin-summary-grid admin-dashboard-kpis">
+    <div class="admin-summary-card kpi-glow">
+        <span>Tổng doanh thu</span>
+        <strong>@Model.TotalRevenue.ToString("N0") đ</strong>
+        <small>Giá trị đơn hàng đã phát sinh, không tính đơn hủy</small>
+    </div>
+    <div class="admin-summary-card">
+        <span>Giá trị tồn kho</span>
+        <strong>@Model.InventoryValue.ToString("N0") đ</strong>
+        <small>@Model.TotalProducts model • @Model.TotalStock sản phẩm tồn</small>
+    </div>
+    <div class="admin-summary-card">
+        <span>Tổng đơn hàng</span>
+        <strong>@Model.TotalOrders.ToString("N0")</strong>
+        <small>@Model.DeliveredOrders đơn đã giao • @Model.CancelledOrders đơn hủy</small>
+    </div>
+    <div class="admin-summary-card">
+        <span>Giá trị đơn trung bình</span>
+        <strong>@Model.AverageOrderValue.ToString("N0") đ</strong>
+        <small>@Model.PaidOrders đơn đã thanh toán • @Model.UnpaidOrders đơn chưa thanh toán</small>
+    </div>
+</div>
+
+<div class="dashboard-grid-two">
+    <section class="card-surface dashboard-panel">
+        <div class="dashboard-panel-head">
+            <div>
+                <div class="dashboard-eyebrow">Xu hướng 7 ngày gần nhất</div>
+                <h3>Doanh thu theo ngày</h3>
+            </div>
+            <span class="dashboard-chip">Realtime view</span>
+        </div>
+        @if (Model.RevenueByDay.Any())
+        {
+            <div class="trend-chart">
+                @foreach (var point in Model.RevenueByDay)
+                {
+                    var height = maxRevenue <= 0 ? 8 : Math.Max(8, (int)Math.Round((point.Value / maxRevenue) * 180));
+                    <div class="trend-col">
+                        <div class="trend-bar" style="height:@(height)px"></div>
+                        <strong>@point.Label</strong>
+                        <span>@point.Value.ToString("N0") đ</span>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="dashboard-empty">Chưa có dữ liệu doanh thu để hiển thị biểu đồ.</div>
+        }
+    </section>
+
+    <section class="card-surface dashboard-panel">
+        <div class="dashboard-panel-head">
+            <div>
+                <div class="dashboard-eyebrow">Phân rã trạng thái</div>
+                <h3>Tình trạng đơn hàng</h3>
+            </div>
+            <span class="dashboard-chip">@Model.TotalOrders.ToString("N0") đơn</span>
+        </div>
+        <div class="status-chip-grid">
+            <div class="status-chip-card paid"><span>Đã thanh toán</span><strong>@Model.PaidOrders</strong></div>
+            <div class="status-chip-card unpaid"><span>Chưa thanh toán</span><strong>@Model.UnpaidOrders</strong></div>
+            <div class="status-chip-card delivered"><span>Đã giao</span><strong>@Model.DeliveredOrders</strong></div>
+            <div class="status-chip-card low"><span>Sắp hết hàng</span><strong>@Model.LowStockProducts</strong></div>
+        </div>
+        <div class="dashboard-list-bars compact-bars">
+            @foreach (var item in Model.OrdersByStatus)
+            {
+                var width = Model.TotalOrders <= 0 ? 0 : Math.Max(6, (int)Math.Round((item.Value / Model.TotalOrders) * 100));
+                <div class="metric-bar-item">
+                    <div class="metric-bar-top"><span>@item.Label</span><strong>@item.DisplayValue</strong></div>
+                    <div class="metric-bar-track"><div class="metric-bar-fill" style="width:@width%"></div></div>
+                </div>
+            }
+        </div>
+    </section>
+</div>
+
+<div class="dashboard-grid-two">
+    <section class="card-surface dashboard-panel">
+        <div class="dashboard-panel-head">
+            <div>
+                <div class="dashboard-eyebrow">Tồn kho theo nhóm</div>
+                <h3>Cơ cấu danh mục</h3>
+            </div>
+        </div>
+        <div class="dashboard-list-bars">
+            @foreach (var item in Model.StockByCategory)
+            {
+                var width = maxCategory <= 0 ? 0 : Math.Max(6, (int)Math.Round((item.Value / maxCategory) * 100));
+                <div class="metric-bar-item">
+                    <div class="metric-bar-top"><span>@item.Label</span><strong>@item.DisplayValue</strong></div>
+                    <div class="metric-bar-track"><div class="metric-bar-fill violet" style="width:@width%"></div></div>
+                </div>
+            }
+        </div>
+    </section>
+
+    <section class="card-surface dashboard-panel">
+        <div class="dashboard-panel-head">
+            <div>
+                <div class="dashboard-eyebrow">Model theo thương hiệu</div>
+                <h3>Top brand đang quản lý</h3>
+            </div>
+        </div>
+        <div class="dashboard-list-bars">
+            @foreach (var item in Model.ProductsByBrand)
+            {
+                var width = maxBrand <= 0 ? 0 : Math.Max(6, (int)Math.Round((item.Value / maxBrand) * 100));
+                <div class="metric-bar-item">
+                    <div class="metric-bar-top"><span>@item.Label</span><strong>@item.DisplayValue</strong></div>
+                    <div class="metric-bar-track"><div class="metric-bar-fill blue" style="width:@width%"></div></div>
+                </div>
+            }
+        </div>
+    </section>
+</div>
+
+<div class="dashboard-grid-two">
+    <section class="card-surface dashboard-panel">
+        <div class="dashboard-panel-head">
+            <div>
+                <div class="dashboard-eyebrow">Đơn hàng mới nhất</div>
+                <h3>Recent orders</h3>
+            </div>
+        </div>
+        <div class="admin-table-wrap">
+            <table class="admin-table dashboard-table">
+                <thead>
+                    <tr>
+                        <th>Mã đơn</th>
+                        <th>Khách hàng</th>
+                        <th>Ngày tạo</th>
+                        <th>Giá trị</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @if (Model.RecentOrders.Any())
+                {
+                    @foreach (var item in Model.RecentOrders)
+                    {
+                        <tr>
+                            <td><a asp-area="Admin" asp-controller="AdminSales" asp-action="Details" asp-route-id="@item.OrderId">@item.OrderCode</a></td>
+                            <td>@item.CustomerName</td>
+                            <td>@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>@item.TotalAmount.ToString("N0") đ</td>
+                            <td><span class="feature-pill on">@item.OrderStatus</span></td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr><td colspan="5" class="dashboard-empty-cell">Chưa có đơn hàng gần đây.</td></tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="card-surface dashboard-panel">
+        <div class="dashboard-panel-head">
+            <div>
+                <div class="dashboard-eyebrow">Cảnh báo tồn kho</div>
+                <h3>Thiết bị sắp hết hàng</h3>
+            </div>
+        </div>
+        <div class="low-stock-list">
+            @if (Model.LowStockItems.Any())
+            {
+                @foreach (var item in Model.LowStockItems)
+                {
+                    <a class="low-stock-row" asp-area="Admin" asp-controller="AdminInventory" asp-action="Edit" asp-route-id="@item.ProductId">
+                        <div>
+                            <strong>@item.ProductName</strong>
+                            <span>@item.CategoryName</span>
+                        </div>
+                        <b>@item.StockQty</b>
+                    </a>
+                }
+            }
+            else
+            {
+                <div class="dashboard-empty">Hiện chưa có sản phẩm nào ở mức tồn kho thấp.</div>
+            }
+        </div>
+    </section>
+</div>
+

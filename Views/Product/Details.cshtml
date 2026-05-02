@@ -1,0 +1,246 @@
+@model ProductDetailsViewModel
+@{
+    ViewData["Title"] = Model.Name;
+    var isAccessory = string.Equals(Model.Category, "Phụ kiện", StringComparison.OrdinalIgnoreCase);
+    var isComponent = string.Equals(Model.Category, "Linh kiện", StringComparison.OrdinalIgnoreCase);
+    var isDesktop = string.Equals(Model.Category, "Máy tính bộ", StringComparison.OrdinalIgnoreCase) || string.Equals(Model.Category, "Máy tính bàn", StringComparison.OrdinalIgnoreCase);
+}
+<section class="details-hero card-surface">
+    <div class="breadcrumbs-lite"><a asp-controller="Home" asp-action="Index">Trang chủ</a><span>/</span><a asp-controller="Product" asp-action="Catalog">Sản phẩm</a><span>/</span><strong>@Model.Name</strong></div>
+    <div class="details-grid details-grid-pro">
+        <div>
+            <div class="main-photo main-photo-pro">
+                <img id="mainProductImage" src="@Model.PrimaryImage" alt="@Model.Name" data-fallback="/images/products/placeholder-generic.svg" />
+            </div>
+            <div class="thumb-row thumb-row-pro">
+                @foreach (var img in Model.Images)
+                {
+                    <button type="button" class="thumb-btn" data-image="@img"><img src="@img" alt="@Model.Name" data-fallback="/images/products/placeholder-generic.svg" /></button>
+                }
+            </div>
+        </div>
+        <div>
+            <div class="eyebrow">@Model.Brand • @Model.Category</div>
+            @if (isAccessory || isComponent)
+            {
+                <div class="detail-mini-tabs"><span>@(isAccessory ? "Phụ kiện" : "Linh kiện")</span><span>@Model.Brand</span><span>Chính hãng</span></div>
+            }
+            <h1>@Model.Name</h1>
+            <div class="detail-price-row">
+                <div class="old-price">@Model.OldPrice.ToString("N0") đ</div>
+                <div class="price">@Model.Price.ToString("N0") đ</div>
+            </div>
+            <div class="purchase-support-row">
+                <span>Chính hãng 100%</span>
+                <span>@((isAccessory || isComponent) ? "Giao nhanh toàn quốc" : "Giao nhanh toàn quốc")</span>
+                <span>@((isAccessory || isComponent) ? "Đổi mới nếu lỗi" : "Trả góp linh hoạt")</span>
+            </div>
+            <div class="detail-spec-grid">
+                <div><strong>CPU</strong><span>@Model.Cpu</span></div>
+                <div><strong>RAM</strong><span>@Model.Ram</span></div>
+                <div><strong>SSD</strong><span>@Model.Ssd</span></div>
+                <div><strong>Tồn kho</strong><span>@Model.Stock</span></div>
+            </div>
+            <form asp-controller="Cart" asp-action="Add" method="post" class="buy-form buy-form-pro">
+                <input type="hidden" name="productId" value="@Model.Id" />
+                <input type="number" name="quantity" value="1" min="1" class="qty-input" />
+                <button type="submit" class="btn-primary">Mua sản phẩm</button>
+                <a asp-controller="Cart" asp-action="Index" class="btn-outline">Xem giỏ hàng</a>
+            </form>
+        </div>
+    </div>
+</section>
+
+<section class="details-two-col">
+    <div class="details-main-stack">
+        <section class="product-rich card-surface">
+            <div class="section-head compact-head">
+                <h2>Mô tả sản phẩm</h2>
+            </div>
+            <div class="description-content">
+                @Html.Raw(Model.Description)
+            </div>
+        </section>
+
+        <section class="product-features card-surface">
+            <div class="section-head compact-head">
+                <h2>Điểm nổi bật</h2>
+            </div>
+            <ul class="feature-list feature-list-pro">
+                @foreach (var f in Model.Features)
+                {
+                    <li>@f</li>
+                }
+            </ul>
+        </section>
+    </div>
+
+    <aside class="details-side-stack">
+        <section class="card-surface info-card-pro">
+            <h3>Dịch vụ đi kèm</h3>
+            <ul>
+                @if (isAccessory || isComponent)
+                {
+                    <li>Tư vấn đúng chuẩn cổng kết nối và khả năng tương thích.</li>
+                    <li>Kiểm tra phụ kiện / linh kiện trước khi giao.</li>
+                    <li>Hỗ trợ đổi mẫu nếu chọn sai chuẩn kết nối còn nguyên tem.</li>
+                }
+                else if (isDesktop)
+                {
+                    <li>Hỗ trợ cài đặt cơ bản và bàn giao vận hành.</li>
+                    <li>Tư vấn cấu hình phù hợp cho văn phòng / doanh nghiệp.</li>
+                    <li>Kiểm tra hàng trước khi thanh toán.</li>
+                }
+                else
+                {
+                    <li>Hỗ trợ cài đặt cơ bản khi nhận máy</li>
+                    <li>Kiểm tra hàng trước khi thanh toán</li>
+                    <li>Hỗ trợ tư vấn chọn cấu hình phù hợp</li>
+                }
+            </ul>
+        </section>
+        <section class="card-surface info-card-pro">
+            <h3>Chính sách hỗ trợ</h3>
+            <ul>
+                <li><a asp-controller="Policy" asp-action="Details" asp-route-key="shipping">Giao hàng toàn quốc</a></li>
+                <li><a asp-controller="Policy" asp-action="Details" asp-route-key="return">Đổi trả dễ dàng</a></li>
+                <li><a asp-controller="Policy" asp-action="Details" asp-route-key="warranty">Bảo hành chính hãng</a></li>
+            </ul>
+        </section>
+    </aside>
+</section>
+
+<section class="product-reviews card-surface product-reviews-modern">
+    @{
+        var rounded = (int)Math.Round(Model.AverageRating, MidpointRounding.AwayFromZero);
+        Func<int, string> barWidth = star => $"{(Model.TotalReviews == 0 ? 0 : (double)(Model.RatingSummary.ContainsKey(star) ? Model.RatingSummary[star] : 0) / Model.TotalReviews * 100):0.##}%";
+        var expPerformance = Model.AverageRating;
+        var expBattery = Math.Max(4.6, Model.AverageRating - 0.1);
+        var expCamera = Math.Max(4.5, Model.AverageRating - 0.1);
+    }
+    <div class="section-head compact-head">
+        <h2>Đánh giá và bình luận</h2>
+    </div>
+
+    <div class="reviews-dashboard">
+        <div class="reviews-score-card">
+            <div class="reviews-big-score">@Model.AverageRating.ToString("0.0")<span>/5</span></div>
+            <div class="review-stars review-stars-large">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    <span>@(i <= rounded ? "★" : "☆")</span>
+                }
+            </div>
+            <div class="reviews-total">@Model.TotalReviews lượt đánh giá</div>
+            <a href="#write-review" class="btn-primary review-write-btn">Viết đánh giá</a>
+        </div>
+
+        <div class="reviews-bars-card">
+            @for (int star = 5; star >= 1; star--)
+            {
+                var count = Model.RatingSummary.ContainsKey(star) ? Model.RatingSummary[star] : 0;
+                <div class="review-bar-row modern">
+                    <span>@star ★</span>
+                    <div class="bar"><i style="width:@barWidth(star)"></i></div>
+                    <strong>@count đánh giá</strong>
+                </div>
+            }
+        </div>
+
+        <div class="reviews-experience-card">
+            <h3>Đánh giá theo trải nghiệm</h3>
+            <div class="experience-row">
+                <span>Hiệu năng</span>
+                <div class="review-stars-inline accent">★★★★★</div>
+                <strong>@expPerformance.ToString("0.0")/5</strong>
+                <small>(@Model.TotalReviews đánh giá)</small>
+            </div>
+            <div class="experience-row">
+                <span>Thời lượng pin</span>
+                <div class="review-stars-inline accent">★★★★★</div>
+                <strong>@expBattery.ToString("0.0")/5</strong>
+                <small>(@Model.TotalReviews đánh giá)</small>
+            </div>
+            <div class="experience-row">
+                <span>Chất lượng hiển thị</span>
+                <div class="review-stars-inline accent">★★★★★</div>
+                <strong>@expCamera.ToString("0.0")/5</strong>
+                <small>(@Model.TotalReviews đánh giá)</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="review-filter-toolbar">
+        <h3>Lọc đánh giá theo</h3>
+        <div class="review-filter-chips">
+            <a class="filter-chip @(Model.FilterStar == null ? "active" : string.Empty)" asp-controller="Product" asp-action="Details" asp-route-id="@Model.Id">Tất cả</a>
+            <span class="filter-chip subtle">Có hình ảnh</span>
+            <span class="filter-chip subtle">Đã mua hàng</span>
+            @for (int i = 5; i >= 1; i--)
+            {
+                <a class="filter-chip @(Model.FilterStar == i ? "active" : string.Empty)" asp-controller="Product" asp-action="Details" asp-route-id="@Model.Id" asp-route-star="@i">@i sao</a>
+            }
+        </div>
+    </div>
+
+    <form id="write-review" asp-controller="Product" asp-action="PostReview" method="post" enctype="multipart/form-data" class="review-form review-form-modern">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <div class="review-form-grid">
+            <input type="text" name="reviewerName" placeholder="Tên của bạn" required value="@Model.ReviewerName" />
+            <select name="rating">
+                @for (int i = 5; i >= 1; i--)
+                {
+                    <option value="@i" selected="@(Model.NewRating == i)">@i sao</option>
+                }
+            </select>
+        </div>
+        <textarea name="comment" rows="4" placeholder="Chia sẻ cảm nhận của bạn" required>@Model.NewComment</textarea>
+        <div class="review-upload-row">
+            <input type="file" name="reviewImage" accept="image/*" />
+            <button type="submit" class="btn-primary">Gửi bình luận</button>
+        </div>
+    </form>
+
+    <div class="review-list review-list-modern">
+        @foreach (var review in Model.Reviews)
+        {
+            var initial = string.IsNullOrWhiteSpace(review.ReviewerName) ? "K" : review.ReviewerName.Trim()[0].ToString().ToUpper();
+            <div class="review-item review-item-modern">
+                <div class="review-avatar">@initial</div>
+                <div class="review-content">
+                    <div class="review-head modern">
+                        <strong>@review.ReviewerName</strong>
+                        <span>@review.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                    </div>
+                    <div class="review-line-rating">
+                        <div class="review-stars-inline accent">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <span>@(i <= review.Rating ? "★" : "☆")</span>
+                            }
+                        </div>
+                        <span class="review-line-text">@(review.Rating >= 5 ? "Tuyệt vời" : review.Rating >= 4 ? "Rất tốt" : review.Rating >= 3 ? "Khá ổn" : "Cần cải thiện")</span>
+                    </div>
+                    <div class="review-tag-row">
+                        <span class="review-tag">Hiệu năng tốt</span>
+                        <span class="review-tag">Trải nghiệm ổn định</span>
+                        @if (!string.IsNullOrWhiteSpace(review.ImageUrl))
+                        {
+                            <span class="review-tag">Có hình ảnh</span>
+                        }
+                    </div>
+                    <p>@review.CommentText</p>
+                    @if (!string.IsNullOrWhiteSpace(review.ImageUrl))
+                    {
+                        <img class="review-image" src="@review.ImageUrl" alt="Ảnh đánh giá" />
+                    }
+                    @if (!string.IsNullOrWhiteSpace(review.ReplyText))
+                    {
+                        <div class="review-admin-reply"><strong>Phản hồi từ shop:</strong> @review.ReplyText</div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</section>
+

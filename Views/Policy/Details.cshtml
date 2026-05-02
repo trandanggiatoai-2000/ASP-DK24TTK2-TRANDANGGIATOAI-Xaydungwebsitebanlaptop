@@ -1,0 +1,13 @@
+@model websitebanlaptop.Models.PolicyPageViewModel
+@{
+    ViewData["Title"] = ViewData["Title"] ?? Model.Title;
+}
+<section class="policy-page card-surface">
+    <div class="policy-header">
+        <div class="policy-kicker">HỖ TRỢ KHÁCH HÀNG</div>
+        <h1>@Model.Title</h1>
+        <p class="policy-summary">@Model.Summary</p>
+    </div>
+    <div class="policy-content">@Html.Raw(Model.ContentHtml)</div>
+</section>
+

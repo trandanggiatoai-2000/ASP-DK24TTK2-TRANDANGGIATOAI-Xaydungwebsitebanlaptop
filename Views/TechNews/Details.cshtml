@@ -1,0 +1,22 @@
+@model websitebanlaptop.Models.TechNewsPostViewModel
+@{
+    ViewData["Title"] = string.IsNullOrWhiteSpace(Model.SeoTitle) ? Model.Title : Model.SeoTitle;
+}
+<div class="lxt-news-layout">
+    <article class="card-surface lxt-news-detail">
+        <div class="page-kicker">@Model.CategoryName.ToUpperInvariant()</div>
+        <h1>@Model.Title</h1>
+        <div class="lxt-news-meta">@Model.PublishedAtText</div>
+        <img class="lxt-news-hero" src="@Model.ThumbnailUrl" alt="@Model.Title" data-fallback="/images/banners/campaign-office.jpg" />
+        <div class="lxt-news-summary">@Model.Summary</div>
+        <div class="policy-content">@Html.Raw(Model.ContentHtml)</div>
+    </article>
+    <aside class="lxt-news-sidebar">
+        <div class="card-surface lxt-news-side-card">
+            <h3>TIN CÔNG NGHỆ</h3>
+            <p>Cập nhật bài viết mới, tư vấn chọn laptop và thông tin sử dụng thực tế.</p>
+            <a class="btn-primary wide" asp-controller="TechNews" asp-action="Index">Xem tất cả bài viết</a>
+        </div>
+    </aside>
+</div>
+

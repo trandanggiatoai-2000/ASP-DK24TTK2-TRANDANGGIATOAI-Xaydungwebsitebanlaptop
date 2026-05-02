@@ -1,0 +1,32 @@
+@{
+    ViewData["Title"] = "Kết quả thanh toán";
+}
+<div class="success-box card-surface">
+    <div class="success-icon">✓</div>
+    <h1>@ViewBag.SuccessTitle</h1>
+    <p class="success-lead">@ViewBag.SuccessMessage</p>
+
+    <div class="success-detail-grid">
+        <div class="success-detail-item">
+            <span>Mã đơn hàng</span>
+            <strong>@ViewBag.OrderCode</strong>
+        </div>
+        <div class="success-detail-item">
+            <span>Hình thức thanh toán</span>
+            <strong>@ViewBag.PaymentMethod</strong>
+        </div>
+        <div class="success-detail-item">
+            <span>Trạng thái thanh toán</span>
+            <strong>@ViewBag.PaymentStatusText</strong>
+        </div>
+    </div>
+
+    <div class="success-note">
+        @ViewBag.SuccessMessage
+    </div>
+
+    <div class="success-actions">
+        <a class="btn-primary" asp-controller="Home" asp-action="Index">Quay về trang chủ để tiếp tục mua sắm</a>
+    </div>
+</div>
+

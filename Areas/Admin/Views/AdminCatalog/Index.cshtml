@@ -1,0 +1,71 @@
+@model AdminCatalogViewModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Danh mục theo hãng";
+    var canImportInventory = (bool)(ViewBag.CanImportInventory ?? false);
+}
+<div class="admin-page-hero compact">
+    <div>
+        <div class="page-kicker">CATALOG CONTROL</div>
+        <h1>Quản lý danh mục theo hãng / tên sản phẩm / danh mục</h1>
+        <p>Lọc nhanh cấu trúc sản phẩm, phụ kiện, linh kiện và máy tính bộ đang có trong kho.</p>
+    </div>
+    @if (canImportInventory)
+    {
+        <div class="admin-actions-row">
+            <a class="btn-secondary" asp-area="Admin" asp-controller="AdminInventory" asp-action="Import">Import thêm thiết bị</a>
+        </div>
+    }
+</div>
+
+<div class="card-surface admin-surface">
+    <form method="get" class="catalog-admin-filter">
+        <input type="text" name="keyword" value="@Model.Keyword" placeholder="Tìm theo tên sản phẩm..." />
+        <select name="brand">
+            <option value="">Tất cả hãng</option>
+            @foreach (var item in Model.Brands)
+            {
+                <option value="@item" selected="@(Model.Brand == item ? "selected" : null)">@item</option>
+            }
+        </select>
+        <select name="category">
+            <option value="">Tất cả danh mục</option>
+            @foreach (var item in Model.Categories)
+            {
+                <option value="@item" selected="@(Model.Category == item ? "selected" : null)">@item</option>
+            }
+        </select>
+        <button type="submit" class="btn-primary">Lọc</button>
+    </form>
+</div>
+
+<div class="card-surface admin-surface">
+    <div class="admin-table-wrap">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Hãng</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Danh mục</th>
+                    <th>Cấu hình</th>
+                    <th>Giá</th>
+                    <th>Tồn kho</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.Brand</td>
+                    <td><strong>@item.ProductName</strong></td>
+                    <td>@item.CategoryName</td>
+                    <td>@item.Cpu<br />@item.Ram • @item.Ssd</td>
+                    <td>@item.Price.ToString("N0") đ</td>
+                    <td>@item.StockQty</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+

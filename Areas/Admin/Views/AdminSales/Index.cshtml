@@ -1,0 +1,76 @@
+@model List<AdminOrderViewModel>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý bán hàng";
+    string status = ViewBag.Status?.ToString() ?? "all";
+    var canUpdateOrders = (bool)(ViewBag.CanUpdateOrders ?? false);
+    var canCancelOrders = (bool)(ViewBag.CanCancelOrders ?? false);
+}
+<div class="section-head"><h1>Quản lý đơn hàng</h1><span>Lọc theo trạng thái thanh toán, giao hàng và hủy đơn</span></div>
+<div class="admin-filter-row">
+    <a class="filter-chip @(status == "all" ? "active" : "")" asp-action="Index" asp-route-status="all">Tất cả đơn</a>
+    <a class="filter-chip @(status == "paid" ? "active" : "")" asp-action="Index" asp-route-status="paid">Đã thanh toán</a>
+    <a class="filter-chip @(status == "unpaid" ? "active" : "")" asp-action="Index" asp-route-status="unpaid">Chưa thanh toán</a>
+    <a class="filter-chip @(status == "delivered" ? "active" : "")" asp-action="Index" asp-route-status="delivered">Đã giao hàng</a>
+    <a class="filter-chip @(status == "cancelled" ? "active" : "")" asp-action="Index" asp-route-status="cancelled">Đã hủy</a>
+</div>
+<div class="card-surface">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Mã đơn</th>
+                <th>Khách hàng</th>
+                <th>Ngày tạo</th>
+                <th>Thanh toán</th>
+                <th>Trạng thái</th>
+                <th>Tổng tiền</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>
+                    <strong>@order.OrderCode</strong>
+                    <div class="order-items-inline">
+                        @foreach (var item in order.Items)
+                        {
+                            <div>• @item.ProductName x @item.Quantity</div>
+                        }
+                    </div>
+                </td>
+                <td>@order.CustomerName<br /><span>@order.Phone</span></td>
+                <td>@order.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                <td><span class="status-pill @(order.IsPaid ? "paid" : "unpaid")">@(order.IsPaid ? "Đã thanh toán" : "Chưa thanh toán")</span><br />@order.PaymentMethod</td>
+                <td>@order.OrderStatus</td>
+                <td>@order.TotalAmount.ToString("N0") đ</td>
+                <td>
+                    <div class="order-action-stack">
+                        <a asp-action="Details" asp-route-id="@order.OrderId" class="btn-secondary admin-mini-btn">Xem chi tiết</a>
+                        @if (canUpdateOrders && order.CanMarkDelivered)
+                        {
+                            <form asp-action="MarkDelivered" method="post">
+                                <input type="hidden" name="orderId" value="@order.OrderId" />
+                                <button type="submit" class="btn-primary admin-mini-btn">Chuyển giao hàng</button>
+                            </form>
+                        }
+                        @if (canCancelOrders && order.CanCancel)
+                        {
+                            <form asp-action="Cancel" method="post" onsubmit="return confirm('Xác nhận hủy đơn hàng này?');">
+                                <input type="hidden" name="orderId" value="@order.OrderId" />
+                                <button type="submit" class="btn-danger admin-mini-btn">Hủy đơn</button>
+                            </form>
+                        }
+                        @if (!canUpdateOrders && !canCancelOrders)
+                        {
+                            <span class="review-date">Chỉ xem đơn hàng</span>
+                        }
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+

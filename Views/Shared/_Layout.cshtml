@@ -1,0 +1,222 @@
+@using websitebanlaptop.Services
+@using websitebanlaptop.Services.Contracts
+@inject CartSessionService CartService
+@inject ILayoutContentService LayoutContentService
+@{
+    var cartCount = CartService.GetCart().Sum(x => x.Quantity);
+    var adminLoggedIn = Context.Session.GetString("AdminLoggedIn") == "1";
+    var site = await LayoutContentService.GetWebsiteSettingsAsync();
+    var megaBrands = await LayoutContentService.GetTopBrandsForMenuAsync();
+    var megaCategories = await LayoutContentService.GetTopCategoriesForMenuAsync();
+    var aboutFooterPolicies = await LayoutContentService.GetAboutFooterPoliciesAsync();
+    var metaDescription = ViewData["MetaDescription"]?.ToString() ?? site.StoreName;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="@metaDescription" />
+    <title>@ViewData["Title"] - @site.StoreName</title>
+    @if (!string.IsNullOrWhiteSpace(site.FaviconUrl))
+    {
+        <link rel="icon" type="image/png" href="@site.FaviconUrl" />
+    }
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>:root{--red:@site.PrimaryColor;--blue:@site.SecondaryColor;--accent:@site.AccentColor;--header-bg:@site.HeaderBackgroundColor;--header-text:@site.HeaderTextColor;--hero-bg:@site.HeroBackgroundColor;--hero-text:@site.HeroTextColor;--popup-bg:@site.PopupBackgroundColor;--popup-text:@site.PopupTextColor;--section-title-color:@site.SectionTitleColor;--section-subtext-color:@site.SectionSubtextColor;}</style>
+</head>
+<body>
+    @if (site.PopupEnabled)
+    {
+        <div class="promo-popup-backdrop" id="promoPopupBackdrop" hidden onclick="window.closePromoPopup && event.target===this && window.closePromoPopup();">
+            <div class="promo-popup" role="dialog" aria-modal="true" aria-labelledby="promoPopupTitle">
+                <button type="button" class="promo-popup-close" id="promoPopupClose" aria-label="Đóng" onclick="window.closePromoPopup && window.closePromoPopup(); return false;">×</button>
+                <div class="promo-popup-media">
+                    <img src="@site.PopupImageUrl" alt="Popup khuyến mãi" data-fallback="/images/banners/campaign-weekend.jpg" />
+                </div>
+                <div class="promo-popup-content" style="background:@site.PopupBackgroundColor;color:@site.PopupTextColor;">
+                    <div class="page-kicker">ƯU ĐÃI NỔI BẬT</div>
+                    <h3 id="promoPopupTitle" style="font-size:@(site.PopupTitleFontSize)px;color:@site.PopupTextColor;">@site.PopupTitle</h3>
+                    <p style="font-size:@(site.PopupSubtitleFontSize)px;color:@site.PopupTextColor;">@site.PopupSubtitle</p>
+                    <a class="btn-primary" href="@site.PopupButtonLink" style="font-size:@(site.PopupButtonFontSize)px;">@site.PopupButtonText</a>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="lxt-topbar">
+        <div class="container lxt-topbar-inner">
+            <div>@site.PromoText</div>
+            <div class="lxt-topbar-phones">
+                <span>@site.TopPhone1</span>
+                <span>@site.TopPhone2</span>
+            </div>
+        </div>
+    </div>
+
+    <header class="site-header lxt-header" style="background:@site.PrimaryColor;color:#fff;">
+        <div class="container lxt-header-main">
+            <a asp-controller="Home" asp-action="Index" class="lxt-logo-wrap">
+                @if (!string.IsNullOrWhiteSpace(site.WebsiteLogoUrl))
+                {
+                    <div class="logo-media @(site.WebsiteLogoCropMode == "landscape" ? "logo-media-landscape" : "logo-media-square")"><img src="@site.WebsiteLogoUrl" alt="@site.StoreName" /></div>
+                }
+                else
+                {
+                    <div class="logo-mark">@site.LogoText</div>
+                }
+                <div>
+                    <div class="lxt-store-name">@site.StoreName</div>
+                    <div class="lxt-store-sub">@site.StoreTagline</div>
+                </div>
+            </a>
+
+            <div class="lxt-search-wrap">
+                <form asp-controller="Product" asp-action="Catalog" method="get" class="lxt-search-form">
+                    <input type="text" name="keyword" placeholder="Gõ tên hoặc model máy để tìm!" />
+                    <button type="submit" aria-label="Tìm kiếm">🔍</button>
+                </form>
+                <a class="lxt-mini-cart" asp-controller="Cart" asp-action="Index" aria-label="Giỏ hàng">🛒<span class="lxt-mini-cart-count">@cartCount</span></a>
+            </div>
+
+            <div class="lxt-contact">
+                <div class="lxt-contact-row"><strong>☎ Hotline</strong> <span>@site.TopPhone1</span> <span>@site.TopPhone2</span></div>
+                <div class="lxt-contact-row">📍 @site.HeaderAddress</div>
+                <div class="lxt-contact-row admin-quick-link-row">
+                    @if (adminLoggedIn)
+                    {
+                        <a class="admin-quick-link" asp-area="Admin" asp-controller="AdminInventory" asp-action="Index">Vào trang quản trị</a>
+                    }
+                    else
+                    {
+                        <a class="admin-quick-link" asp-area="Admin" asp-controller="AdminAuth" asp-action="Login">Đăng nhập admin</a>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="lxt-main-nav">
+            <div class="container lxt-main-nav-inner">
+                <button type="button" class="mega-trigger lxt-trigger" id="categoryToggle">☰ Danh mục</button>
+                <nav class="lxt-nav-links">
+                    <a asp-controller="Product" asp-action="Catalog">Laptop</a>
+                    <a asp-controller="Product" asp-action="Catalog" asp-route-category="Gaming - Đồ họa">Laptop Máy Trạm</a>
+                    <a asp-controller="Product" asp-action="Catalog" asp-route-category="Máy tính bộ">Máy Tính Bàn</a>
+                    <a asp-controller="Product" asp-action="Catalog" asp-route-category="Phụ kiện">Phụ kiện</a>
+                    <a asp-controller="Product" asp-action="Catalog" asp-route-category="Linh kiện">Linh kiện</a>
+                    <a asp-controller="Policy" asp-action="Details" asp-route-key="shipping">Dịch vụ</a>
+                    <a asp-controller="TechNews" asp-action="Index">Tin công nghệ 24H</a>
+                </nav>
+            </div>
+            <div class="container mega-panel lxt-mega-panel" id="megaMenuPanel" hidden>
+                <div>
+                    <h4>Hãng sản xuất</h4>
+                    @foreach (var brand in megaBrands)
+                    {
+                        <a asp-controller="Product" asp-action="Catalog" asp-route-brand="@brand">@brand</a>
+                    }
+                </div>
+                <div>
+                    <h4>Dòng sản phẩm</h4>
+                    @foreach (var category in megaCategories)
+                    {
+                        <a asp-controller="Product" asp-action="Catalog" asp-route-category="@category">@category</a>
+                    }
+                </div>
+                <div>
+                    <h4>Nhu cầu sử dụng</h4>
+                    <a asp-controller="Product" asp-action="Catalog" asp-route-category="Văn phòng">Văn phòng</a>
+                    <a asp-controller="Product" asp-action="Catalog" asp-route-category="Gaming">Laptop Gaming</a>
+                    <a asp-controller="Product" asp-action="Catalog" asp-route-category="Mỏng nhẹ">Mỏng nhẹ</a>
+                    <a asp-controller="Product" asp-action="Catalog" asp-route-category="Cao cấp">Cao cấp</a>
+                    <a asp-controller="Product" asp-action="Catalog" asp-route-category="Đồ họa">Đồ họa</a>
+                    <a asp-controller="Product" asp-action="Catalog" asp-route-category="Doanh nhân">Doanh nhân</a>
+                </div>
+                <div>
+                    <h4>Tiện ích</h4>
+                    <a asp-controller="Product" asp-action="Catalog" asp-route-installment="true">Trả góp 0%</a>
+                    <a asp-controller="Product" asp-action="Catalog" asp-route-fast="true">Giao nhanh</a>
+                    <a asp-controller="Policy" asp-action="Details" asp-route-key="warranty">Bảo hành chính hãng</a>
+                    @if (adminLoggedIn)
+                    {
+                        <a asp-area="Admin" asp-controller="AdminInventory" asp-action="Index">Quản trị kho</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="site-main lxt-site-main">
+        <div class="container">
+            @if (TempData["CartMessage"] != null)
+            {
+                <div class="toast-success">@TempData["CartMessage"]</div>
+            }
+            @RenderBody()
+        </div>
+    </main>
+
+    <footer class="site-footer lxt-footer">
+        <div class="container lxt-footer-grid">
+            <div>
+                <h4>@site.FooterCompanyHeading @site.StoreName.ToUpperInvariant()</h4>
+                <p><strong>@site.FooterShowroomTitle</strong><br />@site.FooterShowroomAddress<br />@site.FooterShowroomHotline</p>
+                <p><strong>@site.FooterWarrantyTitle</strong><br />@site.FooterWarrantyAddress<br />@site.FooterWarrantyHotline</p>
+                <p><strong>@site.FooterWorkingHoursTitle</strong><br />@site.FooterWorkingHoursLine1<br />@site.FooterWorkingHoursLine2</p>
+            </div>
+            <div>
+                <h4>THÔNG TIN</h4>
+                <ul class="footer-link-list">
+                    <li><a href="@site.FooterInfoLink1Url" target="_blank" rel="noopener noreferrer">@site.FooterInfoLink1Text</a></li>
+                    <li><a href="@site.FooterInfoLink2Url" target="_blank" rel="noopener noreferrer">@site.FooterInfoLink2Text</a></li>
+                    <li><a href="@site.FooterInfoLink3Url" target="_blank" rel="noopener noreferrer">@site.FooterInfoLink3Text</a></li>
+                    <li><a href="@site.FooterInfoLink4Url" target="_blank" rel="noopener noreferrer">@site.FooterInfoLink4Text</a></li>
+                    <li><a href="@site.FooterInfoLink5Url" target="_blank" rel="noopener noreferrer">@site.FooterInfoLink5Text</a></li>
+                    <li><a href="@site.FooterInfoLink6Url" target="_blank" rel="noopener noreferrer">@site.FooterInfoLink6Text</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>VỀ CHÚNG TÔI</h4>
+                <p>@site.FooterAbout</p>
+                <ul class="footer-link-list">
+                    @foreach (var policy in aboutFooterPolicies)
+                    {
+                        <li><a asp-controller="Policy" asp-action="Details" asp-route-key="@policy.PolicyKey">@policy.MenuLabel</a></li>
+                    }
+                </ul>
+            </div>
+            <div>
+                <h4>@site.FooterShippingTitle</h4>
+                <div class="lxt-shipping-logos">
+                    <span>@if (!string.IsNullOrWhiteSpace(site.FooterShippingImage1Url)) { <img src="@site.FooterShippingImage1Url" alt="@site.FooterShippingLine1" data-fallback="/images/placeholder-logo.svg" /> } else { @site.FooterShippingLine1 }</span>
+                    <span>@if (!string.IsNullOrWhiteSpace(site.FooterShippingImage2Url)) { <img src="@site.FooterShippingImage2Url" alt="@site.FooterShippingLine2" data-fallback="/images/placeholder-logo.svg" /> } else { @site.FooterShippingLine2 }</span>
+                    <span>@if (!string.IsNullOrWhiteSpace(site.FooterShippingImage3Url)) { <img src="@site.FooterShippingImage3Url" alt="@site.FooterShippingLine3" data-fallback="/images/placeholder-logo.svg" /> } else { @site.FooterShippingLine3 }</span>
+                    <span>@if (!string.IsNullOrWhiteSpace(site.FooterShippingImage4Url)) { <img src="@site.FooterShippingImage4Url" alt="@site.FooterShippingLine4" data-fallback="/images/placeholder-logo.svg" /> } else { @site.FooterShippingLine4 }</span>
+                </div>
+                <h4 style="margin-top:20px;">@site.FooterBankTitle.ToUpperInvariant()</h4>
+                <p>@site.FooterBankLine1<br />@site.FooterBankLine2<br />@site.FooterBankLine3</p>
+                @if (!string.IsNullOrWhiteSpace(site.FooterQrImageUrl))
+                {
+                    <div class="lxt-qr-box lxt-qr-box-image"><img src="@site.FooterQrImageUrl" alt="@site.FooterQrLabel" data-fallback="/images/placeholder-logo.svg" /></div>
+                }
+                else
+                {
+                    <div class="lxt-qr-box">@site.FooterQrLabel</div>
+                }
+            </div>
+        </div>
+        <div class="lxt-footer-copy">@site.FooterCopyright</div>
+    </footer>
+
+    <script>
+        window.sitePopupEnabled = @site.PopupEnabled.ToString().ToLowerInvariant();
+        window.sitePopupDelay = 700;
+    </script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+

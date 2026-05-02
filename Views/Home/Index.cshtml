@@ -1,0 +1,132 @@
+@model HomePageViewModel
+@{
+    ViewData["Title"] = "Trang chủ";
+    var heroSlides = (Model.Slides ?? new List<BannerSlide>()).Where(x => !string.IsNullOrWhiteSpace(x.ImageUrl)).OrderBy(x => x.DisplayOrder).ToList();
+    if (!heroSlides.Any())
+    {
+        heroSlides = new List<BannerSlide>
+        {
+            new BannerSlide { ImageUrl = "/images/banners/campaign-gaming.jpg", Title = "Gaming", LinkUrl = "/Product/Catalog?category=Gaming", KickerText = "Hot" },
+            new BannerSlide { ImageUrl = "/images/banners/campaign-office.jpg", Title = "Văn phòng", LinkUrl = "/Product/Catalog?category=Văn phòng", KickerText = "Bán chạy" },
+            new BannerSlide { ImageUrl = "/images/banners/campaign-macbook.jpg", Title = "Cao cấp", LinkUrl = "/Product/Catalog?category=Cao cấp", KickerText = "Cao cấp" }
+        };
+    }
+    var sideSlides = heroSlides.Skip(1).Take(2).ToList();
+}
+
+
+<section class="lxt-home-hero">
+    <div class="lxt-hero-grid">
+        <div class="lxt-main-hero" data-slider>
+            @for (var i = 0; i < heroSlides.Count; i++)
+            {
+                var slide = heroSlides[i];
+                <a class="hero-campaign-slide hero-campaign-image-slide @(i == 0 ? "active" : "")" href="@(string.IsNullOrWhiteSpace(slide.LinkUrl) ? "/Product/Catalog" : slide.LinkUrl)">
+                    <img src="@slide.ImageUrl" alt="@(string.IsNullOrWhiteSpace(slide.Title) ? $"Banner {i+1}" : slide.Title)" data-fallback="/images/banners/campaign-gaming.jpg" />
+                </a>
+            }
+            <button type="button" class="slider-arrow prev" data-slide-nav="prev" aria-label="Slide trước">‹</button>
+            <button type="button" class="slider-arrow next" data-slide-nav="next" aria-label="Slide sau">›</button>
+            <div class="hero-dots hero-dots-campaign">
+                @for (var i = 0; i < heroSlides.Count; i++)
+                {
+                    <button class="@(i == 0 ? "active" : "")" data-slide-index="@i"></button>
+                }
+            </div>
+        </div>
+        <div class="lxt-side-promos">
+            @foreach (var tile in sideSlides)
+            {
+                <a href="@(string.IsNullOrWhiteSpace(tile.LinkUrl) ? "/Product/Catalog" : tile.LinkUrl)" class="lxt-side-promo-card">
+                    <img src="@tile.ImageUrl" alt="@tile.Title" data-fallback="/images/banners/campaign-office.jpg" />
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="lxt-quick-grid">
+    <div class="lxt-promo-category-grid">
+        <a asp-controller="Product" asp-action="Catalog" asp-route-category="Gaming" class="lxt-promo-tile"><img src="@Model.Settings.CategoryBannerGamingUrl" alt="Gaming" data-fallback="/images/banners/campaign-gaming.jpg" /><span>Gaming</span></a>
+        <a asp-controller="Product" asp-action="Catalog" asp-route-category="Văn phòng" class="lxt-promo-tile"><img src="@Model.Settings.CategoryBannerOfficeUrl" alt="Văn phòng" data-fallback="/images/banners/campaign-office.jpg" /><span>Văn phòng</span></a>
+        <a asp-controller="Product" asp-action="Catalog" asp-route-category="Cao cấp" class="lxt-promo-tile"><img src="@Model.Settings.CategoryBannerPremiumUrl" alt="Cao cấp" data-fallback="/images/banners/campaign-weekend.jpg" /><span>Cao cấp</span></a>
+        <a asp-controller="Product" asp-action="Catalog" asp-route-category="Đồ họa" class="lxt-promo-tile"><img src="@Model.Settings.CategoryBannerGraphicsUrl" alt="Đồ họa" data-fallback="/images/banners/campaign-macbook.jpg" /><span>Đồ họa</span></a>
+        <a asp-controller="Product" asp-action="Catalog" asp-route-category="Phụ kiện" class="lxt-promo-tile"><img src="@Model.Settings.CategoryBannerAccessoryUrl" alt="Phụ kiện" data-fallback="/images/accessories/accessory-keyboard.svg" /><span>Phụ kiện</span></a>
+        <a asp-controller="Product" asp-action="Catalog" asp-route-category="Linh kiện" class="lxt-promo-tile"><img src="@Model.Settings.CategoryBannerComponentUrl" alt="Linh kiện" data-fallback="/images/accessories/component-ram.svg" /><span>Linh kiện</span></a>
+    </div>
+
+    <div class="lxt-chip-sections card-surface">
+        <div class="lxt-chip-group">
+            @foreach (var brand in Model.FeaturedBrands.Take(9))
+            {
+                <a asp-controller="Product" asp-action="Catalog" asp-route-brand="@brand" class="brand-chip">@brand</a>
+            }
+        </div>
+        <div class="lxt-chip-group lxt-chip-group-small">
+            <a asp-controller="Product" asp-action="Catalog" asp-route-keyword="5-10 triệu" class="brand-chip">Từ 5-10 triệu</a>
+            <a asp-controller="Product" asp-action="Catalog" asp-route-keyword="10-20 triệu" class="brand-chip">Từ 10-20 triệu</a>
+            <a asp-controller="Product" asp-action="Catalog" asp-route-keyword="20 triệu" class="brand-chip">20 triệu trở lên</a>
+            @foreach (var item in Model.DemandGroups.Take(9))
+            {
+                <a asp-controller="Product" asp-action="Catalog" asp-route-category="@item" class="brand-chip">@item</a>
+            }
+        </div>
+    </div>
+</section>
+
+@if (Model.Settings.ShowFlashBanner)
+{
+<section class="lxt-flash-sale" data-flash-sale data-countdown-ends-at="@Model.Settings.FlashCountdownEndsAt">
+    <div class="lxt-flash-head">
+        <div>
+            <h2>@Model.Settings.FlashCountdownLabel</h2>
+            <div class="lxt-countdown-boxes" data-flash-countdown>
+                <span><strong data-unit="weeks">00</strong><small>Tuần</small></span>
+                <span><strong data-unit="hours">00</strong><small>Giờ</small></span>
+                <span><strong data-unit="minutes">00</strong><small>Phút</small></span>
+                <span><strong data-unit="seconds">00</strong><small>Giây</small></span>
+            </div>
+        </div>
+        <div class="lxt-flash-badge">@Model.Settings.FlashBadgeText</div>
+    </div>
+    <div class="lxt-flash-products">
+        @foreach (var product in Model.FlashSaleProducts.Take(5))
+        {
+            <div class="lxt-flash-card">
+                <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id"><img src="@product.PrimaryImage" alt="@product.Name" data-fallback="/images/products/placeholder-generic.svg" /></a>
+                <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="lxt-flash-name">@product.Name</a>
+                <div class="lxt-flash-sub">@product.Brand | @product.Category</div>
+                <div class="lxt-flash-old">@(product.OldPrice > product.Price ? product.OldPrice.ToString("N0") + " đ" : "")</div>
+                <div class="lxt-flash-price">@product.Price.ToString("N0") đ</div>
+                <ul class="lxt-flash-specs">
+                    <li>@product.Cpu</li>
+                    <li>@product.Ssd</li>
+                    <li>@product.Ram</li>
+                    <li>@(product.Category.Contains("Gaming") ? "RTX Series" : "Intel Graphics")</li>
+                    <li>@(product.Category.Contains("Gaming") ? "15.6 inch" : "14 inch")</li>
+                </ul>
+            </div>
+        }
+    </div>
+</section>
+}
+
+<section class="lxt-featured-section card-surface">
+    <div class="section-head compact-head lxt-section-head"><h2>@Model.Settings.FeaturedProductsTitle</h2></div>
+    <div class="lxt-featured-grid">
+        @foreach (var product in Model.FeaturedProducts.Take(25))
+        {
+            @await Html.PartialAsync("_ProductCard", product)
+        }
+    </div>
+</section>
+
+<section class="lxt-featured-section card-surface">
+    <div class="section-head compact-head lxt-section-head"><h2>Tin công nghệ mới</h2><a class="view-more-link" asp-controller="TechNews" asp-action="Index">Xem tất cả</a></div>
+    <div class="lxt-news-teaser-grid">
+        <a asp-controller="TechNews" asp-action="Index" class="lxt-news-teaser-card"><img src="/images/products/dell/dell-032.jpg" alt="Tin công nghệ" /><span>Đánh giá Dell Precision 3590</span></a>
+        <a asp-controller="TechNews" asp-action="Index" class="lxt-news-teaser-card"><img src="/images/products/thinkbook/thinkbook-001.jpg" alt="Tin công nghệ" /><span>Review ThinkPad L14 Gen 5</span></a>
+        <a asp-controller="TechNews" asp-action="Index" class="lxt-news-teaser-card"><img src="/images/products/hp/hp-001.jpg" alt="Tin công nghệ" /><span>Top laptop đồ họa 3D cao cấp</span></a>
+    </div>
+</section>
+

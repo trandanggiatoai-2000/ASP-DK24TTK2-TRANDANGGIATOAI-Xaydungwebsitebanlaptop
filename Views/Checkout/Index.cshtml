@@ -1,0 +1,87 @@
+@using websitebanlaptop.Services.Contracts
+@inject ILayoutContentService LayoutContentService
+@{
+    var site = await LayoutContentService.GetWebsiteSettingsAsync();
+}
+@model CheckoutPageViewModel
+@{
+    ViewData["Title"] = "Thanh toán";
+}
+<div class="checkout-layout">
+    <section class="card-surface">
+        <h1>Thông tin thanh toán</h1>
+        <form id="checkoutForm" asp-controller="Checkout" asp-action="Index" method="post" class="checkout-form">
+            @Html.AntiForgeryToken()
+            <div class="form-grid">
+                <div>
+                    <label for="CustomerName">Họ và tên</label>
+                    <input id="CustomerName" name="Form.CustomerName" value="@Model.Form.CustomerName" />
+                    <span asp-validation-for="Form.CustomerName"></span>
+                </div>
+                <div>
+                    <label for="Phone">Số điện thoại</label>
+                    <input id="Phone" name="Form.Phone" value="@Model.Form.Phone" />
+                    <span asp-validation-for="Form.Phone"></span>
+                </div>
+            </div>
+            <div>
+                <label for="Address">Địa chỉ nhận hàng</label>
+                <input id="Address" name="Form.Address" value="@Model.Form.Address" />
+                <span asp-validation-for="Form.Address"></span>
+            </div>
+            <div>
+                <label for="Note">Ghi chú</label>
+                <textarea id="Note" name="Form.Note">@Model.Form.Note</textarea>
+            </div>
+            <div class="payment-box">
+                <h3>Hình thức thanh toán</h3>
+                <label><input type="radio" name="Form.PaymentMethod" value="PayLater" @(Model.Form.PaymentMethod == "BankTransfer" ? "" : "checked") /> Thanh toán sau (ghi nhận đơn trước, thanh toán khi nhận hàng)</label>
+                <label><input type="radio" name="Form.PaymentMethod" value="BankTransfer" @(Model.Form.PaymentMethod == "BankTransfer" ? "checked" : "") /> Chuyển khoản ngân hàng</label>
+                <div id="bankInfo" class="bank-info" style="display:none;">
+                    <p><strong>Ngân hàng:</strong> @Model.BankName</p>
+                    <p><strong>Số tài khoản:</strong> @Model.BankNumber</p>
+                    <p><strong>Chủ tài khoản:</strong> @Model.BankAccountName</p>
+                    <p><strong>Nội dung CK:</strong> Thanh toán đơn hàng @site.StoreName - ghi SĐT đặt hàng</p>
+                </div>
+            </div>
+            <button id="checkoutSubmit" type="button" class="btn-primary">Xác nhận thanh toán</button>
+        </form>
+    </section>
+    <aside class="card-surface cart-summary">
+        <h3>Đơn hàng</h3>
+        @foreach (var item in Model.Cart.Items)
+        {
+            <div class="summary-item">
+                <span>@item.ProductName x @item.Quantity</span>
+                <strong>@item.LineTotal.ToString("N0") đ</strong>
+            </div>
+        }
+        <div class="summary-row"><span>Tạm tính</span><strong>@Model.Cart.Subtotal.ToString("N0") đ</strong></div>
+        <div class="summary-row"><span>Phí giao hàng</span><strong>@Model.Cart.ShippingFee.ToString("N0") đ</strong></div>
+        <div class="summary-row total"><span>Tổng cộng</span><strong>@Model.Cart.Total.ToString("N0") đ</strong></div>
+    </aside>
+</div>
+@section Scripts{
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+ const radios = document.querySelectorAll('input[name="Form.PaymentMethod"]');
+ const bankInfo = document.getElementById('bankInfo');
+ const form = document.getElementById('checkoutForm');
+ const btn = document.getElementById('checkoutSubmit');
+ function toggle(){
+   const checked = document.querySelector('input[name="Form.PaymentMethod"]:checked');
+   bankInfo.style.display = checked && checked.value === 'BankTransfer' ? 'block' : 'none';
+ }
+ radios.forEach(r=>r.addEventListener('change',toggle));
+ toggle();
+ btn.addEventListener('click', function(){
+   if (form.requestSubmit) {
+     form.requestSubmit();
+   } else {
+     form.submit();
+   }
+ });
+});
+</script>
+}
+

@@ -1,0 +1,150 @@
+@model CatalogPageViewModel
+@{
+    var settings = Model.WebsiteSettings;
+    var normalizedCategory = (Model.Category ?? string.Empty).Trim().ToLowerInvariant();
+    var isAccessories = normalizedCategory == "phụ kiện";
+    var isComponents = normalizedCategory == "linh kiện";
+    var isDesktop = normalizedCategory == "máy tính bộ" || normalizedCategory == "máy tính bàn";
+var isWorkstationAlias = normalizedCategory.Contains("gaming");
+    var isGaming = normalizedCategory.Contains("gaming");
+    var isOffice = normalizedCategory.Contains("văn phòng") || normalizedCategory.Contains("office");
+    var isPremium = normalizedCategory.Contains("cao cấp") || normalizedCategory.Contains("premium");
+    var isGraphics = normalizedCategory.Contains("đồ họa") || normalizedCategory.Contains("graphics");
+    var isAccessoryPage = isAccessories || isComponents;
+    var pageTitle = isAccessories ? "Phụ kiện" : isComponents ? "Linh kiện" : isDesktop ? "Máy tính bộ" : "Laptop Máy Trạm";
+    var pageDesc = isAccessories ? $"Tìm được {Model.TotalItems} phụ kiện phù hợp cho bàn phím, chuột, tai nghe, hub và đế tản nhiệt."
+        : isComponents ? $"Tìm được {Model.TotalItems} linh kiện phù hợp cho RAM, SSD, pin, sạc và các linh kiện nâng cấp."
+        : isDesktop ? $"Tìm được {Model.TotalItems} bộ máy phù hợp cho văn phòng, mini PC, workstation và doanh nghiệp."
+        : $"Tìm được {Model.TotalItems} sản phẩm phù hợp. Có thể lọc thêm theo CPU, RAM và SSD.";
+    var accessoryTabs = isAccessories
+        ? new[] { "Bàn phím", "Chuột", "Tai nghe", "USB Wifi", "Hub chuyển đổi", "Đế quạt tản nhiệt" }
+        : new[] { "RAM", "SSD", "Ổ cứng", "Sạc", "Pin", "Mainboard" };
+
+    var categoryBanner = string.Empty;
+    if (isAccessories)
+    {
+        categoryBanner = settings.CategoryBannerAccessoryUrl ?? string.Empty;
+    }
+    else if (isComponents)
+    {
+        categoryBanner = settings.CategoryBannerComponentUrl ?? string.Empty;
+    }
+    else if (isDesktop)
+    {
+        categoryBanner = settings.CategoryBannerGraphicsUrl ?? string.Empty;
+    }
+    else if (isGaming)
+    {
+        categoryBanner = settings.CategoryBannerGamingUrl ?? string.Empty;
+    }
+    else if (isOffice)
+    {
+        categoryBanner = settings.CategoryBannerOfficeUrl ?? string.Empty;
+    }
+    else if (isPremium)
+    {
+        categoryBanner = settings.CategoryBannerPremiumUrl ?? string.Empty;
+    }
+    else if (isGraphics)
+    {
+        categoryBanner = settings.CategoryBannerGraphicsUrl ?? string.Empty;
+    }
+}
+<div class="catalog-top card-surface catalog-top-pro">
+    <div>
+        <div class="eyebrow">DANH SÁCH SẢN PHẨM</div>
+        <h1>@pageTitle</h1>
+        <p>@pageDesc</p>
+    </div>
+    <div class="catalog-badges catalog-badges-interactive">
+        <a asp-controller="Product" asp-action="Catalog" asp-route-keyword="@Model.Keyword" asp-route-brand="@Model.Brand" asp-route-category="@Model.Category" asp-route-cpu="@Model.Cpu" asp-route-ram="@Model.Ram" asp-route-ssd="@Model.Ssd" asp-route-official="@(!Model.Official)" asp-route-fast="@Model.FastDelivery" asp-route-installment="@Model.Installment" class="@(Model.Official ? "active" : "")" data-ajax-catalog-link data-ajax-toggle="official">Hàng chính hãng</a>
+        <a asp-controller="Product" asp-action="Catalog" asp-route-keyword="@Model.Keyword" asp-route-brand="@Model.Brand" asp-route-category="@Model.Category" asp-route-cpu="@Model.Cpu" asp-route-ram="@Model.Ram" asp-route-ssd="@Model.Ssd" asp-route-official="@Model.Official" asp-route-fast="@(!Model.FastDelivery)" asp-route-installment="@Model.Installment" class="@(Model.FastDelivery ? "active" : "")" data-ajax-catalog-link data-ajax-toggle="fast">Giao nhanh</a>
+        <a asp-controller="Product" asp-action="Catalog" asp-route-keyword="@Model.Keyword" asp-route-brand="@Model.Brand" asp-route-category="@Model.Category" asp-route-cpu="@Model.Cpu" asp-route-ram="@Model.Ram" asp-route-ssd="@Model.Ssd" asp-route-official="@Model.Official" asp-route-fast="@Model.FastDelivery" asp-route-installment="@(!Model.Installment)" class="@(Model.Installment ? "active" : "")" data-ajax-catalog-link data-ajax-toggle="installment">Trả góp 0%</a>
+    </div>
+</div>
+@if (!string.IsNullOrWhiteSpace(categoryBanner))
+{
+    <div class="catalog-category-banner card-surface">
+        <img src="@categoryBanner" alt="@pageTitle" />
+    </div>
+}
+@if (isAccessoryPage) { <div class="accessory-toolbar card-surface"><div class="accessory-tabs">@foreach (var tab in accessoryTabs) { <a asp-controller="Product" asp-action="Catalog" asp-route-category="@Model.Category" asp-route-keyword="@tab" class="accessory-tab">@tab</a> }</div><div class="accessory-sort-tabs"><a asp-controller="Product" asp-action="Catalog" asp-route-category="@Model.Category" asp-route-keyword="@Model.Keyword" class="accessory-sort-tab">Giá thấp đến cao</a><a asp-controller="Product" asp-action="Catalog" asp-route-category="@Model.Category" asp-route-keyword="@Model.Keyword" class="accessory-sort-tab">Giá cao đến thấp</a></div></div>}<div class="active-filter-row">
+    @if (!string.IsNullOrWhiteSpace(Model.Brand))
+    {
+        <span class="filter-chip">Hãng: @Model.Brand</span>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.Category))
+    {
+        <span class="filter-chip">Nhu cầu: @Model.Category</span>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.Cpu))
+    {
+        <span class="filter-chip">CPU: @Model.Cpu</span>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.Ram))
+    {
+        <span class="filter-chip">RAM: @Model.Ram</span>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.Ssd))
+    {
+        <span class="filter-chip">SSD: @Model.Ssd</span>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.Keyword))
+    {
+        <span class="filter-chip">Từ khóa: @Model.Keyword</span>
+    }
+    @if (Model.Official)
+    {
+        <span class="filter-chip filter-chip-brand">Hàng chính hãng</span>
+    }
+    @if (Model.FastDelivery)
+    {
+        <span class="filter-chip filter-chip-brand">Giao nhanh</span>
+    }
+    @if (Model.Installment)
+    {
+        <span class="filter-chip filter-chip-brand">Trả góp 0%</span>
+    }
+</div>
+<div class="catalog-service-notes">
+    <div><strong>Hàng chính hãng:</strong> Sản phẩm đầy đủ VAT, bảo hành 12 tháng tại hãng hoặc trung tâm ủy quyền.</div>
+    <div><strong>Giao nhanh:</strong> Ưu tiên giao 2H nội thành hoặc giao liên tỉnh nhanh với sản phẩm còn sẵn kho.</div>
+    <div><strong>Trả góp 0%:</strong> Áp dụng cho nhiều mẫu từ 15 triệu, hỗ trợ thẻ tín dụng và đối tác tài chính.</div>
+</div>
+<div class="product-grid ecommerce-grid">
+    @foreach (var product in Model.Products)
+    {
+        @await Html.PartialAsync("_ProductCard", product)
+    }
+</div>
+@if (Model.TotalPages > 1)
+{
+    <div class="catalog-pagination-wrap">
+        <div class="catalog-pagination-summary">Hiển thị @Model.StartItem-@Model.EndItem trên tổng @Model.TotalItems sản phẩm.</div>
+        <div class="pager pager-modern">
+            @if (Model.HasPreviousPage)
+            {
+                <a class="pager-nav" asp-controller="Product" asp-action="Catalog" asp-route-page="@(Model.Page - 1)" asp-route-keyword="@Model.Keyword" asp-route-brand="@Model.Brand" asp-route-category="@Model.Category" asp-route-cpu="@Model.Cpu" asp-route-ram="@Model.Ram" asp-route-ssd="@Model.Ssd" asp-route-official="@Model.Official" asp-route-fast="@Model.FastDelivery" asp-route-installment="@Model.Installment" data-ajax-catalog-link aria-label="Trang trước">←</a>
+            }
+            @{
+                var startPage = Math.Max(1, Model.Page - 2);
+                var endPage = Math.Min(Model.TotalPages, Model.Page + 2);
+            }
+            @for (var i = startPage; i <= endPage; i++)
+            {
+                <a class="@(i == Model.Page ? "active" : "")" asp-controller="Product" asp-action="Catalog" asp-route-page="@i" asp-route-keyword="@Model.Keyword" asp-route-brand="@Model.Brand" asp-route-category="@Model.Category" asp-route-cpu="@Model.Cpu" asp-route-ram="@Model.Ram" asp-route-ssd="@Model.Ssd" asp-route-official="@Model.Official" asp-route-fast="@Model.FastDelivery" asp-route-installment="@Model.Installment" data-ajax-catalog-link>@i</a>
+            }
+            @if (Model.HasNextPage)
+            {
+                <a class="pager-nav" asp-controller="Product" asp-action="Catalog" asp-route-page="@(Model.Page + 1)" asp-route-keyword="@Model.Keyword" asp-route-brand="@Model.Brand" asp-route-category="@Model.Category" asp-route-cpu="@Model.Cpu" asp-route-ram="@Model.Ram" asp-route-ssd="@Model.Ssd" asp-route-official="@Model.Official" asp-route-fast="@Model.FastDelivery" asp-route-installment="@Model.Installment" data-ajax-catalog-link aria-label="Trang sau">→</a>
+            }
+        </div>
+        @if (Model.HasNextPage)
+        {
+            <div class="catalog-loadmore-wrap">
+                <a class="catalog-loadmore-btn" asp-controller="Product" asp-action="Catalog" asp-route-page="@(Model.Page + 1)" asp-route-keyword="@Model.Keyword" asp-route-brand="@Model.Brand" asp-route-category="@Model.Category" asp-route-cpu="@Model.Cpu" asp-route-ram="@Model.Ram" asp-route-ssd="@Model.Ssd" asp-route-official="@Model.Official" asp-route-fast="@Model.FastDelivery" asp-route-installment="@Model.Installment" data-ajax-catalog-link>Xem thêm @Math.Min(Model.PageSize, Model.RemainingItems) sản phẩm</a>
+            </div>
+        }
+    </div>
+}
+

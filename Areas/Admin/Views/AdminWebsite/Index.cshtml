@@ -1,0 +1,534 @@
+@model AdminWebsitePageViewModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Giao diện website";
+}
+<div class="admin-page-hero">
+    <div>
+        <div class="page-kicker">WEBSITE STUDIO</div>
+        <h1>Tùy chỉnh giao diện web</h1>
+    </div>
+    <div class="admin-actions-row">
+        <a class="btn-outline" asp-area="" asp-controller="Home" asp-action="Index" target="_blank">Xem website</a>
+    </div>
+</div>
+
+<form asp-action="Save" method="post" enctype="multipart/form-data" class="website-admin-shell" data-section-switcher>
+    <aside class="card-surface admin-surface website-admin-sidebar">
+        <div class="website-admin-sidebar-head">
+            <div class="page-kicker">DANH MỤC CẤU HÌNH</div>
+            <h3>Chọn khu vực cần chỉnh</h3>
+        </div>
+        <div class="website-admin-nav" role="tablist" aria-label="Các nhóm cấu hình website">
+            <button type="button" class="website-admin-nav-item active" data-section-target="brand" role="tab" aria-selected="true">Nhận diện thương hiệu</button>
+            <button type="button" class="website-admin-nav-item" data-section-target="brand-style" role="tab" aria-selected="false">Style editor thương hiệu</button>
+            <button type="button" class="website-admin-nav-item" data-section-target="hero" role="tab" aria-selected="false">Khối hero và CTA</button>
+            <button type="button" class="website-admin-nav-item" data-section-target="popup" role="tab" aria-selected="false">Popup banner khuyến mãi</button>
+            <button type="button" class="website-admin-nav-item" data-section-target="flash-sale" role="tab" aria-selected="false">Flash Sale & đếm ngược</button>
+            <button type="button" class="website-admin-nav-item" data-section-target="sections" role="tab" aria-selected="false">Tiêu đề các section</button>
+            <button type="button" class="website-admin-nav-item" data-section-target="slides" role="tab" aria-selected="false">Banner slider trang chủ</button>
+            <button type="button" class="website-admin-nav-item" data-section-target="category-banners" role="tab" aria-selected="false">Banner danh mục</button>
+            <button type="button" class="website-admin-nav-item" data-section-target="footer-info" role="tab" aria-selected="false">Menu thông tin footer</button>
+            <button type="button" class="website-admin-nav-item" data-section-target="footer" role="tab" aria-selected="false">Footer</button>
+        </div>
+        <div class="website-admin-sidebar-note">
+            <div class="mini-stat"><strong>@Model.Slides.Count</strong><span>slide đang cấu hình</span></div>
+            <div class="mini-stat"><strong>@(Model.Settings.PopupEnabled ? "ON" : "OFF")</strong><span>trạng thái popup</span></div>
+            <div class="mini-stat"><strong>@(Model.Settings.ShowHeroSection ? "ON" : "OFF")</strong><span>trạng thái hero</span></div>
+        </div>
+        <div class="website-admin-submit sticky-mobile-submit">
+            <button type="submit" class="btn-primary">Lưu giao diện website</button>
+        </div>
+    </aside>
+
+    <div class="website-admin-content-stack">
+        <section class="card-surface admin-surface website-admin-panel active" data-section-panel="brand" role="tabpanel">
+            <div class="section-head compact-head">
+                <div>
+                    <div class="page-kicker">NHẬN DIỆN THƯƠNG HIỆU</div>
+                    <h3 class="admin-panel-title">Thông tin thương hiệu và màu nhận diện</h3>
+                </div>
+            </div>
+            <div class="form-grid-two">
+                <div>
+                    <label asp-for="Settings.StoreName"></label>
+                    <input asp-for="Settings.StoreName" />
+                </div>
+                <div>
+                    <label asp-for="Settings.LogoText"></label>
+                    <input asp-for="Settings.LogoText" />
+                </div>
+                <div>
+                    <label asp-for="Settings.StoreTagline"></label>
+                    <input asp-for="Settings.StoreTagline" />
+                </div>
+                <div>
+                    <label asp-for="Settings.PromoText"></label>
+                    <input asp-for="Settings.PromoText" />
+                </div>
+            </div>
+            <div class="form-grid-three">
+                <div>
+                    <label asp-for="Settings.PrimaryColor"></label>
+                    <input asp-for="Settings.PrimaryColor" type="color" />
+                </div>
+                <div>
+                    <label asp-for="Settings.SecondaryColor"></label>
+                    <input asp-for="Settings.SecondaryColor" type="color" />
+                </div>
+                <div>
+                    <label asp-for="Settings.AccentColor"></label>
+                    <input asp-for="Settings.AccentColor" type="color" />
+                </div>
+            </div>
+            <div class="form-grid-two" style="margin-top:16px;">
+                <div>
+                    <label asp-for="Settings.WebsiteLogoUrl">Logo website</label>
+                    <input asp-for="Settings.WebsiteLogoUrl" />
+                    <label asp-for="Settings.WebsiteLogoFile">Upload logo website</label>
+                    <input asp-for="Settings.WebsiteLogoFile" type="file" accept="image/*,.svg" />
+                    <label asp-for="Settings.WebsiteLogoCropMode">Crop logo website</label>
+                    <select asp-for="Settings.WebsiteLogoCropMode">
+                        <option value="square">Vuông</option>
+                        <option value="landscape">Ngang</option>
+                    </select>
+                    @if (!string.IsNullOrWhiteSpace(Model.Settings.WebsiteLogoUrl))
+                    {
+                        <div class="upload-preview logo-preview-crop @(Model.Settings.WebsiteLogoCropMode == "landscape" ? "logo-preview-landscape" : "logo-preview-square")"><img src="@Model.Settings.WebsiteLogoUrl" alt="Logo website" /></div>
+                    }
+                </div>
+                <div>
+                    <label asp-for="Settings.AdminLogoUrl">Logo admin</label>
+                    <input asp-for="Settings.AdminLogoUrl" />
+                    <label asp-for="Settings.AdminLogoFile">Upload logo admin</label>
+                    <input asp-for="Settings.AdminLogoFile" type="file" accept="image/*,.svg" />
+                    <label asp-for="Settings.AdminLogoCropMode">Crop logo admin</label>
+                    <select asp-for="Settings.AdminLogoCropMode">
+                        <option value="square">Vuông</option>
+                        <option value="landscape">Ngang</option>
+                    </select>
+                    @if (!string.IsNullOrWhiteSpace(Model.Settings.AdminLogoUrl))
+                    {
+                        <div class="upload-preview logo-preview-crop @(Model.Settings.AdminLogoCropMode == "landscape" ? "logo-preview-landscape" : "logo-preview-square")"><img src="@Model.Settings.AdminLogoUrl" alt="Logo admin" /></div>
+                    }
+                </div>
+                <div class="full-row">
+                    <label asp-for="Settings.FaviconUrl">Favicon</label>
+                    <input asp-for="Settings.FaviconUrl" />
+                    <label asp-for="Settings.FaviconFile">Upload favicon</label>
+                    <input asp-for="Settings.FaviconFile" type="file" accept="image/*,.svg,.ico" />
+                    @if (!string.IsNullOrWhiteSpace(Model.Settings.FaviconUrl))
+                    {
+                        <div class="upload-preview logo-preview-crop logo-preview-favicon"><img src="@Model.Settings.FaviconUrl" alt="Favicon" /></div>
+                    }
+                </div>
+            </div>
+
+        </section>
+
+        <section class="card-surface admin-surface website-admin-panel" data-section-panel="brand-style" role="tabpanel" hidden>
+            <div class="section-head compact-head">
+                <div>
+                    <div class="page-kicker">STYLE EDITOR</div>
+                    <h3 class="admin-panel-title">Nhận diện thương hiệu</h3>
+                </div>
+            </div>
+            <div class="form-grid-three">
+                <div><label asp-for="Settings.HeaderBackgroundColor">Màu nền header</label><input asp-for="Settings.HeaderBackgroundColor" type="color" /></div>
+                <div><label asp-for="Settings.HeaderTextColor">Màu chữ header</label><input asp-for="Settings.HeaderTextColor" type="color" /></div>
+                <div><label asp-for="Settings.PromoTextFontSize">Cỡ chữ promo</label><input asp-for="Settings.PromoTextFontSize" type="number" min="10" max="24" /></div>
+                <div><label asp-for="Settings.StoreNameFontSize">Cỡ chữ tên thương hiệu</label><input asp-for="Settings.StoreNameFontSize" type="number" min="14" max="36" /></div>
+                <div><label asp-for="Settings.StoreTaglineFontSize">Cỡ chữ tagline</label><input asp-for="Settings.StoreTaglineFontSize" type="number" min="10" max="24" /></div>
+            </div>
+        </section>
+
+        <section class="card-surface admin-surface website-admin-panel" data-section-panel="hero" role="tabpanel" hidden>
+            <div class="section-head compact-head">
+                <div>
+                    <div class="page-kicker">HERO + CTA</div>
+                    <h3 class="admin-panel-title">Khối hero và CTA</h3>
+                </div>
+            </div>
+            <div class="checkbox-row website-toggle-row">
+                <label><input asp-for="Settings.ShowHeroSection" /> Hiển thị khối Hero + CTA ngoài website</label>
+            </div>
+            <div class="form-grid-two">
+                <div>
+                    <label asp-for="Settings.HeroTitle"></label>
+                    <input asp-for="Settings.HeroTitle" />
+                </div>
+                <div>
+                    <label asp-for="Settings.HeroSubtitle"></label>
+                    <input asp-for="Settings.HeroSubtitle" />
+                </div>
+                <div>
+                    <label asp-for="Settings.HeroButtonText"></label>
+                    <input asp-for="Settings.HeroButtonText" />
+                </div>
+                <div>
+                    <label asp-for="Settings.HeroButtonLink"></label>
+                    <input asp-for="Settings.HeroButtonLink" />
+                </div>
+                <div>
+                    <label asp-for="Settings.HeaderButtonText"></label>
+                    <input asp-for="Settings.HeaderButtonText" />
+                </div>
+                <div>
+                    <label asp-for="Settings.HeaderButtonLink"></label>
+                    <input asp-for="Settings.HeaderButtonLink" />
+                </div>
+            </div>
+            <div class="form-grid-three" style="margin-top:16px;">
+                <div><label asp-for="Settings.HeroBackgroundColor">Màu nền Hero</label><input asp-for="Settings.HeroBackgroundColor" type="color" /></div>
+                <div><label asp-for="Settings.HeroTextColor">Màu chữ Hero</label><input asp-for="Settings.HeroTextColor" type="color" /></div>
+                <div><label asp-for="Settings.HeroButtonFontSize">Cỡ chữ nút CTA</label><input asp-for="Settings.HeroButtonFontSize" type="number" min="12" max="32" /></div>
+                <div><label asp-for="Settings.HeroTitleFontSize">Cỡ chữ tiêu đề Hero</label><input asp-for="Settings.HeroTitleFontSize" type="number" min="24" max="72" /></div>
+                <div><label asp-for="Settings.HeroSubtitleFontSize">Cỡ chữ mô tả Hero</label><input asp-for="Settings.HeroSubtitleFontSize" type="number" min="12" max="32" /></div>
+            </div>
+        </section>
+
+        <section class="card-surface admin-surface website-admin-panel" data-section-panel="popup" role="tabpanel" hidden>
+            <div class="section-head compact-head">
+                <div>
+                    <div class="page-kicker">PROMO POPUP</div>
+                    <h3 class="admin-panel-title">Popup banner khuyến mãi</h3>
+                </div>
+            </div>
+            <div class="form-grid-two">
+                <div class="checkbox-row">
+                    <label><input asp-for="Settings.PopupEnabled" /> Bật popup khuyến mãi đầu trang</label>
+                </div>
+                <div>
+                    <label asp-for="Settings.PopupButtonLink"></label>
+                    <input asp-for="Settings.PopupButtonLink" />
+                </div>
+                <div>
+                    <label asp-for="Settings.PopupTitle"></label>
+                    <input asp-for="Settings.PopupTitle" />
+                </div>
+                <div>
+                    <label asp-for="Settings.PopupButtonText"></label>
+                    <input asp-for="Settings.PopupButtonText" />
+                </div>
+                <div class="full-row">
+                    <label asp-for="Settings.PopupSubtitle"></label>
+                    <textarea asp-for="Settings.PopupSubtitle" rows="3"></textarea>
+                </div>
+                <div class="full-row">
+                    <label asp-for="Settings.PopupImageUrl"></label>
+                    <input asp-for="Settings.PopupImageUrl" />
+                    <label asp-for="Settings.PopupImageFile">Upload ảnh popup</label>
+                    <input asp-for="Settings.PopupImageFile" type="file" accept="image/*,.svg" />
+                    @if (!string.IsNullOrWhiteSpace(Model.Settings.PopupImageUrl))
+                    {
+                        <div class="upload-preview"><img src="@Model.Settings.PopupImageUrl" alt="Popup banner" /></div>
+                    }
+                </div>
+            </div>
+            <div class="form-grid-three" style="margin-top:16px;">
+                <div><label asp-for="Settings.PopupBackgroundColor">Màu nền Popup</label><input asp-for="Settings.PopupBackgroundColor" type="color" /></div>
+                <div><label asp-for="Settings.PopupTextColor">Màu chữ Popup</label><input asp-for="Settings.PopupTextColor" type="color" /></div>
+                <div><label asp-for="Settings.PopupButtonFontSize">Cỡ chữ nút Popup</label><input asp-for="Settings.PopupButtonFontSize" type="number" min="12" max="28" /></div>
+                <div><label asp-for="Settings.PopupTitleFontSize">Cỡ chữ tiêu đề Popup</label><input asp-for="Settings.PopupTitleFontSize" type="number" min="18" max="56" /></div>
+                <div><label asp-for="Settings.PopupSubtitleFontSize">Cỡ chữ mô tả Popup</label><input asp-for="Settings.PopupSubtitleFontSize" type="number" min="12" max="28" /></div>
+            </div>
+        </section>
+
+
+        <section class="card-surface admin-surface website-admin-panel" data-section-panel="flash-sale" role="tabpanel" hidden>
+            <div class="section-head compact-head">
+                <div>
+                    <div class="page-kicker">FLASH SALE</div>
+                    <h3 class="admin-panel-title">Quản lý Flash Sale và đồng hồ đếm ngược</h3>
+                </div>
+            </div>
+            <div class="checkbox-row website-toggle-row" style="display:flex;gap:20px;flex-wrap:wrap;">
+                <label><input asp-for="Settings.ShowFlashBanner" /> Hiển thị khối Flash Sale</label>
+            </div>
+            <div class="form-grid-two">
+                <div>
+                    <label asp-for="Settings.FlashTitle">Tiêu đề Flash Sale</label>
+                    <input asp-for="Settings.FlashTitle" />
+                </div>
+                <div>
+                    <label asp-for="Settings.FlashBadgeText">Nhãn Flash Sale</label>
+                    <input asp-for="Settings.FlashBadgeText" />
+                </div>
+                <div>
+                    <label asp-for="Settings.FlashCountdownLabel">Tiêu đề đồng hồ đếm ngược</label>
+                    <input asp-for="Settings.FlashCountdownLabel" />
+                </div>
+                <div>
+                    <label asp-for="Settings.FlashCountdownEndsAt">Thời điểm kết thúc</label>
+                    <input asp-for="Settings.FlashCountdownEndsAt" type="datetime-local" />
+                    <small class="helper-text">Ví dụ: 2026-04-30T23:59</small>
+                </div>
+                <div>
+                    <label asp-for="Settings.FlashImageUrl">Ảnh Flash Sale</label>
+                    <input asp-for="Settings.FlashImageUrl" />
+                    <label asp-for="Settings.FlashImageFile">Upload ảnh flash</label>
+                    <input asp-for="Settings.FlashImageFile" type="file" accept="image/*,.svg" />
+                    @if (!string.IsNullOrWhiteSpace(Model.Settings.FlashImageUrl))
+                    {
+                        <div class="upload-preview"><img src="@Model.Settings.FlashImageUrl" alt="Flash banner" /></div>
+                    }
+                </div>
+            </div>
+        </section>
+
+        <section class="card-surface admin-surface website-admin-panel" data-section-panel="sections" role="tabpanel" hidden>
+            <div class="section-head compact-head">
+                <div>
+                    <div class="page-kicker">SECTION TITLES</div>
+                    <h3 class="admin-panel-title">Tiêu đề các section</h3>
+                </div>
+            </div>
+            <div class="checkbox-row website-toggle-row" style="display:flex;gap:20px;flex-wrap:wrap;">
+                <label><input asp-for="Settings.ShowMegaMenu" /> Hiển thị Mega Menu</label>
+                <label><input asp-for="Settings.ShowFlashBanner" /> Hiển thị Flash Banner</label>
+            </div>
+            <div class="form-grid-two">
+                <div>
+                    <label asp-for="Settings.FeaturedBrandsTitle"></label>
+                    <input asp-for="Settings.FeaturedBrandsTitle" />
+                </div>
+                <div>
+                    <label asp-for="Settings.DemandSectionTitle"></label>
+                    <input asp-for="Settings.DemandSectionTitle" />
+                </div>
+                <div>
+                    <label asp-for="Settings.FeaturedProductsTitle"></label>
+                    <input asp-for="Settings.FeaturedProductsTitle" />
+                </div>
+            <div class="form-grid-three" style="margin-top:16px;">
+                <div><label asp-for="Settings.SectionTitleColor">Màu chữ tiêu đề section</label><input asp-for="Settings.SectionTitleColor" type="color" /></div>
+                <div><label asp-for="Settings.SectionSubtextColor">Màu chữ phụ section</label><input asp-for="Settings.SectionSubtextColor" type="color" /></div>
+                <div><label asp-for="Settings.SectionTitleFontSize">Cỡ chữ tiêu đề section</label><input asp-for="Settings.SectionTitleFontSize" type="number" min="16" max="40" /></div>
+            </div>
+        </section>
+
+        <section class="card-surface admin-surface website-admin-panel" data-section-panel="slides" role="tabpanel" hidden>
+            <div class="section-head compact-head">
+                <div>
+                    <div class="page-kicker">SLIDER</div>
+                    <h3 class="admin-panel-title">Banner slider trang chủ</h3>
+                </div>
+                <span>Kéo thả trực tiếp 4 ảnh banner để đổi thứ tự hiển thị</span>
+            </div>
+            <div class="slider-gallery-admin" data-sortable-slides>
+                @for (var i = 0; i < Model.Slides.Count; i++)
+                {
+                    <article class="slider-gallery-item" data-slide-card draggable="true" data-slide-gallery-item data-slide-index="@i">
+                        <input type="hidden" asp-for="Slides[i].SlideId" />
+                        <input type="hidden" asp-for="Slides[i].DisplayOrder" data-display-order />
+                        <input type="hidden" asp-for="Slides[i].KickerText" />
+                        <input type="hidden" asp-for="Slides[i].Title" />
+                        <input type="hidden" asp-for="Slides[i].Subtitle" />
+                        <input type="hidden" asp-for="Slides[i].ButtonText" />
+                        <input type="hidden" asp-for="Slides[i].LinkUrl" />
+                        <input type="hidden" asp-for="Slides[i].SecondaryButtonText" />
+                        <input type="hidden" asp-for="Slides[i].SecondaryButtonLink" />
+                        <input type="hidden" asp-for="Slides[i].ThemePrimaryColor" />
+                        <input type="hidden" asp-for="Slides[i].ThemeAccentColor" />
+                        <input type="hidden" asp-for="Slides[i].TitleFontSize" />
+                        <input type="hidden" asp-for="Slides[i].SubtitleFontSize" />
+                        <input type="hidden" asp-for="Slides[i].KickerFontSize" />
+                        <input type="hidden" asp-for="Slides[i].ButtonFontSize" />
+                        <input type="hidden" asp-for="Slides[i].ChipFontSize" />
+                        <input type="hidden" asp-for="Slides[i].PanelOpacityPercent" />
+                        <input type="hidden" asp-for="Slides[i].PanelWidthPercent" />
+                        <input type="hidden" asp-for="Slides[i].PanelPadding" />
+                        <input type="hidden" asp-for="Slides[i].PanelRadius" />
+
+                        <div class="slider-gallery-top">
+                            <div class="slide-order-chip">Slide <span data-slide-order-label>@(i + 1)</span></div>
+                            <button type="button" class="drag-handle drag-handle-gallery" title="Kéo thả để đổi vị trí">↕</button>
+                        </div>
+
+                        <div class="slider-gallery-thumb">
+                            <img src="@(string.IsNullOrWhiteSpace(Model.Slides[i].ImageUrl) ? "/images/banners/campaign-gaming.jpg" : Model.Slides[i].ImageUrl)"
+                                 alt="Slide @(i + 1)"
+                                 data-gallery-preview-image
+                                 data-fallback="/images/banners/campaign-gaming.jpg" />
+                        </div>
+
+                        <div class="slider-gallery-fields">
+                            <div>
+                                <label asp-for="Slides[i].ImageUrl">Link ảnh slide @(i + 1)</label>
+                                <input asp-for="Slides[i].ImageUrl" data-gallery-image-url />
+                            </div>
+                            <div>
+                                <label asp-for="Slides[i].UploadFile">Upload ảnh slide @(i + 1)</label>
+                                <input asp-for="Slides[i].UploadFile" type="file" accept="image/*,.svg" data-gallery-image-file />
+                            </div>
+                            <div>
+                                <label asp-for="Slides[i].Title">Tiêu đề slide @(i + 1)</label>
+                                <input asp-for="Slides[i].Title" />
+                            </div>
+                            <div>
+                                <label asp-for="Slides[i].KickerText">Nhãn badge slide @(i + 1)</label>
+                                <input asp-for="Slides[i].KickerText" />
+                            </div>
+                            <div style="grid-column:1/-1;">
+                                <label asp-for="Slides[i].Subtitle">Mô tả slide @(i + 1)</label>
+                                <textarea asp-for="Slides[i].Subtitle" rows="2"></textarea>
+                            </div>
+                            <div>
+                                <label asp-for="Slides[i].LinkUrl">Link chính slide @(i + 1)</label>
+                                <input asp-for="Slides[i].LinkUrl" />
+                            </div>
+                            <div>
+                                <label asp-for="Slides[i].SecondaryButtonLink">Link phụ slide @(i + 1)</label>
+                                <input asp-for="Slides[i].SecondaryButtonLink" />
+                            </div>
+                        </div>
+                    </article>
+                }
+            </div>
+        </section>
+
+        <section class="card-surface admin-surface website-admin-panel" data-section-panel="category-banners" role="tabpanel" hidden>
+            <div class="section-head compact-head">
+                <div>
+                    <div class="page-kicker">CATEGORY BANNERS</div>
+                    <h3 class="admin-panel-title">Banner tự động theo category</h3>
+                </div>
+                <span>Thiết kế theo dạng card giống slider để dễ nhìn và thao tác nhanh hơn</span>
+            </div>
+            <div class="slider-gallery-admin config-gallery-grid two-col-admin">
+                <article class="slider-gallery-item config-gallery-item">
+                    <div class="slider-gallery-top"><div class="slide-order-chip">Gaming</div></div>
+                    <div class="slider-gallery-thumb config-banner-thumb">@if (!string.IsNullOrWhiteSpace(Model.Settings.CategoryBannerGamingUrl)) { <img src="@Model.Settings.CategoryBannerGamingUrl" alt="Banner Gaming" /> } else { <div class="config-empty-preview">Chưa có banner</div> }</div>
+                    <div class="slider-gallery-fields">
+                        <div><label asp-for="Settings.CategoryBannerGamingUrl">Link ảnh banner Gaming</label><input asp-for="Settings.CategoryBannerGamingUrl" /></div>
+                        <div><label asp-for="Settings.CategoryBannerGamingFile">Upload banner Gaming</label><input asp-for="Settings.CategoryBannerGamingFile" type="file" accept="image/*,.svg" /></div>
+                    </div>
+                </article>
+                <article class="slider-gallery-item config-gallery-item">
+                    <div class="slider-gallery-top"><div class="slide-order-chip">Văn phòng</div></div>
+                    <div class="slider-gallery-thumb config-banner-thumb">@if (!string.IsNullOrWhiteSpace(Model.Settings.CategoryBannerOfficeUrl)) { <img src="@Model.Settings.CategoryBannerOfficeUrl" alt="Banner Văn phòng" /> } else { <div class="config-empty-preview">Chưa có banner</div> }</div>
+                    <div class="slider-gallery-fields">
+                        <div><label asp-for="Settings.CategoryBannerOfficeUrl">Link ảnh banner Văn phòng</label><input asp-for="Settings.CategoryBannerOfficeUrl" /></div>
+                        <div><label asp-for="Settings.CategoryBannerOfficeFile">Upload banner Văn phòng</label><input asp-for="Settings.CategoryBannerOfficeFile" type="file" accept="image/*,.svg" /></div>
+                    </div>
+                </article>
+                <article class="slider-gallery-item config-gallery-item">
+                    <div class="slider-gallery-top"><div class="slide-order-chip">Cao cấp</div></div>
+                    <div class="slider-gallery-thumb config-banner-thumb">@if (!string.IsNullOrWhiteSpace(Model.Settings.CategoryBannerPremiumUrl)) { <img src="@Model.Settings.CategoryBannerPremiumUrl" alt="Banner Cao cấp" /> } else { <div class="config-empty-preview">Chưa có banner</div> }</div>
+                    <div class="slider-gallery-fields">
+                        <div><label asp-for="Settings.CategoryBannerPremiumUrl">Link ảnh banner Cao cấp</label><input asp-for="Settings.CategoryBannerPremiumUrl" /></div>
+                        <div><label asp-for="Settings.CategoryBannerPremiumFile">Upload banner Cao cấp</label><input asp-for="Settings.CategoryBannerPremiumFile" type="file" accept="image/*,.svg" /></div>
+                    </div>
+                </article>
+                <article class="slider-gallery-item config-gallery-item">
+                    <div class="slider-gallery-top"><div class="slide-order-chip">Đồ họa</div></div>
+                    <div class="slider-gallery-thumb config-banner-thumb">@if (!string.IsNullOrWhiteSpace(Model.Settings.CategoryBannerGraphicsUrl)) { <img src="@Model.Settings.CategoryBannerGraphicsUrl" alt="Banner Đồ họa" /> } else { <div class="config-empty-preview">Chưa có banner</div> }</div>
+                    <div class="slider-gallery-fields">
+                        <div><label asp-for="Settings.CategoryBannerGraphicsUrl">Link ảnh banner Đồ họa</label><input asp-for="Settings.CategoryBannerGraphicsUrl" /></div>
+                        <div><label asp-for="Settings.CategoryBannerGraphicsFile">Upload banner Đồ họa</label><input asp-for="Settings.CategoryBannerGraphicsFile" type="file" accept="image/*,.svg" /></div>
+                    </div>
+                </article>
+                <article class="slider-gallery-item config-gallery-item">
+                    <div class="slider-gallery-top"><div class="slide-order-chip">Phụ kiện</div></div>
+                    <div class="slider-gallery-thumb config-banner-thumb">@if (!string.IsNullOrWhiteSpace(Model.Settings.CategoryBannerAccessoryUrl)) { <img src="@Model.Settings.CategoryBannerAccessoryUrl" alt="Banner Phụ kiện" /> } else { <div class="config-empty-preview">Chưa có banner</div> }</div>
+                    <div class="slider-gallery-fields">
+                        <div><label asp-for="Settings.CategoryBannerAccessoryUrl">Link ảnh banner Phụ kiện</label><input asp-for="Settings.CategoryBannerAccessoryUrl" /></div>
+                        <div><label asp-for="Settings.CategoryBannerAccessoryFile">Upload banner Phụ kiện</label><input asp-for="Settings.CategoryBannerAccessoryFile" type="file" accept="image/*,.svg" /></div>
+                    </div>
+                </article>
+                <article class="slider-gallery-item config-gallery-item">
+                    <div class="slider-gallery-top"><div class="slide-order-chip">Linh kiện</div></div>
+                    <div class="slider-gallery-thumb config-banner-thumb">@if (!string.IsNullOrWhiteSpace(Model.Settings.CategoryBannerComponentUrl)) { <img src="@Model.Settings.CategoryBannerComponentUrl" alt="Banner Linh kiện" /> } else { <div class="config-empty-preview">Chưa có banner</div> }</div>
+                    <div class="slider-gallery-fields">
+                        <div><label asp-for="Settings.CategoryBannerComponentUrl">Link ảnh banner Linh kiện</label><input asp-for="Settings.CategoryBannerComponentUrl" /></div>
+                        <div><label asp-for="Settings.CategoryBannerComponentFile">Upload banner Linh kiện</label><input asp-for="Settings.CategoryBannerComponentFile" type="file" accept="image/*,.svg" /></div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="card-surface admin-surface website-admin-panel" data-section-panel="footer-info" role="tabpanel" hidden>
+            <div class="section-head compact-head">
+                <div>
+                    <div class="page-kicker">FOOTER INFO LINKS</div>
+                    <h3 class="admin-panel-title">Quản lý nội dung mẫu cột Thông tin ở footer</h3>
+                </div>
+            </div>
+            <div class="slider-gallery-admin config-gallery-grid three-col-admin">
+                <article class="slider-gallery-item config-gallery-item compact-config-card"><div class="slider-gallery-top"><div class="slide-order-chip">Mục 1</div></div><div class="slider-gallery-fields"><div><label asp-for="Settings.FooterInfoLink1Text">Tiêu đề</label><input asp-for="Settings.FooterInfoLink1Text" /></div><div><label asp-for="Settings.FooterInfoLink1Url">Link</label><input asp-for="Settings.FooterInfoLink1Url" /></div></div></article>
+                <article class="slider-gallery-item config-gallery-item compact-config-card"><div class="slider-gallery-top"><div class="slide-order-chip">Mục 2</div></div><div class="slider-gallery-fields"><div><label asp-for="Settings.FooterInfoLink2Text">Tiêu đề</label><input asp-for="Settings.FooterInfoLink2Text" /></div><div><label asp-for="Settings.FooterInfoLink2Url">Link</label><input asp-for="Settings.FooterInfoLink2Url" /></div></div></article>
+                <article class="slider-gallery-item config-gallery-item compact-config-card"><div class="slider-gallery-top"><div class="slide-order-chip">Mục 3</div></div><div class="slider-gallery-fields"><div><label asp-for="Settings.FooterInfoLink3Text">Tiêu đề</label><input asp-for="Settings.FooterInfoLink3Text" /></div><div><label asp-for="Settings.FooterInfoLink3Url">Link</label><input asp-for="Settings.FooterInfoLink3Url" /></div></div></article>
+                <article class="slider-gallery-item config-gallery-item compact-config-card"><div class="slider-gallery-top"><div class="slide-order-chip">Mục 4</div></div><div class="slider-gallery-fields"><div><label asp-for="Settings.FooterInfoLink4Text">Tiêu đề</label><input asp-for="Settings.FooterInfoLink4Text" /></div><div><label asp-for="Settings.FooterInfoLink4Url">Link</label><input asp-for="Settings.FooterInfoLink4Url" /></div></div></article>
+                <article class="slider-gallery-item config-gallery-item compact-config-card"><div class="slider-gallery-top"><div class="slide-order-chip">Mục 5</div></div><div class="slider-gallery-fields"><div><label asp-for="Settings.FooterInfoLink5Text">Tiêu đề</label><input asp-for="Settings.FooterInfoLink5Text" /></div><div><label asp-for="Settings.FooterInfoLink5Url">Link</label><input asp-for="Settings.FooterInfoLink5Url" /></div></div></article>
+                <article class="slider-gallery-item config-gallery-item compact-config-card"><div class="slider-gallery-top"><div class="slide-order-chip">Mục 6</div></div><div class="slider-gallery-fields"><div><label asp-for="Settings.FooterInfoLink6Text">Tiêu đề</label><input asp-for="Settings.FooterInfoLink6Text" /></div><div><label asp-for="Settings.FooterInfoLink6Url">Link</label><input asp-for="Settings.FooterInfoLink6Url" /></div></div></article>
+            </div>
+        </section>
+
+        <section class="card-surface admin-surface website-admin-panel" data-section-panel="footer" role="tabpanel" hidden>
+            <div class="section-head compact-head">
+                <div>
+                    <div class="page-kicker">FOOTER & CONTACT</div>
+                    <h3 class="admin-panel-title">Footer và thông tin hiển thị ngoài website</h3>
+                </div>
+                <span>Gom trường theo từng nhóm giống giao diện slider để gọn hơn khi nhập liệu</span>
+            </div>
+            <div class="slider-gallery-admin config-gallery-grid two-col-admin">
+                <article class="slider-gallery-item config-gallery-item">
+                    <div class="slider-gallery-top"><div class="slide-order-chip">Topbar & thông tin thương hiệu</div></div>
+                    <div class="slider-gallery-fields two-columns-inside">
+                        <div><label asp-for="Settings.TopPhone1">Số điện thoại trên topbar 1</label><input asp-for="Settings.TopPhone1" /></div>
+                        <div><label asp-for="Settings.TopPhone2">Số điện thoại trên topbar 2</label><input asp-for="Settings.TopPhone2" /></div>
+                        <div style="grid-column:1/-1;"><label asp-for="Settings.HeaderAddress">Địa chỉ hiển thị trên header</label><input asp-for="Settings.HeaderAddress" /></div>
+                        <div><label asp-for="Settings.FooterCompanyHeading">Tiêu đề cột trái</label><input asp-for="Settings.FooterCompanyHeading" /></div>
+                        <div><label asp-for="Settings.FooterCopyright">Dòng copyright cuối trang</label><textarea asp-for="Settings.FooterCopyright" rows="3"></textarea></div>
+                        <div style="grid-column:1/-1;"><label asp-for="Settings.FooterAbout">Giới thiệu ngắn</label><textarea asp-for="Settings.FooterAbout" rows="4"></textarea></div>
+                    </div>
+                </article>
+                <article class="slider-gallery-item config-gallery-item">
+                    <div class="slider-gallery-top"><div class="slide-order-chip">Showroom & bảo hành</div></div>
+                    <div class="slider-gallery-fields two-columns-inside">
+                        <div><label asp-for="Settings.FooterShowroomTitle">Tiêu đề showroom</label><input asp-for="Settings.FooterShowroomTitle" /></div>
+                        <div><label asp-for="Settings.FooterShowroomHotline">Hotline showroom</label><input asp-for="Settings.FooterShowroomHotline" /></div>
+                        <div style="grid-column:1/-1;"><label asp-for="Settings.FooterShowroomAddress">Địa chỉ showroom</label><textarea asp-for="Settings.FooterShowroomAddress" rows="3"></textarea></div>
+                        <div><label asp-for="Settings.FooterWarrantyTitle">Tiêu đề bảo hành</label><input asp-for="Settings.FooterWarrantyTitle" /></div>
+                        <div><label asp-for="Settings.FooterWarrantyHotline">Hotline bảo hành</label><input asp-for="Settings.FooterWarrantyHotline" /></div>
+                        <div style="grid-column:1/-1;"><label asp-for="Settings.FooterWarrantyAddress">Địa chỉ bảo hành</label><textarea asp-for="Settings.FooterWarrantyAddress" rows="3"></textarea></div>
+                    </div>
+                </article>
+                <article class="slider-gallery-item config-gallery-item">
+                    <div class="slider-gallery-top"><div class="slide-order-chip">Giờ làm việc & đơn vị giao hàng</div></div>
+                    <div class="slider-gallery-fields two-columns-inside">
+                        <div><label asp-for="Settings.FooterWorkingHoursTitle">Tiêu đề giờ làm việc</label><input asp-for="Settings.FooterWorkingHoursTitle" /></div>
+                        <div><label asp-for="Settings.FooterShippingTitle">Tiêu đề đơn vị giao hàng</label><input asp-for="Settings.FooterShippingTitle" /></div>
+                        <div><label asp-for="Settings.FooterWorkingHoursLine1">Giờ làm việc dòng 1</label><input asp-for="Settings.FooterWorkingHoursLine1" /></div>
+                        <div><label asp-for="Settings.FooterWorkingHoursLine2">Giờ làm việc dòng 2</label><input asp-for="Settings.FooterWorkingHoursLine2" /></div>
+                    </div>
+                    <div class="mini-upload-grid">
+                        <div class="mini-upload-card"><div class="mini-upload-title">Đơn vị 1</div><label asp-for="Settings.FooterShippingLine1">Tên đơn vị</label><input asp-for="Settings.FooterShippingLine1" /><label asp-for="Settings.FooterShippingImage1Url">Link logo</label><input asp-for="Settings.FooterShippingImage1Url" /><label asp-for="Settings.FooterShippingImage1File">Upload logo</label><input asp-for="Settings.FooterShippingImage1File" type="file" accept="image/*,.svg" />@if (!string.IsNullOrWhiteSpace(Model.Settings.FooterShippingImage1Url)) { <div class="mini-upload-preview"><img src="@Model.Settings.FooterShippingImage1Url" alt="Logo 1" /></div> }</div>
+                        <div class="mini-upload-card"><div class="mini-upload-title">Đơn vị 2</div><label asp-for="Settings.FooterShippingLine2">Tên đơn vị</label><input asp-for="Settings.FooterShippingLine2" /><label asp-for="Settings.FooterShippingImage2Url">Link logo</label><input asp-for="Settings.FooterShippingImage2Url" /><label asp-for="Settings.FooterShippingImage2File">Upload logo</label><input asp-for="Settings.FooterShippingImage2File" type="file" accept="image/*,.svg" />@if (!string.IsNullOrWhiteSpace(Model.Settings.FooterShippingImage2Url)) { <div class="mini-upload-preview"><img src="@Model.Settings.FooterShippingImage2Url" alt="Logo 2" /></div> }</div>
+                        <div class="mini-upload-card"><div class="mini-upload-title">Đơn vị 3</div><label asp-for="Settings.FooterShippingLine3">Tên đơn vị</label><input asp-for="Settings.FooterShippingLine3" /><label asp-for="Settings.FooterShippingImage3Url">Link logo</label><input asp-for="Settings.FooterShippingImage3Url" /><label asp-for="Settings.FooterShippingImage3File">Upload logo</label><input asp-for="Settings.FooterShippingImage3File" type="file" accept="image/*,.svg" />@if (!string.IsNullOrWhiteSpace(Model.Settings.FooterShippingImage3Url)) { <div class="mini-upload-preview"><img src="@Model.Settings.FooterShippingImage3Url" alt="Logo 3" /></div> }</div>
+                        <div class="mini-upload-card"><div class="mini-upload-title">Đơn vị 4</div><label asp-for="Settings.FooterShippingLine4">Tên đơn vị</label><input asp-for="Settings.FooterShippingLine4" /><label asp-for="Settings.FooterShippingImage4Url">Link logo</label><input asp-for="Settings.FooterShippingImage4Url" /><label asp-for="Settings.FooterShippingImage4File">Upload logo</label><input asp-for="Settings.FooterShippingImage4File" type="file" accept="image/*,.svg" />@if (!string.IsNullOrWhiteSpace(Model.Settings.FooterShippingImage4Url)) { <div class="mini-upload-preview"><img src="@Model.Settings.FooterShippingImage4Url" alt="Logo 4" /></div> }</div>
+                    </div>
+                </article>
+                <article class="slider-gallery-item config-gallery-item">
+                    <div class="slider-gallery-top"><div class="slide-order-chip">Chuyển khoản & QR</div></div>
+                    <div class="slider-gallery-fields two-columns-inside">
+                        <div><label asp-for="Settings.FooterBankTitle">Tiêu đề chuyển khoản</label><input asp-for="Settings.FooterBankTitle" /></div>
+                        <div><label asp-for="Settings.FooterQrLabel">Nhãn QR</label><input asp-for="Settings.FooterQrLabel" /></div>
+                        <div><label asp-for="Settings.FooterBankLine1">Thông tin ngân hàng dòng 1</label><input asp-for="Settings.FooterBankLine1" /></div>
+                        <div><label asp-for="Settings.FooterBankLine2">Thông tin ngân hàng dòng 2</label><input asp-for="Settings.FooterBankLine2" /></div>
+                        <div style="grid-column:1/-1;"><label asp-for="Settings.FooterBankLine3">Thông tin ngân hàng dòng 3</label><input asp-for="Settings.FooterBankLine3" /></div>
+                        <div style="grid-column:1/-1;"><label asp-for="Settings.FooterQrImageUrl">Link ảnh QR</label><input asp-for="Settings.FooterQrImageUrl" /></div>
+                        <div style="grid-column:1/-1;"><label asp-for="Settings.FooterQrImageFile">Upload ảnh QR</label><input asp-for="Settings.FooterQrImageFile" type="file" accept="image/*,.svg" /></div>
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(Model.Settings.FooterQrImageUrl)) { <div class="slider-gallery-thumb config-banner-thumb compact-qr-preview"><img src="@Model.Settings.FooterQrImageUrl" alt="QR" /></div> }
+                </article>
+            </div>
+        </section>
+
+            <div class="website-admin-submit">
+                <button type="submit" class="btn-primary">Lưu giao diện website</button>
+            </div>
+    </div>
+</form>
+
