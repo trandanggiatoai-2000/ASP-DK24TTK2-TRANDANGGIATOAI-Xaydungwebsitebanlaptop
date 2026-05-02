@@ -25,6 +25,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <style>:root{--red:@site.PrimaryColor;--blue:@site.SecondaryColor;--accent:@site.AccentColor;--header-bg:@site.HeaderBackgroundColor;--header-text:@site.HeaderTextColor;--hero-bg:@site.HeroBackgroundColor;--hero-text:@site.HeroTextColor;--popup-bg:@site.PopupBackgroundColor;--popup-text:@site.PopupTextColor;--section-title-color:@site.SectionTitleColor;--section-subtext-color:@site.SectionSubtextColor;}</style>
 </head>
@@ -215,6 +216,7 @@
         window.sitePopupEnabled = @site.PopupEnabled.ToString().ToLowerInvariant();
         window.sitePopupDelay = 700;
     </script>
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

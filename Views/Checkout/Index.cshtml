@@ -7,58 +7,82 @@
 @{
     ViewData["Title"] = "Thanh toán";
 }
-<div class="checkout-layout">
-    <section class="card-surface">
-        <h1>Thông tin thanh toán</h1>
-        <form id="checkoutForm" asp-controller="Checkout" asp-action="Index" method="post" class="checkout-form">
-            @Html.AntiForgeryToken()
-            <div class="form-grid">
-                <div>
-                    <label for="CustomerName">Họ và tên</label>
-                    <input id="CustomerName" name="Form.CustomerName" value="@Model.Form.CustomerName" />
-                    <span asp-validation-for="Form.CustomerName"></span>
-                </div>
-                <div>
-                    <label for="Phone">Số điện thoại</label>
-                    <input id="Phone" name="Form.Phone" value="@Model.Form.Phone" />
-                    <span asp-validation-for="Form.Phone"></span>
-                </div>
+<div class="row g-4 align-items-start">
+    <section class="col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-4">
+                <div class="text-uppercase small fw-semibold text-primary mb-1">Đặt hàng</div>
+                <h1 class="h3 fw-bold mb-4">Thông tin thanh toán</h1>
+                <form id="checkoutForm" asp-controller="Checkout" asp-action="Index" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" for="CustomerName">Họ và tên</label>
+                            <input id="CustomerName" name="Form.CustomerName" value="@Model.Form.CustomerName" class="form-control form-control-lg" />
+                            <span asp-validation-for="Form.CustomerName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" for="Phone">Số điện thoại</label>
+                            <input id="Phone" name="Form.Phone" value="@Model.Form.Phone" class="form-control form-control-lg" />
+                            <span asp-validation-for="Form.Phone" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" for="Address">Địa chỉ nhận hàng</label>
+                        <input id="Address" name="Form.Address" value="@Model.Form.Address" class="form-control form-control-lg" />
+                        <span asp-validation-for="Form.Address" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold" for="Note">Ghi chú</label>
+                        <textarea id="Note" name="Form.Note" rows="4" class="form-control">@Model.Form.Note</textarea>
+                    </div>
+
+                    <div class="card bg-body-tertiary border-0 rounded-4 mb-4">
+                        <div class="card-body">
+                            <h3 class="h5 fw-bold mb-3">Hình thức thanh toán</h3>
+                            <div class="d-grid gap-3">
+                                <label class="form-check border rounded-4 p-3 bg-white">
+                                    <input class="form-check-input" type="radio" name="Form.PaymentMethod" value="PayLater" @(Model.Form.PaymentMethod == "BankTransfer" ? "" : "checked") />
+                                    <span class="form-check-label fw-medium ms-2">Thanh toán sau, ghi nhận đơn trước và thanh toán khi nhận hàng</span>
+                                </label>
+                                <label class="form-check border rounded-4 p-3 bg-white">
+                                    <input class="form-check-input" type="radio" name="Form.PaymentMethod" value="BankTransfer" @(Model.Form.PaymentMethod == "BankTransfer" ? "checked" : "") />
+                                    <span class="form-check-label fw-medium ms-2">Chuyển khoản ngân hàng</span>
+                                </label>
+                            </div>
+                            <div id="bankInfo" class="alert alert-light border rounded-4 mt-3 mb-0" style="display:none;">
+                                <p class="mb-2"><strong>Ngân hàng:</strong> @Model.BankName</p>
+                                <p class="mb-2"><strong>Số tài khoản:</strong> @Model.BankNumber</p>
+                                <p class="mb-2"><strong>Chủ tài khoản:</strong> @Model.BankAccountName</p>
+                                <p class="mb-0"><strong>Nội dung CK:</strong> Thanh toán đơn hàng @site.StoreName - ghi SĐT đặt hàng</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="checkoutSubmit" type="button" class="btn btn-dark btn-lg rounded-pill px-4">Xác nhận thanh toán</button>
+                </form>
             </div>
-            <div>
-                <label for="Address">Địa chỉ nhận hàng</label>
-                <input id="Address" name="Form.Address" value="@Model.Form.Address" />
-                <span asp-validation-for="Form.Address"></span>
-            </div>
-            <div>
-                <label for="Note">Ghi chú</label>
-                <textarea id="Note" name="Form.Note">@Model.Form.Note</textarea>
-            </div>
-            <div class="payment-box">
-                <h3>Hình thức thanh toán</h3>
-                <label><input type="radio" name="Form.PaymentMethod" value="PayLater" @(Model.Form.PaymentMethod == "BankTransfer" ? "" : "checked") /> Thanh toán sau (ghi nhận đơn trước, thanh toán khi nhận hàng)</label>
-                <label><input type="radio" name="Form.PaymentMethod" value="BankTransfer" @(Model.Form.PaymentMethod == "BankTransfer" ? "checked" : "") /> Chuyển khoản ngân hàng</label>
-                <div id="bankInfo" class="bank-info" style="display:none;">
-                    <p><strong>Ngân hàng:</strong> @Model.BankName</p>
-                    <p><strong>Số tài khoản:</strong> @Model.BankNumber</p>
-                    <p><strong>Chủ tài khoản:</strong> @Model.BankAccountName</p>
-                    <p><strong>Nội dung CK:</strong> Thanh toán đơn hàng @site.StoreName - ghi SĐT đặt hàng</p>
-                </div>
-            </div>
-            <button id="checkoutSubmit" type="button" class="btn-primary">Xác nhận thanh toán</button>
-        </form>
+        </div>
     </section>
-    <aside class="card-surface cart-summary">
-        <h3>Đơn hàng</h3>
-        @foreach (var item in Model.Cart.Items)
-        {
-            <div class="summary-item">
-                <span>@item.ProductName x @item.Quantity</span>
-                <strong>@item.LineTotal.ToString("N0") đ</strong>
+    <aside class="col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-4">
+                <div class="text-uppercase small fw-semibold text-primary mb-1">Đơn hàng</div>
+                <h3 class="h5 fw-bold mb-4">Tóm tắt thanh toán</h3>
+                <div class="list-group list-group-flush mb-3">
+                    @foreach (var item in Model.Cart.Items)
+                    {
+                        <div class="list-group-item px-0 d-flex justify-content-between align-items-start">
+                            <span class="pe-3">@item.ProductName x @item.Quantity</span>
+                            <strong>@item.LineTotal.ToString("N0") đ</strong>
+                        </div>
+                    }
+                </div>
+                <div class="d-flex justify-content-between mb-2"><span>Tạm tính</span><strong>@Model.Cart.Subtotal.ToString("N0") đ</strong></div>
+                <div class="d-flex justify-content-between mb-2"><span>Phí giao hàng</span><strong>@Model.Cart.ShippingFee.ToString("N0") đ</strong></div>
+                <div class="d-flex justify-content-between border-top pt-3 mt-3 fs-5"><span class="fw-semibold">Tổng cộng</span><strong class="text-danger">@Model.Cart.Total.ToString("N0") đ</strong></div>
             </div>
-        }
-        <div class="summary-row"><span>Tạm tính</span><strong>@Model.Cart.Subtotal.ToString("N0") đ</strong></div>
-        <div class="summary-row"><span>Phí giao hàng</span><strong>@Model.Cart.ShippingFee.ToString("N0") đ</strong></div>
-        <div class="summary-row total"><span>Tổng cộng</span><strong>@Model.Cart.Total.ToString("N0") đ</strong></div>
+        </div>
     </aside>
 </div>
 @section Scripts{
@@ -84,4 +108,3 @@ document.addEventListener("DOMContentLoaded", function(){
 });
 </script>
 }
-

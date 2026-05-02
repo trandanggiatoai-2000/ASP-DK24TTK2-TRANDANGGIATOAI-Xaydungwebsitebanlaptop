@@ -1,18 +1,37 @@
 @{
     ViewData["Title"] = "Đang xử lý thanh toán";
 }
-<div class="checkout-popup-page">
-    <div class="checkout-popup-overlay">
-        <div class="checkout-popup-box card-surface">
-            <div class="success-icon">✓</div>
-            <h2>@ViewBag.SuccessTitle</h2>
-            <p>@ViewBag.SuccessMessage</p>
-            <div class="popup-meta">
-                <div><span>Mã đơn:</span> <strong>@ViewBag.OrderCode</strong></div>
-                <div><span>Thanh toán:</span> <strong>@ViewBag.PaymentMethod</strong></div>
-                <div><span>Trạng thái:</span> <strong>@ViewBag.PaymentStatusText</strong></div>
+<div class="row justify-content-center my-4 my-lg-5">
+    <div class="col-xl-7 col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4 text-center">
+            <div class="card-body p-4 p-lg-5">
+                <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-success-subtle text-success fs-1 fw-bold mb-4" style="width:72px;height:72px;">&#10003;</div>
+                <h2 class="h2 fw-bold mb-3">@ViewBag.SuccessTitle</h2>
+                <p class="lead text-body-secondary mb-4">@ViewBag.SuccessMessage</p>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="bg-body-tertiary border rounded-4 h-100 p-3">
+                            <span class="d-block text-body-secondary small mb-2">Mã đơn</span>
+                            <strong>@ViewBag.OrderCode</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="bg-body-tertiary border rounded-4 h-100 p-3">
+                            <span class="d-block text-body-secondary small mb-2">Thanh toán</span>
+                            <strong>@ViewBag.PaymentMethod</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="bg-body-tertiary border rounded-4 h-100 p-3">
+                            <span class="d-block text-body-secondary small mb-2">Trạng thái</span>
+                            <strong>@ViewBag.PaymentStatusText</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-info border-0 rounded-4 mb-0" role="alert">
+                    Hệ thống đang chuyển sang trang thành công...
+                </div>
             </div>
-            <div class="popup-waiting">Hệ thống đang chuyển sang trang thành công...</div>
         </div>
     </div>
 </div>
@@ -24,4 +43,3 @@
     }, 1400);
 </script>
 }
-

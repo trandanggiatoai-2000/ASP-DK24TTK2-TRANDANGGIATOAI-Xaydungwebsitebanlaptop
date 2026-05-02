@@ -2,43 +2,59 @@
 @{
     ViewData["Title"] = "Tin công nghệ";
 }
-<div class="lxt-news-layout">
-    <section class="lxt-news-main">
-        <div class="section-head compact-head"><h1>TIN CÔNG NGHỆ</h1></div>
-        @foreach (var post in Model)
-        {
-            <article class="lxt-news-item">
-                <a asp-controller="TechNews" asp-action="Details" asp-route-slug="@post.Slug" class="lxt-news-thumb">
-                    <img src="@post.ThumbnailUrl" alt="@post.Title" data-fallback="/images/banners/campaign-office.jpg" />
-                    <span class="lxt-news-date">@post.PublishedAtText</span>
-                </a>
-                <div class="lxt-news-copy">
-                    <a asp-controller="TechNews" asp-action="Details" asp-route-slug="@post.Slug" class="lxt-news-title">@post.Title</a>
-                    <p>@post.Summary</p>
-                </div>
-            </article>
-        }
-    </section>
-    <aside class="lxt-news-sidebar">
-        <div class="card-surface lxt-news-side-card">
-            <h3>CHUYÊN MỤC</h3>
-            <ul>
-                <li><a asp-controller="Policy" asp-action="Details" asp-route-key="shipping">Chính sách</a></li>
-                <li><a asp-controller="Product" asp-action="Catalog" asp-route-category="Đồ họa">Đồ họa</a></li>
-                <li><a asp-controller="Product" asp-action="Catalog" asp-route-category="Gaming">Games</a></li>
-                <li><a asp-controller="Policy" asp-action="Details" asp-route-key="warranty">Thông tin Laptop – PC</a></li>
-                <li><a asp-controller="TechNews" asp-action="Index">Tin công nghệ</a></li>
-            </ul>
+<div class="row g-4">
+    <section class="col-lg-8">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div>
+                <div class="text-uppercase small fw-semibold text-primary mb-1">Bản tin</div>
+                <h1 class="h3 fw-bold mb-0">Tin công nghệ</h1>
+            </div>
         </div>
-        <div class="card-surface lxt-news-side-card">
-            <h3>BÀI VIẾT MỚI</h3>
-            <ul>
-                @foreach (var item in Model.Take(5))
-                {
-                    <li><a asp-controller="TechNews" asp-action="Details" asp-route-slug="@item.Slug">@item.Title</a></li>
-                }
-            </ul>
+        <div class="d-grid gap-3">
+            @foreach (var post in Model)
+            {
+                <article class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <a asp-controller="TechNews" asp-action="Details" asp-route-slug="@post.Slug" class="technews-thumb-wrap">
+                                <img class="technews-thumb-image" src="@post.ThumbnailUrl" alt="@post.Title" data-fallback="/images/banners/campaign-office.jpg" />
+                                <span class="badge text-bg-danger position-absolute top-0 start-0 m-3 rounded-pill px-3 py-2">@post.PublishedAtText</span>
+                            </a>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body p-4">
+                                <a asp-controller="TechNews" asp-action="Details" asp-route-slug="@post.Slug" class="text-decoration-none text-dark fw-bold fs-4 lh-sm d-block mb-3">@post.Title</a>
+                                <p class="text-body-secondary mb-0">@post.Summary</p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+    </section>
+    <aside class="col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-body p-4">
+                <h3 class="h5 fw-bold mb-3">Chuyên mục</h3>
+                <div class="list-group list-group-flush">
+                    <a class="list-group-item list-group-item-action px-0" asp-controller="Policy" asp-action="Details" asp-route-key="shipping">Chính sách</a>
+                    <a class="list-group-item list-group-item-action px-0" asp-controller="Product" asp-action="Catalog" asp-route-category="Đồ họa">Đồ họa</a>
+                    <a class="list-group-item list-group-item-action px-0" asp-controller="Product" asp-action="Catalog" asp-route-category="Gaming">Games</a>
+                    <a class="list-group-item list-group-item-action px-0" asp-controller="Policy" asp-action="Details" asp-route-key="warranty">Thông tin Laptop – PC</a>
+                    <a class="list-group-item list-group-item-action px-0" asp-controller="TechNews" asp-action="Index">Tin công nghệ</a>
+                </div>
+            </div>
+        </div>
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-4">
+                <h3 class="h5 fw-bold mb-3">Bài viết mới</h3>
+                <div class="list-group list-group-flush">
+                    @foreach (var item in Model.Take(5))
+                    {
+                        <a class="list-group-item list-group-item-action px-0" asp-controller="TechNews" asp-action="Details" asp-route-slug="@item.Slug">@item.Title</a>
+                    }
+                </div>
+            </div>
         </div>
     </aside>
 </div>
-
