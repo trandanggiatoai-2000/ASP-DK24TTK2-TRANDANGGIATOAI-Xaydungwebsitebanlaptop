@@ -17,12 +17,12 @@
     <div class="row g-4 align-items-start">
         <div class="col-lg-6">
             <div class="main-photo main-photo-pro">
-                <img id="mainProductImage" src="@Model.PrimaryImage" alt="@Model.Name" data-fallback="/images/products/placeholder-generic.svg" />
+                <img id="mainProductImage" src="@Model.PrimaryImage" alt="@Model.Name" data-fallback="/images/products/acer/acer-001.jpg" />
             </div>
             <div class="thumb-row thumb-row-pro">
                 @foreach (var img in Model.Images)
                 {
-                    <button type="button" class="thumb-btn" data-image="@img"><img src="@img" alt="@Model.Name" data-fallback="/images/products/placeholder-generic.svg" /></button>
+                    <button type="button" class="thumb-btn" data-image="@img"><img src="@img" alt="@Model.Name" data-fallback="/images/products/acer/acer-001.jpg" /></button>
                 }
             </div>
         </div>
