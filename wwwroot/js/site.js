@@ -38,18 +38,13 @@
   const toggle = document.getElementById('categoryToggle');
   const panel = document.getElementById('megaMenuPanel');
   if(toggle && panel){
-    const syncMegaMenu = (open) => {
-      panel.classList.toggle('show', open);
-      panel.hidden = !open;
-      panel.setAttribute('aria-hidden', open ? 'false' : 'true');
-    };
-    syncMegaMenu(false);
+    panel.classList.remove('show');
     toggle.addEventListener('click', function(e){
       e.stopPropagation();
-      syncMegaMenu(!panel.classList.contains('show'));
+      panel.classList.toggle('show');
     });
     panel.addEventListener('click', function(e){ e.stopPropagation(); });
-    document.addEventListener('click', function(){ syncMegaMenu(false); });
+    document.addEventListener('click', function(){ panel.classList.remove('show'); });
   }
 
   if (window.sitePopupEnabled) {

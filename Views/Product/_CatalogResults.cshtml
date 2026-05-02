@@ -5,7 +5,7 @@
     var isAccessories = normalizedCategory == "phụ kiện";
     var isComponents = normalizedCategory == "linh kiện";
     var isDesktop = normalizedCategory == "máy tính bộ" || normalizedCategory == "máy tính bàn";
-    var isWorkstationAlias = normalizedCategory.Contains("gaming");
+var isWorkstationAlias = normalizedCategory.Contains("gaming");
     var isGaming = normalizedCategory.Contains("gaming");
     var isOffice = normalizedCategory.Contains("văn phòng") || normalizedCategory.Contains("office");
     var isPremium = normalizedCategory.Contains("cao cấp") || normalizedCategory.Contains("premium");
@@ -50,154 +50,101 @@
         categoryBanner = settings.CategoryBannerGraphicsUrl ?? string.Empty;
     }
 }
-
-<div class="card border-0 shadow-sm rounded-4 mb-3">
-    <div class="card-body p-4 d-flex flex-column flex-xl-row align-items-xl-end justify-content-between gap-3">
-        <div>
-            <div class="eyebrow">DANH SÁCH SẢN PHẨM</div>
-            <h1 class="h3 fw-bold mb-2">@pageTitle</h1>
-            <p class="text-secondary mb-0" style="max-width: 40rem;">@pageDesc</p>
-        </div>
-        <div class="d-flex flex-wrap gap-2">
-            <a asp-controller="Product" asp-action="Catalog" asp-route-keyword="@Model.Keyword" asp-route-brand="@Model.Brand" asp-route-category="@Model.Category" asp-route-cpu="@Model.Cpu" asp-route-ram="@Model.Ram" asp-route-ssd="@Model.Ssd" asp-route-official="@(!Model.Official)" asp-route-fast="@Model.FastDelivery" asp-route-installment="@Model.Installment" class="btn @(Model.Official ? "btn-primary" : "btn-outline-secondary") rounded-pill" data-ajax-catalog-link data-ajax-toggle="official">Hàng chính hãng</a>
-            <a asp-controller="Product" asp-action="Catalog" asp-route-keyword="@Model.Keyword" asp-route-brand="@Model.Brand" asp-route-category="@Model.Category" asp-route-cpu="@Model.Cpu" asp-route-ram="@Model.Ram" asp-route-ssd="@Model.Ssd" asp-route-official="@Model.Official" asp-route-fast="@(!Model.FastDelivery)" asp-route-installment="@Model.Installment" class="btn @(Model.FastDelivery ? "btn-primary" : "btn-outline-secondary") rounded-pill" data-ajax-catalog-link data-ajax-toggle="fast">Giao nhanh</a>
-            <a asp-controller="Product" asp-action="Catalog" asp-route-keyword="@Model.Keyword" asp-route-brand="@Model.Brand" asp-route-category="@Model.Category" asp-route-cpu="@Model.Cpu" asp-route-ram="@Model.Ram" asp-route-ssd="@Model.Ssd" asp-route-official="@Model.Official" asp-route-fast="@Model.FastDelivery" asp-route-installment="@(!Model.Installment)" class="btn @(Model.Installment ? "btn-primary" : "btn-outline-secondary") rounded-pill" data-ajax-catalog-link data-ajax-toggle="installment">Trả góp 0%</a>
-        </div>
+<div class="catalog-top card-surface catalog-top-pro">
+    <div>
+        <div class="eyebrow">DANH SÁCH SẢN PHẨM</div>
+        <h1>@pageTitle</h1>
+        <p>@pageDesc</p>
+    </div>
+    <div class="catalog-badges catalog-badges-interactive">
+        <a asp-controller="Product" asp-action="Catalog" asp-route-keyword="@Model.Keyword" asp-route-brand="@Model.Brand" asp-route-category="@Model.Category" asp-route-cpu="@Model.Cpu" asp-route-ram="@Model.Ram" asp-route-ssd="@Model.Ssd" asp-route-official="@(!Model.Official)" asp-route-fast="@Model.FastDelivery" asp-route-installment="@Model.Installment" class="@(Model.Official ? "active" : "")" data-ajax-catalog-link data-ajax-toggle="official">Hàng chính hãng</a>
+        <a asp-controller="Product" asp-action="Catalog" asp-route-keyword="@Model.Keyword" asp-route-brand="@Model.Brand" asp-route-category="@Model.Category" asp-route-cpu="@Model.Cpu" asp-route-ram="@Model.Ram" asp-route-ssd="@Model.Ssd" asp-route-official="@Model.Official" asp-route-fast="@(!Model.FastDelivery)" asp-route-installment="@Model.Installment" class="@(Model.FastDelivery ? "active" : "")" data-ajax-catalog-link data-ajax-toggle="fast">Giao nhanh</a>
+        <a asp-controller="Product" asp-action="Catalog" asp-route-keyword="@Model.Keyword" asp-route-brand="@Model.Brand" asp-route-category="@Model.Category" asp-route-cpu="@Model.Cpu" asp-route-ram="@Model.Ram" asp-route-ssd="@Model.Ssd" asp-route-official="@Model.Official" asp-route-fast="@Model.FastDelivery" asp-route-installment="@(!Model.Installment)" class="@(Model.Installment ? "active" : "")" data-ajax-catalog-link data-ajax-toggle="installment">Trả góp 0%</a>
     </div>
 </div>
-
 @if (!string.IsNullOrWhiteSpace(categoryBanner))
 {
-    <div class="catalog-category-banner card border-0 shadow-sm rounded-4 mb-3 overflow-hidden">
+    <div class="catalog-category-banner card-surface">
         <img src="@categoryBanner" alt="@pageTitle" />
     </div>
 }
-
-@if (isAccessoryPage)
-{
-    <div class="card border-0 shadow-sm rounded-4 mb-3">
-        <div class="card-body p-3 d-flex flex-column gap-3">
-            <div class="d-flex flex-wrap gap-2">
-                @foreach (var tab in accessoryTabs)
-                {
-                    var isActiveTab = string.Equals(Model.Keyword, tab, StringComparison.OrdinalIgnoreCase);
-                    <a asp-controller="Product" asp-action="Catalog" asp-route-category="@Model.Category" asp-route-keyword="@tab" class="btn @(isActiveTab ? "btn-dark" : "btn-outline-secondary") btn-sm rounded-pill" data-ajax-catalog-link>@tab</a>
-                }
-            </div>
-            <div class="d-flex flex-wrap gap-2">
-                <a asp-controller="Product" asp-action="Catalog" asp-route-category="@Model.Category" asp-route-keyword="@Model.Keyword" class="btn btn-outline-primary btn-sm rounded-pill" data-ajax-catalog-link>Giá thấp đến cao</a>
-                <a asp-controller="Product" asp-action="Catalog" asp-route-category="@Model.Category" asp-route-keyword="@Model.Keyword" class="btn btn-outline-primary btn-sm rounded-pill" data-ajax-catalog-link>Giá cao đến thấp</a>
-            </div>
-        </div>
-    </div>
-}
-
-<div class="d-flex flex-wrap gap-2 mb-3">
+@if (isAccessoryPage) { <div class="accessory-toolbar card-surface"><div class="accessory-tabs">@foreach (var tab in accessoryTabs) { <a asp-controller="Product" asp-action="Catalog" asp-route-category="@Model.Category" asp-route-keyword="@tab" class="accessory-tab">@tab</a> }</div><div class="accessory-sort-tabs"><a asp-controller="Product" asp-action="Catalog" asp-route-category="@Model.Category" asp-route-keyword="@Model.Keyword" class="accessory-sort-tab">Giá thấp đến cao</a><a asp-controller="Product" asp-action="Catalog" asp-route-category="@Model.Category" asp-route-keyword="@Model.Keyword" class="accessory-sort-tab">Giá cao đến thấp</a></div></div>}<div class="active-filter-row">
     @if (!string.IsNullOrWhiteSpace(Model.Brand))
     {
-        <span class="badge rounded-pill text-bg-light border px-3 py-2">Hãng: @Model.Brand</span>
+        <span class="filter-chip">Hãng: @Model.Brand</span>
     }
     @if (!string.IsNullOrWhiteSpace(Model.Category))
     {
-        <span class="badge rounded-pill text-bg-light border px-3 py-2">Nhu cầu: @Model.Category</span>
+        <span class="filter-chip">Nhu cầu: @Model.Category</span>
     }
     @if (!string.IsNullOrWhiteSpace(Model.Cpu))
     {
-        <span class="badge rounded-pill text-bg-light border px-3 py-2">CPU: @Model.Cpu</span>
+        <span class="filter-chip">CPU: @Model.Cpu</span>
     }
     @if (!string.IsNullOrWhiteSpace(Model.Ram))
     {
-        <span class="badge rounded-pill text-bg-light border px-3 py-2">RAM: @Model.Ram</span>
+        <span class="filter-chip">RAM: @Model.Ram</span>
     }
     @if (!string.IsNullOrWhiteSpace(Model.Ssd))
     {
-        <span class="badge rounded-pill text-bg-light border px-3 py-2">SSD: @Model.Ssd</span>
+        <span class="filter-chip">SSD: @Model.Ssd</span>
     }
     @if (!string.IsNullOrWhiteSpace(Model.Keyword))
     {
-        <span class="badge rounded-pill text-bg-light border px-3 py-2">Từ khóa: @Model.Keyword</span>
+        <span class="filter-chip">Từ khóa: @Model.Keyword</span>
     }
     @if (Model.Official)
     {
-        <span class="badge rounded-pill text-primary bg-primary-subtle border px-3 py-2">Hàng chính hãng</span>
+        <span class="filter-chip filter-chip-brand">Hàng chính hãng</span>
     }
     @if (Model.FastDelivery)
     {
-        <span class="badge rounded-pill text-primary bg-primary-subtle border px-3 py-2">Giao nhanh</span>
+        <span class="filter-chip filter-chip-brand">Giao nhanh</span>
     }
     @if (Model.Installment)
     {
-        <span class="badge rounded-pill text-primary bg-primary-subtle border px-3 py-2">Trả góp 0%</span>
+        <span class="filter-chip filter-chip-brand">Trả góp 0%</span>
     }
 </div>
-
-<div class="row row-cols-1 row-cols-lg-3 g-3 mb-3">
-    <div class="col">
-        <div class="card h-100 border-0 shadow-sm rounded-4">
-            <div class="card-body small text-secondary">
-                <strong class="d-block text-dark mb-1">Hàng chính hãng</strong>
-                Sản phẩm đầy đủ VAT, bảo hành 12 tháng tại hãng hoặc trung tâm ủy quyền.
-            </div>
-        </div>
-    </div>
-    <div class="col">
-        <div class="card h-100 border-0 shadow-sm rounded-4">
-            <div class="card-body small text-secondary">
-                <strong class="d-block text-dark mb-1">Giao nhanh</strong>
-                Ưu tiên giao 2H nội thành hoặc giao liên tỉnh nhanh với sản phẩm còn sẵn kho.
-            </div>
-        </div>
-    </div>
-    <div class="col">
-        <div class="card h-100 border-0 shadow-sm rounded-4">
-            <div class="card-body small text-secondary">
-                <strong class="d-block text-dark mb-1">Trả góp 0%</strong>
-                Áp dụng cho nhiều mẫu từ 15 triệu, hỗ trợ thẻ tín dụng và đối tác tài chính.
-            </div>
-        </div>
-    </div>
+<div class="catalog-service-notes">
+    <div><strong>Hàng chính hãng:</strong> Sản phẩm đầy đủ VAT, bảo hành 12 tháng tại hãng hoặc trung tâm ủy quyền.</div>
+    <div><strong>Giao nhanh:</strong> Ưu tiên giao 2H nội thành hoặc giao liên tỉnh nhanh với sản phẩm còn sẵn kho.</div>
+    <div><strong>Trả góp 0%:</strong> Áp dụng cho nhiều mẫu từ 15 triệu, hỗ trợ thẻ tín dụng và đối tác tài chính.</div>
 </div>
-
 <div class="product-grid ecommerce-grid">
     @foreach (var product in Model.Products)
     {
         @await Html.PartialAsync("_ProductCard", product)
     }
 </div>
-
 @if (Model.TotalPages > 1)
 {
-    <div class="d-flex flex-column align-items-center gap-3 my-4">
-        <div class="text-secondary fw-semibold text-center">Hiển thị @Model.StartItem-@Model.EndItem trên tổng @Model.TotalItems sản phẩm.</div>
-        <nav aria-label="Phân trang sản phẩm">
-            <ul class="pagination pagination-lg flex-wrap justify-content-center mb-0">
-                @if (Model.HasPreviousPage)
-                {
-                    <li class="page-item">
-                        <a class="page-link rounded-pill mx-1" asp-controller="Product" asp-action="Catalog" asp-route-page="@(Model.Page - 1)" asp-route-keyword="@Model.Keyword" asp-route-brand="@Model.Brand" asp-route-category="@Model.Category" asp-route-cpu="@Model.Cpu" asp-route-ram="@Model.Ram" asp-route-ssd="@Model.Ssd" asp-route-official="@Model.Official" asp-route-fast="@Model.FastDelivery" asp-route-installment="@Model.Installment" data-ajax-catalog-link aria-label="Trang trước">←</a>
-                    </li>
-                }
-                @{
-                    var startPage = Math.Max(1, Model.Page - 2);
-                    var endPage = Math.Min(Model.TotalPages, Model.Page + 2);
-                }
-                @for (var i = startPage; i <= endPage; i++)
-                {
-                    <li class="page-item @(i == Model.Page ? "active" : string.Empty)">
-                        <a class="page-link rounded-pill mx-1" asp-controller="Product" asp-action="Catalog" asp-route-page="@i" asp-route-keyword="@Model.Keyword" asp-route-brand="@Model.Brand" asp-route-category="@Model.Category" asp-route-cpu="@Model.Cpu" asp-route-ram="@Model.Ram" asp-route-ssd="@Model.Ssd" asp-route-official="@Model.Official" asp-route-fast="@Model.FastDelivery" asp-route-installment="@Model.Installment" data-ajax-catalog-link>@i</a>
-                    </li>
-                }
-                @if (Model.HasNextPage)
-                {
-                    <li class="page-item">
-                        <a class="page-link rounded-pill mx-1" asp-controller="Product" asp-action="Catalog" asp-route-page="@(Model.Page + 1)" asp-route-keyword="@Model.Keyword" asp-route-brand="@Model.Brand" asp-route-category="@Model.Category" asp-route-cpu="@Model.Cpu" asp-route-ram="@Model.Ram" asp-route-ssd="@Model.Ssd" asp-route-official="@Model.Official" asp-route-fast="@Model.FastDelivery" asp-route-installment="@Model.Installment" data-ajax-catalog-link aria-label="Trang sau">→</a>
-                    </li>
-                }
-            </ul>
-        </nav>
+    <div class="catalog-pagination-wrap">
+        <div class="catalog-pagination-summary">Hiển thị @Model.StartItem-@Model.EndItem trên tổng @Model.TotalItems sản phẩm.</div>
+        <div class="pager pager-modern">
+            @if (Model.HasPreviousPage)
+            {
+                <a class="pager-nav" asp-controller="Product" asp-action="Catalog" asp-route-page="@(Model.Page - 1)" asp-route-keyword="@Model.Keyword" asp-route-brand="@Model.Brand" asp-route-category="@Model.Category" asp-route-cpu="@Model.Cpu" asp-route-ram="@Model.Ram" asp-route-ssd="@Model.Ssd" asp-route-official="@Model.Official" asp-route-fast="@Model.FastDelivery" asp-route-installment="@Model.Installment" data-ajax-catalog-link aria-label="Trang trước">←</a>
+            }
+            @{
+                var startPage = Math.Max(1, Model.Page - 2);
+                var endPage = Math.Min(Model.TotalPages, Model.Page + 2);
+            }
+            @for (var i = startPage; i <= endPage; i++)
+            {
+                <a class="@(i == Model.Page ? "active" : "")" asp-controller="Product" asp-action="Catalog" asp-route-page="@i" asp-route-keyword="@Model.Keyword" asp-route-brand="@Model.Brand" asp-route-category="@Model.Category" asp-route-cpu="@Model.Cpu" asp-route-ram="@Model.Ram" asp-route-ssd="@Model.Ssd" asp-route-official="@Model.Official" asp-route-fast="@Model.FastDelivery" asp-route-installment="@Model.Installment" data-ajax-catalog-link>@i</a>
+            }
+            @if (Model.HasNextPage)
+            {
+                <a class="pager-nav" asp-controller="Product" asp-action="Catalog" asp-route-page="@(Model.Page + 1)" asp-route-keyword="@Model.Keyword" asp-route-brand="@Model.Brand" asp-route-category="@Model.Category" asp-route-cpu="@Model.Cpu" asp-route-ram="@Model.Ram" asp-route-ssd="@Model.Ssd" asp-route-official="@Model.Official" asp-route-fast="@Model.FastDelivery" asp-route-installment="@Model.Installment" data-ajax-catalog-link aria-label="Trang sau">→</a>
+            }
+        </div>
         @if (Model.HasNextPage)
         {
-            <a class="btn btn-outline-primary rounded-pill px-4" asp-controller="Product" asp-action="Catalog" asp-route-page="@(Model.Page + 1)" asp-route-keyword="@Model.Keyword" asp-route-brand="@Model.Brand" asp-route-category="@Model.Category" asp-route-cpu="@Model.Cpu" asp-route-ram="@Model.Ram" asp-route-ssd="@Model.Ssd" asp-route-official="@Model.Official" asp-route-fast="@Model.FastDelivery" asp-route-installment="@Model.Installment" data-ajax-catalog-link>Xem thêm @Math.Min(Model.PageSize, Model.RemainingItems) sản phẩm</a>
+            <div class="catalog-loadmore-wrap">
+                <a class="catalog-loadmore-btn" asp-controller="Product" asp-action="Catalog" asp-route-page="@(Model.Page + 1)" asp-route-keyword="@Model.Keyword" asp-route-brand="@Model.Brand" asp-route-category="@Model.Category" asp-route-cpu="@Model.Cpu" asp-route-ram="@Model.Ram" asp-route-ssd="@Model.Ssd" asp-route-official="@Model.Official" asp-route-fast="@Model.FastDelivery" asp-route-installment="@Model.Installment" data-ajax-catalog-link>Xem thêm @Math.Min(Model.PageSize, Model.RemainingItems) sản phẩm</a>
+            </div>
         }
     </div>
 }
+

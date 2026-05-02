@@ -3,60 +3,57 @@
     ViewData["Title"] = "Danh sách laptop";
 }
 <div class="catalog-layout catalog-layout-pro" data-catalog-ajax-root>
-    <aside class="sticky-sidebar">
-        <div class="card border-0 shadow-sm rounded-4">
-            <div class="card-body p-4">
-                <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
-                    <h3 class="h5 fw-bold mb-0">Bộ lọc tìm kiếm</h3>
-                    <span class="small text-body-secondary" data-catalog-total>@Model.TotalItems sản phẩm</span>
-                </div>
-                <form asp-controller="Product" asp-action="Catalog" method="get" class="d-grid gap-3" data-catalog-filter-form>
-                    <input type="text" name="keyword" value="@Model.Keyword" placeholder="Tên, CPU, thương hiệu" class="form-control" />
-                    <select name="brand" class="form-select">
-                        <option value="">Tất cả hãng</option>
-                        @foreach (var b in Model.Brands)
-                        {
-                            <option value="@b" selected="@(Model.Brand == b ? "selected" : null)">@b</option>
-                        }
-                    </select>
-                    <select name="category" class="form-select">
-                        <option value="">Tất cả nhu cầu</option>
-                        @foreach (var c in Model.Categories)
-                        {
-                            <option value="@c" selected="@(Model.Category == c ? "selected" : null)">@c</option>
-                        }
-                    </select>
-                    <select name="cpu" class="form-select">
-                        <option value="">Tất cả CPU</option>
-                        @foreach (var c in Model.Cpus)
-                        {
-                            <option value="@c" selected="@(Model.Cpu == c ? "selected" : null)">@c</option>
-                        }
-                    </select>
-                    <select name="ram" class="form-select">
-                        <option value="">Tất cả RAM</option>
-                        @foreach (var r in Model.Rams)
-                        {
-                            <option value="@r" selected="@(Model.Ram == r ? "selected" : null)">@r</option>
-                        }
-                    </select>
-                    <select name="ssd" class="form-select">
-                        <option value="">Tất cả SSD</option>
-                        @foreach (var s in Model.Ssds)
-                        {
-                            <option value="@s" selected="@(Model.Ssd == s ? "selected" : null)">@s</option>
-                        }
-                    </select>
-                    <input type="hidden" name="official" value="@(Model.Official ? "true" : "false")" data-catalog-hidden="official" />
-                    <input type="hidden" name="fast" value="@(Model.FastDelivery ? "true" : "false")" data-catalog-hidden="fast" />
-                    <input type="hidden" name="installment" value="@(Model.Installment ? "true" : "false")" data-catalog-hidden="installment" />
-                    <button type="submit" class="btn btn-dark rounded-pill">Lọc ngay</button>
-                    <a asp-controller="Product" asp-action="Catalog" class="btn btn-outline-secondary rounded-pill catalog-reset-btn" data-ajax-catalog-link>Đặt lại bộ lọc</a>
-                </form>
-            </div>
+    <aside class="catalog-sidebar card-surface sticky-sidebar">
+        <div class="sidebar-head">
+            <h3>Bộ lọc tìm kiếm</h3>
+            <span data-catalog-total>@Model.TotalItems sản phẩm</span>
         </div>
+        <form asp-controller="Product" asp-action="Catalog" method="get" class="filter-form filter-form-pro" data-catalog-filter-form>
+            <input type="text" name="keyword" value="@Model.Keyword" placeholder="Tên, CPU, thương hiệu" />
+            <select name="brand">
+                <option value="">Tất cả hãng</option>
+                @foreach (var b in Model.Brands)
+                {
+                    <option value="@b" selected="@(Model.Brand == b ? "selected" : null)">@b</option>
+                }
+            </select>
+            <select name="category">
+                <option value="">Tất cả nhu cầu</option>
+                @foreach (var c in Model.Categories)
+                {
+                    <option value="@c" selected="@(Model.Category == c ? "selected" : null)">@c</option>
+                }
+            </select>
+            <select name="cpu">
+                <option value="">Tất cả CPU</option>
+                @foreach (var c in Model.Cpus)
+                {
+                    <option value="@c" selected="@(Model.Cpu == c ? "selected" : null)">@c</option>
+                }
+            </select>
+            <select name="ram">
+                <option value="">Tất cả RAM</option>
+                @foreach (var r in Model.Rams)
+                {
+                    <option value="@r" selected="@(Model.Ram == r ? "selected" : null)">@r</option>
+                }
+            </select>
+            <select name="ssd">
+                <option value="">Tất cả SSD</option>
+                @foreach (var s in Model.Ssds)
+                {
+                    <option value="@s" selected="@(Model.Ssd == s ? "selected" : null)">@s</option>
+                }
+            </select>
+            <input type="hidden" name="official" value="@(Model.Official ? "true" : "false")" data-catalog-hidden="official" />
+            <input type="hidden" name="fast" value="@(Model.FastDelivery ? "true" : "false")" data-catalog-hidden="fast" />
+            <input type="hidden" name="installment" value="@(Model.Installment ? "true" : "false")" data-catalog-hidden="installment" />
+            <button type="submit" class="btn-primary wide">Lọc ngay</button>
+            <a asp-controller="Product" asp-action="Catalog" class="btn-outline wide catalog-reset-btn" data-ajax-catalog-link>Đặt lại bộ lọc</a>
+        </form>
     </aside>
     <section data-catalog-results>
         @await Html.PartialAsync("_CatalogResults", Model)
     </section>
 </div>
+

@@ -3,15 +3,14 @@
     var isAccessory = string.Equals(Model.Category, "Phụ kiện", StringComparison.OrdinalIgnoreCase);
     var isComponent = string.Equals(Model.Category, "Linh kiện", StringComparison.OrdinalIgnoreCase);
     var isDesktop = string.Equals(Model.Category, "Máy tính bộ", StringComparison.OrdinalIgnoreCase) || string.Equals(Model.Category, "Máy tính bàn", StringComparison.OrdinalIgnoreCase);
-    var isGaming = Model.Category.Contains("Gaming", StringComparison.OrdinalIgnoreCase);
     var discount = Model.OldPrice > Model.Price && Model.OldPrice > 0
         ? (int)Math.Round((1 - (Model.Price / Model.OldPrice)) * 100)
         : 0;
-    var sizeText = isDesktop ? "Mini / SFF" : (isGaming ? "15.6 inch" : "14 inch");
+    var sizeText = isDesktop ? "Mini / SFF" : (Model.Category.Contains("Gaming") ? "15.6”" : "14”");
     var graphicsText = isDesktop ? "Desktop / Office"
         : isAccessory ? "Accessory / Gear"
         : isComponent ? "Upgrade / Part"
-        : (isGaming ? "RTX 3050" : (Model.Brand == "Apple" ? "Apple GPU" : "Intel UHD"));
+        : (Model.Category.Contains("Gaming") ? "RTX 3050" : (Model.Brand == "Apple" ? "Apple GPU" : "Intel UHD"));
     var memberDiscount = Math.Max(100000, (int)Math.Round(Model.Price * 0.01m / 1000) * 1000);
     var studentDiscount = Math.Max(500000, (int)Math.Round(Model.Price * 0.025m / 1000) * 1000);
     var configLine = isAccessory
@@ -23,61 +22,46 @@
     {
         configLine = isAccessory ? "Phụ kiện chính hãng" : isComponent ? "Linh kiện nâng cấp" : "Cấu hình đang cập nhật";
     }
-    var supportText = isAccessory ? "Phụ kiện phù hợp học tập, làm việc và giải trí hằng ngày."
-        : isComponent ? "Linh kiện nâng cấp hiệu quả cho laptop và PC."
-        : isDesktop ? "Máy bộ phù hợp văn phòng, doanh nghiệp và học tập."
-        : "Ưu đãi tốt, phù hợp học tập, làm việc và giải trí.";
 }
-<div class="card h-100 border-0 shadow-sm rounded-4 position-relative overflow-hidden">
-    <div class="position-absolute top-0 start-0 end-0 d-flex justify-content-between px-3 pt-3 z-2">
-        <div>
-            @if (discount > 0)
-            {
-                <span class="badge rounded-pill text-bg-danger px-3 py-2">Giảm @discount%</span>
-            }
-        </div>
-        <div>
-            @if (Model.IsInstallment)
-            {
-                <span class="badge rounded-pill text-primary bg-primary-subtle border px-3 py-2">@Model.InstallmentText</span>
-            }
-        </div>
+<div class="product-card lxt-product-card lxt-product-card-sample @(isDesktop ? "lxt-product-card-desktop" : "")">
+    <div class="sample-card-top">
+        @if (discount > 0)
+        {
+            <span class="sample-discount-badge">Giảm @discount%</span>
+        }
+        @if (Model.IsInstallment)
+        {
+            <span class="sample-installment-badge">@Model.InstallmentText</span>
+        }
     </div>
-
-    <div class="card-body d-flex flex-column gap-2 p-3">
-        <div class="sample-media @(isAccessory || isComponent ? "sample-media-accessory" : string.Empty)">
-            <a asp-controller="Product" asp-action="Details" asp-route-id="@Model.Id" class="d-block text-center">
-                <img src="@Model.PrimaryImage" alt="@Model.Name" data-fallback="/images/products/placeholder-generic.svg" />
-            </a>
-        </div>
-
-        <div>
-            <div class="sample-cpu-line">@Model.Cpu @graphicsText</div>
-            <div class="sample-config-line">@configLine</div>
-        </div>
-
-        <a class="text-decoration-none text-dark fw-bold lh-sm d-block flex-grow-1" style="min-height:3.5rem;" asp-controller="Product" asp-action="Details" asp-route-id="@Model.Id">@Model.Name</a>
-
-        <div class="small text-decoration-line-through text-body-secondary">
-            @(Model.OldPrice > Model.Price ? Model.OldPrice.ToString("N0") + " đ" : "")
-            @if (discount > 0)
-            {
-                <span class="ms-2 badge text-danger bg-danger-subtle border">-@discount%</span>
-            }
-        </div>
-
-        <div class="fs-5 fw-bold text-danger">@Model.Price.ToString("N0") đ</div>
-
-        <div class="d-grid gap-2">
-            <div class="small rounded-3 px-2 py-2 text-primary-emphasis bg-primary-subtle border">Smember giảm đến @memberDiscount.ToString("N0")đ</div>
-            <div class="small rounded-3 px-2 py-2 text-secondary-emphasis bg-secondary-subtle border">S-Student giảm thêm @studentDiscount.ToString("N0")đ</div>
-        </div>
-
-        <div class="small text-body-secondary">@supportText</div>
-
-        <div class="d-flex align-items-center justify-content-between pt-1">
-            <div class="small fw-bold text-dark">★ @(isGaming ? "5" : "4.9")</div>
-            <a asp-controller="Product" asp-action="Details" asp-route-id="@Model.Id" class="small text-decoration-none">♡ Yêu thích</a>
-        </div>
+    <div class="lxt-product-media sample-media @(isAccessory || isComponent ? "sample-media-accessory" : "")">
+        <a asp-controller="Product" asp-action="Details" asp-route-id="@Model.Id">
+            <img src="@Model.PrimaryImage" alt="@Model.Name" data-fallback="/images/products/placeholder-generic.svg" />
+        </a>
+    </div>
+    <div class="sample-spec-head">
+        <div class="sample-cpu-line">@Model.Cpu @graphicsText</div>
+        <div class="sample-config-line">@configLine</div>
+    </div>
+    <a class="lxt-product-name sample-product-name" asp-controller="Product" asp-action="Details" asp-route-id="@Model.Id">@Model.Name</a>
+    <div class="lxt-product-old sample-old-price">
+        @(Model.OldPrice > Model.Price ? Model.OldPrice.ToString("N0") + " đ" : "")
+        @if (discount > 0) { <span>@discount%</span> }
+    </div>
+    <div class="lxt-product-price sample-price">@Model.Price.ToString("N0") đ</div>
+    <div class="sample-promo-boxes">
+        <div class="sample-promo-box">Smember giảm đến @memberDiscount.ToString("N0")đ</div>
+        <div class="sample-promo-box alt">S-Student giảm thêm @studentDiscount.ToString("N0")đ</div>
+    </div>
+    <div class="sample-subtext">
+        @(isAccessory ? "Phụ kiện phù hợp học tập, làm việc và giải trí hằng ngày."
+            : isComponent ? "Linh kiện nâng cấp hiệu quả cho laptop và PC."
+            : isDesktop ? "Máy bộ phù hợp văn phòng, doanh nghiệp và học tập."
+            : "Ưu đãi tốt, phù hợp học tập, làm việc và giải trí.")
+    </div>
+    <div class="sample-rating-row">
+        <div class="sample-rating">⭐ @(Model.Category.Contains("Gaming") ? "5" : "4.9")</div>
+        <a asp-controller="Product" asp-action="Details" asp-route-id="@Model.Id" class="sample-favorite">♡ Yêu thích</a>
     </div>
 </div>
+
