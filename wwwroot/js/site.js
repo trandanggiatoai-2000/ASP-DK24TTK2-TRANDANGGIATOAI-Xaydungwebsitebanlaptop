@@ -182,7 +182,7 @@
 document.addEventListener('error', function(e){
   const target = e.target;
   if(target && target.tagName === 'IMG'){
-    const fallback = target.getAttribute('data-fallback') || '/images/products/acer/acer-001.jpg';
+    const fallback = target.getAttribute('data-fallback') || '/images/products/placeholder-generic.svg';
     if(target.getAttribute('src') !== fallback){
       target.setAttribute('src', fallback);
     }
@@ -405,14 +405,3 @@ document.addEventListener('DOMContentLoaded', function () {
 
   applyState();
 })();
-
-document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('img[data-fallback]').forEach(function (img) {
-    img.addEventListener('error', function () {
-      var fallback = img.getAttribute('data-fallback');
-      if (!fallback || img.src.indexOf(fallback) !== -1) return;
-      img.src = fallback;
-      img.classList.add('image-fallback-active');
-    });
-  });
-});

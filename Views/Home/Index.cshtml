@@ -93,7 +93,7 @@
         @foreach (var product in Model.FlashSaleProducts.Take(5))
         {
             <div class="lxt-flash-card">
-                <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id"><img src="@product.PrimaryImage" alt="@product.Name" data-fallback="/images/products/acer/acer-001.jpg" /></a>
+                <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id"><img src="@product.PrimaryImage" alt="@product.Name" data-fallback="/images/products/placeholder-generic.svg" /></a>
                 <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="lxt-flash-name">@product.Name</a>
                 <div class="lxt-flash-sub">@product.Brand | @product.Category</div>
                 <div class="lxt-flash-old">@(product.OldPrice > product.Price ? product.OldPrice.ToString("N0") + " đ" : "")</div>
