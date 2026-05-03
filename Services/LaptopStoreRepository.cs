@@ -932,30 +932,30 @@ BEGIN
         FROM Products p
         CROSS APPLY (VALUES
             (CASE 
-                WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%2025%' THEN N'/images/products/acer-aspire-2025.svg'
-                WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%2026%' THEN N'/images/products/acer-aspire-2026.svg'
-                WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%Nitro%' THEN N'/images/products/acer-nitro-v.svg'
-                WHEN p.Brand = N'ASUS' THEN N'/images/products/asus-tuf-a15.svg'
-                WHEN p.Brand = N'Dell' THEN N'/images/products/dell-inspiron-15.svg'
-                WHEN p.Brand = N'HP' THEN N'/images/products/hp-pavilion-14.svg'
-                WHEN p.Brand = N'Lenovo' THEN N'/images/products/lenovo-ideapad-slim-5.svg'
-                WHEN p.Brand = N'Apple' THEN N'/images/products/macbook-air-m2.svg'
+                WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%2025%' THEN N'/images/products/acer/acer-001.jpg'
+                WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%2026%' THEN N'/images/products/acer/acer-002.jpg'
+                WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%Nitro%' THEN N'/images/products/acer/acer-003.jpg'
+                WHEN p.Brand = N'ASUS' THEN N'/images/products/asus/asus-001.jpg'
+                WHEN p.Brand = N'Dell' THEN N'/images/products/dell/dell-001.jpg'
+                WHEN p.Brand = N'HP' THEN N'/images/products/hp/hp-001.jpg'
+                WHEN p.Brand = N'Lenovo' THEN N'/images/products/lenovo/lenovo-001.jpg'
+                WHEN p.Brand = N'Apple' THEN N'/images/products/macbook/macbook-001.jpg'
                 ELSE N'/images/banners/slide1.svg' END, 1),
             (CASE 
-                WHEN p.Brand = N'Acer' THEN N'/images/products/acer-alt.svg'
-                WHEN p.Brand = N'ASUS' THEN N'/images/products/asus-alt.svg'
-                WHEN p.Brand = N'Dell' THEN N'/images/products/dell-alt.svg'
-                WHEN p.Brand = N'HP' THEN N'/images/products/hp-alt.svg'
-                WHEN p.Brand = N'Lenovo' THEN N'/images/products/lenovo-alt.svg'
-                WHEN p.Brand = N'Apple' THEN N'/images/products/apple-alt.svg'
+                WHEN p.Brand = N'Acer' THEN N'/images/products/acer/acer-004.jpg'
+                WHEN p.Brand = N'ASUS' THEN N'/images/products/asus/asus-002.jpg'
+                WHEN p.Brand = N'Dell' THEN N'/images/products/dell/dell-002.jpg'
+                WHEN p.Brand = N'HP' THEN N'/images/products/hp/hp-002.jpg'
+                WHEN p.Brand = N'Lenovo' THEN N'/images/products/lenovo/lenovo-002.jpg'
+                WHEN p.Brand = N'Apple' THEN N'/images/products/macbook/macbook-002.jpg'
                 ELSE N'/images/banners/slide2.svg' END, 2),
             (CASE 
-                WHEN p.Brand = N'Acer' THEN N'/images/products/acer-detail.svg'
-                WHEN p.Brand = N'ASUS' THEN N'/images/products/asus-detail.svg'
-                WHEN p.Brand = N'Dell' THEN N'/images/products/dell-detail.svg'
-                WHEN p.Brand = N'HP' THEN N'/images/products/hp-detail.svg'
-                WHEN p.Brand = N'Lenovo' THEN N'/images/products/lenovo-detail.svg'
-                WHEN p.Brand = N'Apple' THEN N'/images/products/apple-detail.svg'
+                WHEN p.Brand = N'Acer' THEN N'/images/products/acer/acer-005.jpg'
+                WHEN p.Brand = N'ASUS' THEN N'/images/products/asus/asus-003.jpg'
+                WHEN p.Brand = N'Dell' THEN N'/images/products/dell/dell-003.jpg'
+                WHEN p.Brand = N'HP' THEN N'/images/products/hp/hp-003.jpg'
+                WHEN p.Brand = N'Lenovo' THEN N'/images/products/lenovo/lenovo-003.jpg'
+                WHEN p.Brand = N'Apple' THEN N'/images/products/macbook/macbook-003.jpg'
                 ELSE N'/images/banners/slide3.svg' END, 3)
         ) v(ImageUrl, DisplayOrder)
     ) x
@@ -963,15 +963,15 @@ END
 
 UPDATE pi
 SET pi.ImageUrl = CASE
-    WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%2025%' THEN N'/images/products/acer-aspire-2025.svg'
-    WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%2026%' THEN N'/images/products/acer-aspire-2026.svg'
-    WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%Nitro%' THEN N'/images/products/acer-nitro-v.svg'
-    WHEN p.Brand = N'ASUS' THEN N'/images/products/asus-tuf-a15.svg'
-    WHEN p.Brand = N'Dell' THEN N'/images/products/dell-inspiron-15.svg'
-    WHEN p.Brand = N'HP' THEN N'/images/products/hp-pavilion-14.svg'
-    WHEN p.Brand = N'Lenovo' THEN N'/images/products/lenovo-ideapad-slim-5.svg'
-    WHEN p.Brand = N'Apple' THEN N'/images/products/macbook-air-m2.svg'
-    ELSE N'/images/products/placeholder-generic.svg'
+    WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%2025%' THEN N'/images/products/acer/acer-001.jpg'
+    WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%2026%' THEN N'/images/products/acer/acer-002.jpg'
+    WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%Nitro%' THEN N'/images/products/acer/acer-003.jpg'
+    WHEN p.Brand = N'ASUS' THEN N'/images/products/asus/asus-001.jpg'
+    WHEN p.Brand = N'Dell' THEN N'/images/products/dell/dell-001.jpg'
+    WHEN p.Brand = N'HP' THEN N'/images/products/hp/hp-001.jpg'
+    WHEN p.Brand = N'Lenovo' THEN N'/images/products/lenovo/lenovo-001.jpg'
+    WHEN p.Brand = N'Apple' THEN N'/images/products/macbook/macbook-001.jpg'
+    ELSE N'/images/products/acer/acer-001.jpg'
 END
 FROM ProductImages pi
 INNER JOIN Products p ON p.ProductId = pi.ProductId
@@ -984,15 +984,15 @@ WHERE pi.DisplayOrder = 1 AND (
 INSERT INTO ProductImages(ProductId, ImageUrl, DisplayOrder)
 SELECT p.ProductId,
        CASE
-           WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%2025%' THEN N'/images/products/acer-aspire-2025.svg'
-           WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%2026%' THEN N'/images/products/acer-aspire-2026.svg'
-           WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%Nitro%' THEN N'/images/products/acer-nitro-v.svg'
-           WHEN p.Brand = N'ASUS' THEN N'/images/products/asus-tuf-a15.svg'
-           WHEN p.Brand = N'Dell' THEN N'/images/products/dell-inspiron-15.svg'
-           WHEN p.Brand = N'HP' THEN N'/images/products/hp-pavilion-14.svg'
-           WHEN p.Brand = N'Lenovo' THEN N'/images/products/lenovo-ideapad-slim-5.svg'
-           WHEN p.Brand = N'Apple' THEN N'/images/products/macbook-air-m2.svg'
-           ELSE N'/images/products/placeholder-generic.svg'
+           WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%2025%' THEN N'/images/products/acer/acer-001.jpg'
+           WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%2026%' THEN N'/images/products/acer/acer-002.jpg'
+           WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%Nitro%' THEN N'/images/products/acer/acer-003.jpg'
+           WHEN p.Brand = N'ASUS' THEN N'/images/products/asus/asus-001.jpg'
+           WHEN p.Brand = N'Dell' THEN N'/images/products/dell/dell-001.jpg'
+           WHEN p.Brand = N'HP' THEN N'/images/products/hp/hp-001.jpg'
+           WHEN p.Brand = N'Lenovo' THEN N'/images/products/lenovo/lenovo-001.jpg'
+           WHEN p.Brand = N'Apple' THEN N'/images/products/macbook/macbook-001.jpg'
+           ELSE N'/images/products/acer/acer-001.jpg'
        END,
        1
 FROM Products p
@@ -1454,11 +1454,47 @@ SELECT CAST(SCOPE_IDENTITY() AS INT);", conn);
         var storedHash = reader[15]?.ToString() ?? string.Empty;
         var inputPassword = password?.Trim() ?? string.Empty;
         var inputHash = HashPassword(inputPassword);
-        var accepted = string.Equals(storedHash, inputHash, StringComparison.OrdinalIgnoreCase);
-        if (!accepted) return null;
+        var legacySha256Hash = LegacySha256HashPassword(inputPassword);
+        var acceptedByMd5 = string.Equals(storedHash, inputHash, StringComparison.OrdinalIgnoreCase);
+        var acceptedByLegacySha256 = string.Equals(storedHash, legacySha256Hash, StringComparison.OrdinalIgnoreCase);
+        if (!acceptedByMd5 && !acceptedByLegacySha256) return null;
+
+        var userId = reader.GetInt32(0);
+        if (acceptedByLegacySha256)
+        {
+            await reader.CloseAsync();
+            using var updateCmd = new SqlCommand("UPDATE AdminUsers SET PasswordHash=@PasswordHash WHERE UserId=@UserId", conn);
+            updateCmd.Parameters.AddWithValue("@UserId", userId);
+            updateCmd.Parameters.AddWithValue("@PasswordHash", inputHash);
+            await updateCmd.ExecuteNonQueryAsync();
+
+            using var reloadCmd = new SqlCommand(@"SELECT TOP 1 UserId, Username, FullName, IsSuperAdmin, CanViewOrders, CanUpdateOrders, CanCancelOrders, CanViewReviews, CanReplyReviews, CanDeleteReviews, CanManageInventory, CanDeleteInventory, CanImportInventory, CanManageWebsite, IsActive, PasswordHash FROM AdminUsers WHERE UserId=@UserId", conn);
+            reloadCmd.Parameters.AddWithValue("@UserId", userId);
+            using var reloadReader = await reloadCmd.ExecuteReaderAsync();
+            if (!await reloadReader.ReadAsync()) return null;
+
+            return new AdminUserSessionModel
+            {
+                UserId = reloadReader.GetInt32(0),
+                Username = reloadReader.GetString(1),
+                FullName = reloadReader.GetString(2),
+                IsSuperAdmin = reloadReader.GetBoolean(3),
+                CanViewOrders = reloadReader.GetBoolean(4),
+                CanUpdateOrders = reloadReader.GetBoolean(5),
+                CanCancelOrders = reloadReader.GetBoolean(6),
+                CanViewReviews = reloadReader.GetBoolean(7),
+                CanReplyReviews = reloadReader.GetBoolean(8),
+                CanDeleteReviews = reloadReader.GetBoolean(9),
+                CanManageInventory = reloadReader.GetBoolean(10),
+                CanDeleteInventory = reloadReader.GetBoolean(11),
+                CanImportInventory = reloadReader.GetBoolean(12),
+                CanManageWebsite = reloadReader.GetBoolean(13)
+            };
+        }
+
         return new AdminUserSessionModel
         {
-            UserId = reader.GetInt32(0),
+            UserId = userId,
             Username = reader.GetString(1),
             FullName = reader.GetString(2),
             IsSuperAdmin = reader.GetBoolean(3),
@@ -1824,6 +1860,13 @@ VALUES(
 
     private static string HashPassword(string password)
     {
+        using var md5 = MD5.Create();
+        var hash = md5.ComputeHash(Encoding.UTF8.GetBytes(password ?? string.Empty));
+        return Convert.ToHexString(hash).ToLowerInvariant();
+    }
+
+    private static string LegacySha256HashPassword(string password)
+    {
         using var sha = SHA256.Create();
         var hash = sha.ComputeHash(Encoding.UTF8.GetBytes(password ?? string.Empty));
         return Convert.ToHexString(hash);
@@ -2176,7 +2219,7 @@ public async Task DeleteProductReviewAsync(int reviewId)
                 .ToList();
         }
 
-        return new List<string> { "/images/products/placeholder-generic.svg" };
+        return GetBrandImageSet("Acer", "Acer", 1, string.Empty);
     }
 
     public async Task<string> CreateOrderAsync(CheckoutViewModel form, List<CartItem> items)
@@ -2339,12 +2382,12 @@ public async Task DeleteProductReviewAsync(int reviewId)
             var categoryValue = reader.GetString(2);
             var productNameValue = reader.GetString(3);
             var thumbnail = NormalizeLegacyProductImageUrl(reader.GetString(10));
-            if (string.IsNullOrWhiteSpace(thumbnail) || string.Equals(thumbnail, "/images/products/placeholder-generic.svg", StringComparison.OrdinalIgnoreCase))
+            if (string.IsNullOrWhiteSpace(thumbnail) || string.Equals(thumbnail, "/images/products/acer/acer-001.jpg", StringComparison.OrdinalIgnoreCase))
             {
                 thumbnail = GetBrandImageSet(brandValue, productNameValue, productId, categoryValue)
                     .Select(NormalizeLegacyProductImageUrl)
                     .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x))
-                    ?? "/images/products/placeholder-generic.svg";
+                    ?? "/images/products/acer/acer-001.jpg";
             }
 
             result.Add(new InventoryItemViewModel
@@ -3169,7 +3212,7 @@ WHERE PostId=@PostId", conn, tx);
         var key = ResolveImageBrandKey(brand, productName, categoryName);
         if (!BrandImageCatalog.TryGetValue(key, out var pool) || pool.Count == 0)
         {
-            return new List<string> { "/images/products/placeholder-generic.svg" };
+            return GetBrandImageSet("Acer", "Acer", 1, string.Empty);
         }
 
         var start = Math.Abs(productId) % pool.Count;
@@ -3189,6 +3232,7 @@ WHERE PostId=@PostId", conn, tx);
 
         if (categoryValue.Contains("phụ kiện")) return "accessory";
         if (categoryValue.Contains("linh kiện")) return "component";
+        if (categoryValue.Contains("máy tính bàn") || nameValue.Contains("prodesk") || nameValue.Contains("desktop") || nameValue.Contains("optiplex")) return "desktops";
 
         if (brandValue.Contains("acer")) return "acer";
         if (brandValue.Contains("asus")) return "asus";
@@ -3196,10 +3240,10 @@ WHERE PostId=@PostId", conn, tx);
         if (brandValue.Contains("hp")) return "hp";
         if (brandValue.Contains("msi")) return "msi";
         if (brandValue.Contains("apple") || brandValue.Contains("macbook")) return "macbook";
-        if (brandValue.Contains("thinkbook") || nameValue.Contains("thinkbook")) return "thinkbook";
+        if (brandValue.Contains("thinkbook") || nameValue.Contains("thinkbook") || nameValue.Contains("thinkpad")) return "thinkbook";
         if (brandValue.Contains("lenovo"))
         {
-            if (nameValue.Contains("thinkbook")) return "thinkbook";
+            if (nameValue.Contains("thinkbook") || nameValue.Contains("thinkpad")) return "thinkbook";
             return "lenovo";
         }
         return brandValue;
@@ -3215,12 +3259,15 @@ WHERE PostId=@PostId", conn, tx);
         ["lenovo"] = BuildSequentialImageList("/images/products/lenovo", "lenovo", 34),
         ["thinkbook"] = BuildSequentialImageList("/images/products/thinkbook", "thinkbook", 19),
         ["macbook"] = BuildSequentialImageList("/images/products/macbook", "macbook", 29),
+        ["desktops"] = BuildSequentialImageList("/images/products/desktops", "desktops", 9),
         ["accessory"] = BuildImageList("/uploads/products", new[]
         {
             "ban-phim-co-gaming-ek87-ea47cc97.png",
             "chuot-logitech-g102-gen-2-9e309308.jpg",
             "de-tan-nhiet-laptop-x6b-6-fan-48e05f77.jpg",
-            "ugreen-usb-c-hub-6-in-1-9-7876c2ce.jpg"
+            "ugreen-usb-c-hub-6-in-1-9-7876c2ce.jpg",
+            "s#U1ea1c-zin-laptop-dell-65w-48c68ee2.jpg",
+            "tai-nghe-ch#U1ee5p-tai-h3-3103e9fd.jpg"
         }),
         ["component"] = BuildImageList("/uploads/products", new[]
         {
@@ -3342,10 +3389,6 @@ WHERE PostId=@PostId", conn, tx);
 
     private static readonly Dictionary<string, string> LegacyTechNewsImageMap = new(StringComparer.OrdinalIgnoreCase)
     {
-        ["/images/products/dell/gen-h-d1.jpg"] = "/images/products/dell/dell-032.jpg",
-        ["/images/products/thinkbook/t1.jpg"] = "/images/products/thinkbook/thinkbook-001.jpg",
-        ["/images/products/thinkbook/t2.jpg"] = "/images/products/thinkbook/thinkbook-011.jpg",
-        ["/images/products/hp/hp 1.jpg"] = "/images/products/hp/hp-001.jpg",
         ["/images/accessories/accessory-keyboard.svg"] = "/uploads/products/ban-phim-co-gaming-ek87-ea47cc97.png",
         ["/images/accessories/component-ram.svg"] = "/uploads/products/ram-ddr4-laptop-16gb-samsung-3200mhz-3550965f.jpg"
     };

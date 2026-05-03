@@ -21,6 +21,6 @@ public class ProductCardViewModel
     public string FastDeliveryText { get; set; } = "Giao nhanh nội thành";
     public string InstallmentText { get; set; } = "Trả góp 0%";
     public List<string> Images { get; set; } = new();
-    public string PrimaryImage => Images.Count > 0 ? Images[0] : "/images/banners/slide2.svg";
+    public string PrimaryImage => Images.Count > 0 ? Images[0] : "/images/products/acer/acer-001.jpg";
 }
 
