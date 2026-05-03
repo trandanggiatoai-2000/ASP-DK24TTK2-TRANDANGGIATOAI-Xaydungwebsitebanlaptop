@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="600" viewBox="0 0 900 600">
+  <rect width="900" height="600" rx="36" fill="#f4f7fb"/>
+  <rect x="130" y="140" width="640" height="300" rx="28" fill="#ffffff" stroke="#cfd8e3" stroke-width="8"/>
+  <rect x="170" y="180" width="560" height="220" rx="14" fill="#eef3f8"/>
+  <rect x="310" y="440" width="280" height="42" rx="12" fill="#cfd8e3"/>
+  <path d="M210 500h480l45 45H165z" fill="#dbe3ec"/>
+  <text x="450" y="105" font-family="Arial, sans-serif" font-size="44" font-weight="700" text-anchor="middle" fill="#243447">Hình sản phẩm</text>
+  <text x="450" y="560" font-family="Arial, sans-serif" font-size="26" text-anchor="middle" fill="#6b7280">Đang cập nhật</text>
+</svg>
