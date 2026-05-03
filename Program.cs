@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.DataProtection;
 using websitebanlaptop.Extensions;
 using websitebanlaptop.Middleware;
+using websitebanlaptop.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,7 +28,18 @@ builder.Services.AddApplicationServices();
 
 var app = builder.Build();
 
-await app.InitializeApplicationDataAsync();
+using (var scope = app.Services.CreateScope())
+{
+    var repository = scope.ServiceProvider.GetRequiredService<IInfrastructureRepository>();
+    await repository.BootstrapDatabaseAsync();
+
+    var isInitialized = await repository.IsDatabaseInitializedAsync();
+    if (!isInitialized)
+    {
+        await repository.EnsureAdminSecuritySchemaAsync();
+    }
+
+    }
 
 if (!app.Environment.IsDevelopment())
 {
@@ -50,3 +62,4 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+

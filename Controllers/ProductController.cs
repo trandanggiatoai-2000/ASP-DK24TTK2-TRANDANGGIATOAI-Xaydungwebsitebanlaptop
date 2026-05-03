@@ -1,12 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using websitebanlaptop.Models;
 using websitebanlaptop.Services.Contracts;
 
 namespace websitebanlaptop.Controllers;
 
 public class ProductController : Controller
 {
-    private const int CatalogPageSize = 20;
     private readonly IStorefrontService _storefrontService;
     private readonly IFileStorageService _fileStorageService;
 
@@ -16,12 +14,12 @@ public class ProductController : Controller
         _fileStorageService = fileStorageService;
     }
 
-    public async Task<IActionResult> Catalog([FromQuery] CatalogQueryModel query)
+    public async Task<IActionResult> Catalog(string? keyword, string? brand, string? category, string? cpu, string? ram, string? ssd, bool official = false, bool fast = false, bool installment = false, int page = 1, bool ajax = false)
     {
-        var vm = await _storefrontService.GetCatalogPageAsync(query, CatalogPageSize);
-        if (query.Ajax || IsAjaxRequest())
+        var vm = await _storefrontService.SearchProductsAsync(keyword, brand, category, cpu, ram, ssd, official, fast, installment, page, 20);
+        ViewBag.WebsiteSettings = await _storefrontService.GetWebsiteSettingsAsync();
+        if (ajax || string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase))
             return PartialView("_CatalogResults", vm);
-
         return View(vm);
     }
 
@@ -53,8 +51,5 @@ public class ProductController : Controller
     [ValidateAntiForgeryToken]
     public Task<IActionResult> AddReview(int productId, string reviewerName, int rating, string commentText, IFormFile? reviewImage)
         => PostReview(productId, reviewerName, rating, commentText, reviewImage);
-
-    private bool IsAjaxRequest()
-        => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
 }
 

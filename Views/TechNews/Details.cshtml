@@ -2,26 +2,21 @@
 @{
     ViewData["Title"] = string.IsNullOrWhiteSpace(Model.SeoTitle) ? Model.Title : Model.SeoTitle;
 }
-<div class="row g-4">
-    <article class="col-lg-8">
-        <div class="card border-0 shadow-sm rounded-4">
-            <div class="card-body p-4 p-lg-5">
-                <div class="text-uppercase small fw-semibold text-primary mb-2">@Model.CategoryName.ToUpperInvariant()</div>
-                <h1 class="display-6 fw-bold mb-3">@Model.Title</h1>
-                <div class="text-body-secondary mb-4">@Model.PublishedAtText</div>
-                <img class="img-fluid w-100 rounded-4 mb-4" src="@Model.ThumbnailUrl" alt="@Model.Title" data-fallback="/images/banners/campaign-office.jpg" />
-                <p class="lead text-body-secondary mb-4">@Model.Summary</p>
-                <div class="policy-content">@Html.Raw(Model.ContentHtml)</div>
-            </div>
-        </div>
+<div class="lxt-news-layout">
+    <article class="card-surface lxt-news-detail">
+        <div class="page-kicker">@Model.CategoryName.ToUpperInvariant()</div>
+        <h1>@Model.Title</h1>
+        <div class="lxt-news-meta">@Model.PublishedAtText</div>
+        <img class="lxt-news-hero" src="@Model.ThumbnailUrl" alt="@Model.Title" data-fallback="/images/banners/campaign-office.jpg" />
+        <div class="lxt-news-summary">@Model.Summary</div>
+        <div class="policy-content">@Html.Raw(Model.ContentHtml)</div>
     </article>
-    <aside class="col-lg-4">
-        <div class="card border-0 shadow-sm rounded-4">
-            <div class="card-body p-4">
-                <h3 class="h5 fw-bold mb-3">Tin công nghệ</h3>
-                <p class="text-body-secondary mb-4">Cập nhật bài viết mới, tư vấn chọn laptop và thông tin sử dụng thực tế.</p>
-                <a class="btn btn-dark rounded-pill px-4" asp-controller="TechNews" asp-action="Index">Xem tất cả bài viết</a>
-            </div>
+    <aside class="lxt-news-sidebar">
+        <div class="card-surface lxt-news-side-card">
+            <h3>TIN CÔNG NGHỆ</h3>
+            <p>Cập nhật bài viết mới, tư vấn chọn laptop và thông tin sử dụng thực tế.</p>
+            <a class="btn-primary wide" asp-controller="TechNews" asp-action="Index">Xem tất cả bài viết</a>
         </div>
     </aside>
 </div>
+

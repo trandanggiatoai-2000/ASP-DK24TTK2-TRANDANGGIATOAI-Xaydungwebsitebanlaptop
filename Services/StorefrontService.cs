@@ -19,24 +19,8 @@ public class StorefrontService : IStorefrontService
 
     public Task<HomePageViewModel> GetHomePageAsync() => _storefrontRepository.GetHomePageAsync();
     public Task<WebsiteSettingsViewModel> GetWebsiteSettingsAsync() => _websiteRepository.GetWebsiteSettingsAsync();
-    public async Task<CatalogPageViewModel> GetCatalogPageAsync(CatalogQueryModel query, int pageSize)
-    {
-        var catalog = await _storefrontRepository.SearchProductsAsync(
-            query.Keyword,
-            query.Brand,
-            query.Category,
-            query.Cpu,
-            query.Ram,
-            query.Ssd,
-            query.Official,
-            query.Fast,
-            query.Installment,
-            query.Page,
-            pageSize);
-
-        catalog.WebsiteSettings = await _websiteRepository.GetWebsiteSettingsAsync();
-        return catalog;
-    }
+    public Task<CatalogPageViewModel> SearchProductsAsync(string? keyword, string? brand, string? category, string? cpu, string? ram, string? ssd, bool official, bool fast, bool installment, int page, int pageSize)
+        => _storefrontRepository.SearchProductsAsync(keyword, brand, category, cpu, ram, ssd, official, fast, installment, page, pageSize);
     public Task<ProductDetailsViewModel?> GetProductByIdAsync(int id, int? star = null) => _storefrontRepository.GetProductByIdAsync(id, star);
     public Task<List<ProductReviewViewModel>> GetProductReviewsAsync(int productId, int? star = null) => _storefrontRepository.GetProductReviewsAsync(productId, star);
     public Task AddProductReviewAsync(int productId, string reviewerName, int rating, string commentText, string imageUrl) => _storefrontRepository.AddProductReviewAsync(productId, reviewerName, rating, commentText, imageUrl);

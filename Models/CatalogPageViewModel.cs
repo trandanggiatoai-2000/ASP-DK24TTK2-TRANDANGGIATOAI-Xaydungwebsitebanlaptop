@@ -3,7 +3,6 @@ namespace websitebanlaptop.Models;
 public class CatalogPageViewModel
 {
     public List<ProductCardViewModel> Products { get; set; } = new();
-    public WebsiteSettingsViewModel WebsiteSettings { get; set; } = new();
     public List<string> Brands { get; set; } = new();
     public List<string> Categories { get; set; } = new();
     public List<string> Cpus { get; set; } = new();

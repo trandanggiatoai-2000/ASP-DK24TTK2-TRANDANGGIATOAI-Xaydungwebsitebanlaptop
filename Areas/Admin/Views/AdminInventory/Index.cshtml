@@ -82,7 +82,7 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td><img class="admin-thumb" src="@item.Thumbnail" alt="@item.ProductName" data-fallback="/images/products/placeholder-generic.svg" /></td>
+                    <td><img class="admin-thumb" src="@item.Thumbnail" alt="@item.ProductName" /></td>
                     <td><strong>@item.ProductName</strong><div class="order-items-inline">@item.Brand • Mã SP: @item.ProductId</div></td>
                     <td>@item.CategoryName</td>
                     <td>@item.Cpu<br />@item.Ram • @item.Ssd</td>

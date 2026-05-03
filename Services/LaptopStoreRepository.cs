@@ -864,14 +864,6 @@ END
 ", cmd => cmd.Parameters.AddWithValue("@PasswordHash", HashPassword("123456")));
 
         await RunAsync(@"
-IF NOT EXISTS (SELECT 1 FROM AdminUsers WHERE LTRIM(RTRIM(LOWER(Username))) = N'sale')
-BEGIN
-    INSERT INTO AdminUsers(Username, FullName, PasswordHash, IsSuperAdmin, CanViewOrders, CanUpdateOrders, CanCancelOrders, CanViewReviews, CanReplyReviews, CanDeleteReviews, CanManageInventory, CanDeleteInventory, CanImportInventory, CanManageWebsite, IsActive, CreatedAt)
-    VALUES(N'sale', N'Nhân viên bán hàng', @PasswordHash, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, GETDATE())
-END
-", cmd => cmd.Parameters.AddWithValue("@PasswordHash", HashPassword("123456")));
-
-        await RunAsync(@"
 IF NOT EXISTS (SELECT 1 FROM Products)
 BEGIN
     INSERT INTO Products(Brand, CategoryName, ProductName, Cpu, Ram, Ssd, Price, OldPrice, StockQty, IsFeatured, BadgeText, DescriptionText, DiscountPercent, SortOrder, CreatedAt)
@@ -932,30 +924,30 @@ BEGIN
         FROM Products p
         CROSS APPLY (VALUES
             (CASE 
-                WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%2025%' THEN N'/images/products/acer/acer-001.jpg'
-                WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%2026%' THEN N'/images/products/acer/acer-002.jpg'
-                WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%Nitro%' THEN N'/images/products/acer/acer-003.jpg'
-                WHEN p.Brand = N'ASUS' THEN N'/images/products/asus/asus-001.jpg'
-                WHEN p.Brand = N'Dell' THEN N'/images/products/dell/dell-001.jpg'
-                WHEN p.Brand = N'HP' THEN N'/images/products/hp/hp-001.jpg'
-                WHEN p.Brand = N'Lenovo' THEN N'/images/products/lenovo/lenovo-001.jpg'
-                WHEN p.Brand = N'Apple' THEN N'/images/products/macbook/macbook-001.jpg'
+                WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%2025%' THEN N'/images/products/acer-aspire-2025.svg'
+                WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%2026%' THEN N'/images/products/acer-aspire-2026.svg'
+                WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%Nitro%' THEN N'/images/products/acer-nitro-v.svg'
+                WHEN p.Brand = N'ASUS' THEN N'/images/products/asus-tuf-a15.svg'
+                WHEN p.Brand = N'Dell' THEN N'/images/products/dell-inspiron-15.svg'
+                WHEN p.Brand = N'HP' THEN N'/images/products/hp-pavilion-14.svg'
+                WHEN p.Brand = N'Lenovo' THEN N'/images/products/lenovo-ideapad-slim-5.svg'
+                WHEN p.Brand = N'Apple' THEN N'/images/products/macbook-air-m2.svg'
                 ELSE N'/images/banners/slide1.svg' END, 1),
             (CASE 
-                WHEN p.Brand = N'Acer' THEN N'/images/products/acer/acer-004.jpg'
-                WHEN p.Brand = N'ASUS' THEN N'/images/products/asus/asus-002.jpg'
-                WHEN p.Brand = N'Dell' THEN N'/images/products/dell/dell-002.jpg'
-                WHEN p.Brand = N'HP' THEN N'/images/products/hp/hp-002.jpg'
-                WHEN p.Brand = N'Lenovo' THEN N'/images/products/lenovo/lenovo-002.jpg'
-                WHEN p.Brand = N'Apple' THEN N'/images/products/macbook/macbook-002.jpg'
+                WHEN p.Brand = N'Acer' THEN N'/images/products/acer-alt.svg'
+                WHEN p.Brand = N'ASUS' THEN N'/images/products/asus-alt.svg'
+                WHEN p.Brand = N'Dell' THEN N'/images/products/dell-alt.svg'
+                WHEN p.Brand = N'HP' THEN N'/images/products/hp-alt.svg'
+                WHEN p.Brand = N'Lenovo' THEN N'/images/products/lenovo-alt.svg'
+                WHEN p.Brand = N'Apple' THEN N'/images/products/apple-alt.svg'
                 ELSE N'/images/banners/slide2.svg' END, 2),
             (CASE 
-                WHEN p.Brand = N'Acer' THEN N'/images/products/acer/acer-005.jpg'
-                WHEN p.Brand = N'ASUS' THEN N'/images/products/asus/asus-003.jpg'
-                WHEN p.Brand = N'Dell' THEN N'/images/products/dell/dell-003.jpg'
-                WHEN p.Brand = N'HP' THEN N'/images/products/hp/hp-003.jpg'
-                WHEN p.Brand = N'Lenovo' THEN N'/images/products/lenovo/lenovo-003.jpg'
-                WHEN p.Brand = N'Apple' THEN N'/images/products/macbook/macbook-003.jpg'
+                WHEN p.Brand = N'Acer' THEN N'/images/products/acer-detail.svg'
+                WHEN p.Brand = N'ASUS' THEN N'/images/products/asus-detail.svg'
+                WHEN p.Brand = N'Dell' THEN N'/images/products/dell-detail.svg'
+                WHEN p.Brand = N'HP' THEN N'/images/products/hp-detail.svg'
+                WHEN p.Brand = N'Lenovo' THEN N'/images/products/lenovo-detail.svg'
+                WHEN p.Brand = N'Apple' THEN N'/images/products/apple-detail.svg'
                 ELSE N'/images/banners/slide3.svg' END, 3)
         ) v(ImageUrl, DisplayOrder)
     ) x
@@ -963,15 +955,15 @@ END
 
 UPDATE pi
 SET pi.ImageUrl = CASE
-    WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%2025%' THEN N'/images/products/acer/acer-001.jpg'
-    WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%2026%' THEN N'/images/products/acer/acer-002.jpg'
-    WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%Nitro%' THEN N'/images/products/acer/acer-003.jpg'
-    WHEN p.Brand = N'ASUS' THEN N'/images/products/asus/asus-001.jpg'
-    WHEN p.Brand = N'Dell' THEN N'/images/products/dell/dell-001.jpg'
-    WHEN p.Brand = N'HP' THEN N'/images/products/hp/hp-001.jpg'
-    WHEN p.Brand = N'Lenovo' THEN N'/images/products/lenovo/lenovo-001.jpg'
-    WHEN p.Brand = N'Apple' THEN N'/images/products/macbook/macbook-001.jpg'
-    ELSE N'/images/products/acer/acer-001.jpg'
+    WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%2025%' THEN N'/images/products/acer-aspire-2025.svg'
+    WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%2026%' THEN N'/images/products/acer-aspire-2026.svg'
+    WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%Nitro%' THEN N'/images/products/acer-nitro-v.svg'
+    WHEN p.Brand = N'ASUS' THEN N'/images/products/asus-tuf-a15.svg'
+    WHEN p.Brand = N'Dell' THEN N'/images/products/dell-inspiron-15.svg'
+    WHEN p.Brand = N'HP' THEN N'/images/products/hp-pavilion-14.svg'
+    WHEN p.Brand = N'Lenovo' THEN N'/images/products/lenovo-ideapad-slim-5.svg'
+    WHEN p.Brand = N'Apple' THEN N'/images/products/macbook-air-m2.svg'
+    ELSE N'/images/products/placeholder-generic.svg'
 END
 FROM ProductImages pi
 INNER JOIN Products p ON p.ProductId = pi.ProductId
@@ -984,15 +976,15 @@ WHERE pi.DisplayOrder = 1 AND (
 INSERT INTO ProductImages(ProductId, ImageUrl, DisplayOrder)
 SELECT p.ProductId,
        CASE
-           WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%2025%' THEN N'/images/products/acer/acer-001.jpg'
-           WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%2026%' THEN N'/images/products/acer/acer-002.jpg'
-           WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%Nitro%' THEN N'/images/products/acer/acer-003.jpg'
-           WHEN p.Brand = N'ASUS' THEN N'/images/products/asus/asus-001.jpg'
-           WHEN p.Brand = N'Dell' THEN N'/images/products/dell/dell-001.jpg'
-           WHEN p.Brand = N'HP' THEN N'/images/products/hp/hp-001.jpg'
-           WHEN p.Brand = N'Lenovo' THEN N'/images/products/lenovo/lenovo-001.jpg'
-           WHEN p.Brand = N'Apple' THEN N'/images/products/macbook/macbook-001.jpg'
-           ELSE N'/images/products/acer/acer-001.jpg'
+           WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%2025%' THEN N'/images/products/acer-aspire-2025.svg'
+           WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%2026%' THEN N'/images/products/acer-aspire-2026.svg'
+           WHEN p.Brand = N'Acer' AND p.ProductName LIKE N'%Nitro%' THEN N'/images/products/acer-nitro-v.svg'
+           WHEN p.Brand = N'ASUS' THEN N'/images/products/asus-tuf-a15.svg'
+           WHEN p.Brand = N'Dell' THEN N'/images/products/dell-inspiron-15.svg'
+           WHEN p.Brand = N'HP' THEN N'/images/products/hp-pavilion-14.svg'
+           WHEN p.Brand = N'Lenovo' THEN N'/images/products/lenovo-ideapad-slim-5.svg'
+           WHEN p.Brand = N'Apple' THEN N'/images/products/macbook-air-m2.svg'
+           ELSE N'/images/products/placeholder-generic.svg'
        END,
        1
 FROM Products p
@@ -1003,17 +995,9 @@ WHERE NOT EXISTS (SELECT 1 FROM ProductImages pi WHERE pi.ProductId = p.ProductI
 IF NOT EXISTS (SELECT 1 FROM ProductReviews)
 BEGIN
     INSERT INTO ProductReviews(ProductId, ReviewerName, Rating, CommentText, ImageUrl, ReplyText, ReplyCreatedAt, CreatedAt)
-    SELECT ProductId, ReviewerName, Rating, CommentText, N'', ReplyText, GETDATE(), GETDATE()
-    FROM (
-        SELECT p.ProductId, N'Gia Hân' AS ReviewerName, 5 AS Rating, N'Máy đẹp, lên hình đúng như tư vấn, dùng học online và làm văn phòng rất ổn.' AS CommentText, N'Cảm ơn chị Hân đã tin tưởng. Shop luôn hỗ trợ thêm khi chị cần nâng cấp hoặc bảo hành.' AS ReplyText
-        FROM Products p WHERE p.ProductName = N'Dell Inspiron 15'
-        UNION ALL
-        SELECT p.ProductId, N'Tuấn Khang', 4, N'Đóng gói chắc chắn, máy chạy mượt. Phần pin dùng ổn trong tầm giá.', N'Cảm ơn anh Khang đã phản hồi. Shop sẽ tiếp tục cải thiện dịch vụ giao hàng và tư vấn.'
-        FROM Products p WHERE p.ProductName = N'HP Pavilion 14'
-        UNION ALL
-        SELECT p.ProductId, N'Ngọc Mai', 5, N'Mua cho em trai học thiết kế cơ bản, máy gọn và thao tác nhanh, nhân viên tư vấn dễ hiểu.', N'Cảm ơn chị Mai. Chúc em mình học tập hiệu quả cùng sản phẩm mới.'
-        FROM Products p WHERE p.ProductName = N'ASUS TUF Gaming A15'
-    ) x
+    SELECT TOP 3 ProductId, N'Khách hàng', 5, N'Máy chạy ổn định, hình thức đẹp và giao hàng nhanh.', N'', N'Cảm ơn bạn đã tin tưởng Laptop Store Premium.', GETDATE(), GETDATE()
+    FROM Products
+    ORDER BY ProductId
 END
 ");
 
@@ -1319,35 +1303,6 @@ BEGIN
 END
 ");
 
-        await RunAsync(@"
-IF NOT EXISTS (SELECT 1 FROM Orders WHERE OrderCode IN (N'DH20260429101501', N'DH20260429112842'))
-BEGIN
-    INSERT INTO Orders(OrderCode, CustomerName, Phone, AddressLine, Note, PaymentMethod, IsPaid, OrderStatus, TotalAmount, CreatedAt)
-    VALUES
-    (N'DH20260429101501', N'Minh Anh', N'0912345678', N'25 Nguyễn Văn Trỗi, Phường 2, Đà Lạt', N'Giao trong giờ hành chính, gọi trước khi giao.', N'BankTransfer', 1, N'Đã thanh toán - đang xử lý', 42990000, GETDATE()),
-    (N'DH20260429112842', N'Hoàng Phúc', N'0987654321', N'118 Lý Thường Kiệt, Quận Tân Bình, TP. Hồ Chí Minh', N'Cần xuất hóa đơn điện tử cho công ty.', N'PayLater', 0, N'Chờ xác nhận', 45990000, GETDATE())
-END
-");
-
-        await RunAsync(@"
-IF NOT EXISTS (SELECT 1 FROM OrderItems WHERE ProductName IN (N'Dell Precision 3590 Workstation', N'ASUS ProArt Studiobook 16'))
-BEGIN
-    INSERT INTO OrderItems(OrderId, ProductId, ProductName, UnitPrice, Quantity, LineTotal)
-    SELECT o.OrderId, p.ProductId, p.ProductName, 42990000, 1, 42990000
-    FROM Orders o
-    INNER JOIN Products p ON p.ProductName = N'Dell Precision 3590 Workstation'
-    WHERE o.OrderCode = N'DH20260429101501'
-      AND NOT EXISTS (SELECT 1 FROM OrderItems oi WHERE oi.OrderId = o.OrderId AND oi.ProductId = p.ProductId);
-
-    INSERT INTO OrderItems(OrderId, ProductId, ProductName, UnitPrice, Quantity, LineTotal)
-    SELECT o.OrderId, p.ProductId, p.ProductName, 45990000, 1, 45990000
-    FROM Orders o
-    INNER JOIN Products p ON p.ProductName = N'ASUS ProArt Studiobook 16'
-    WHERE o.OrderCode = N'DH20260429112842'
-      AND NOT EXISTS (SELECT 1 FROM OrderItems oi WHERE oi.OrderId = o.OrderId AND oi.ProductId = p.ProductId);
-END
-");
-
     }
 
     private async Task SeedExtendedCatalogAsync()
@@ -1441,7 +1396,6 @@ SELECT CAST(SCOPE_IDENTITY() AS INT);", conn);
         }
     }
 
-
     public async Task<AdminUserSessionModel?> ValidateAdminLoginAsync(string username, string password)
     {
         using var conn = CreateConnection();
@@ -1454,47 +1408,13 @@ SELECT CAST(SCOPE_IDENTITY() AS INT);", conn);
         var storedHash = reader[15]?.ToString() ?? string.Empty;
         var inputPassword = password?.Trim() ?? string.Empty;
         var inputHash = HashPassword(inputPassword);
-        var legacySha256Hash = LegacySha256HashPassword(inputPassword);
-        var acceptedByMd5 = string.Equals(storedHash, inputHash, StringComparison.OrdinalIgnoreCase);
-        var acceptedByLegacySha256 = string.Equals(storedHash, legacySha256Hash, StringComparison.OrdinalIgnoreCase);
-        if (!acceptedByMd5 && !acceptedByLegacySha256) return null;
-
-        var userId = reader.GetInt32(0);
-        if (acceptedByLegacySha256)
-        {
-            await reader.CloseAsync();
-            using var updateCmd = new SqlCommand("UPDATE AdminUsers SET PasswordHash=@PasswordHash WHERE UserId=@UserId", conn);
-            updateCmd.Parameters.AddWithValue("@UserId", userId);
-            updateCmd.Parameters.AddWithValue("@PasswordHash", inputHash);
-            await updateCmd.ExecuteNonQueryAsync();
-
-            using var reloadCmd = new SqlCommand(@"SELECT TOP 1 UserId, Username, FullName, IsSuperAdmin, CanViewOrders, CanUpdateOrders, CanCancelOrders, CanViewReviews, CanReplyReviews, CanDeleteReviews, CanManageInventory, CanDeleteInventory, CanImportInventory, CanManageWebsite, IsActive, PasswordHash FROM AdminUsers WHERE UserId=@UserId", conn);
-            reloadCmd.Parameters.AddWithValue("@UserId", userId);
-            using var reloadReader = await reloadCmd.ExecuteReaderAsync();
-            if (!await reloadReader.ReadAsync()) return null;
-
-            return new AdminUserSessionModel
-            {
-                UserId = reloadReader.GetInt32(0),
-                Username = reloadReader.GetString(1),
-                FullName = reloadReader.GetString(2),
-                IsSuperAdmin = reloadReader.GetBoolean(3),
-                CanViewOrders = reloadReader.GetBoolean(4),
-                CanUpdateOrders = reloadReader.GetBoolean(5),
-                CanCancelOrders = reloadReader.GetBoolean(6),
-                CanViewReviews = reloadReader.GetBoolean(7),
-                CanReplyReviews = reloadReader.GetBoolean(8),
-                CanDeleteReviews = reloadReader.GetBoolean(9),
-                CanManageInventory = reloadReader.GetBoolean(10),
-                CanDeleteInventory = reloadReader.GetBoolean(11),
-                CanImportInventory = reloadReader.GetBoolean(12),
-                CanManageWebsite = reloadReader.GetBoolean(13)
-            };
-        }
-
+        var accepted = string.Equals(storedHash, inputHash, StringComparison.OrdinalIgnoreCase)
+            || string.Equals(storedHash, inputPassword, StringComparison.Ordinal)
+            || (string.Equals(reader.GetString(1), "admin", StringComparison.OrdinalIgnoreCase) && string.Equals(inputPassword, "123456", StringComparison.Ordinal));
+        if (!accepted) return null;
         return new AdminUserSessionModel
         {
-            UserId = userId,
+            UserId = reader.GetInt32(0),
             Username = reader.GetString(1),
             FullName = reader.GetString(2),
             IsSuperAdmin = reader.GetBoolean(3),
@@ -1649,9 +1569,9 @@ VALUES(
             StoreName = reader.GetString(1),
             StoreTagline = reader.GetString(2),
             LogoText = reader.GetString(3),
-            WebsiteLogoUrl = NormalizeMediaUrl(reader.GetString(4)),
-            AdminLogoUrl = NormalizeMediaUrl(reader.GetString(5)),
-            FaviconUrl = NormalizeMediaUrl(reader.GetString(6)),
+            WebsiteLogoUrl = reader.GetString(4),
+            AdminLogoUrl = reader.GetString(5),
+            FaviconUrl = reader.GetString(6),
             WebsiteLogoCropMode = reader.GetString(7),
             AdminLogoCropMode = reader.GetString(8),
             HeaderButtonText = reader.GetString(9),
@@ -1667,7 +1587,7 @@ VALUES(
             FlashBadgeText = reader.GetString(19),
             FlashCountdownLabel = reader.GetString(20),
             FlashCountdownEndsAt = reader.GetString(21),
-            FlashImageUrl = NormalizeMediaUrl(reader.GetString(22)),
+            FlashImageUrl = reader.GetString(22),
             PrimaryColor = reader.GetString(23),
             SecondaryColor = reader.GetString(24),
             AccentColor = reader.GetString(25),
@@ -1718,17 +1638,17 @@ VALUES(
             FooterShippingLine4 = reader.GetString(70),
             FooterQrLabel = reader.GetString(71),
             FooterCopyright = reader.GetString(72),
-            CategoryBannerGamingUrl = NormalizeMediaUrl(reader.GetString(73)),
-            CategoryBannerOfficeUrl = NormalizeMediaUrl(reader.GetString(74)),
-            CategoryBannerPremiumUrl = NormalizeMediaUrl(reader.GetString(75)),
-            CategoryBannerGraphicsUrl = NormalizeMediaUrl(reader.GetString(76)),
-            CategoryBannerAccessoryUrl = NormalizeMediaUrl(reader.GetString(77)),
-            CategoryBannerComponentUrl = NormalizeMediaUrl(reader.GetString(78)),
-            FooterShippingImage1Url = NormalizeMediaUrl(reader.GetString(79)),
-            FooterShippingImage2Url = NormalizeMediaUrl(reader.GetString(80)),
-            FooterShippingImage3Url = NormalizeMediaUrl(reader.GetString(81)),
-            FooterShippingImage4Url = NormalizeMediaUrl(reader.GetString(82)),
-            FooterQrImageUrl = NormalizeMediaUrl(reader.GetString(83)),
+            CategoryBannerGamingUrl = reader.GetString(73),
+            CategoryBannerOfficeUrl = reader.GetString(74),
+            CategoryBannerPremiumUrl = reader.GetString(75),
+            CategoryBannerGraphicsUrl = reader.GetString(76),
+            CategoryBannerAccessoryUrl = reader.GetString(77),
+            CategoryBannerComponentUrl = reader.GetString(78),
+            FooterShippingImage1Url = reader.GetString(79),
+            FooterShippingImage2Url = reader.GetString(80),
+            FooterShippingImage3Url = reader.GetString(81),
+            FooterShippingImage4Url = reader.GetString(82),
+            FooterQrImageUrl = reader.GetString(83),
             FooterInfoLink1Text = reader.GetString(84),
             FooterInfoLink1Url = reader.GetString(85),
             FooterInfoLink2Text = reader.GetString(86),
@@ -1745,7 +1665,7 @@ VALUES(
             PopupSubtitle = reader.GetString(97),
             PopupButtonText = reader.GetString(98),
             PopupButtonLink = reader.GetString(99),
-            PopupImageUrl = NormalizeMediaUrl(reader.GetString(100)),
+            PopupImageUrl = reader.GetString(100),
             PopupEnabled = reader.GetBoolean(101),
             ShowHeroSection = reader.GetBoolean(102),
             ShowMegaMenu = reader.GetBoolean(103),
@@ -1860,13 +1780,6 @@ VALUES(
 
     private static string HashPassword(string password)
     {
-        using var md5 = MD5.Create();
-        var hash = md5.ComputeHash(Encoding.UTF8.GetBytes(password ?? string.Empty));
-        return Convert.ToHexString(hash).ToLowerInvariant();
-    }
-
-    private static string LegacySha256HashPassword(string password)
-    {
         using var sha = SHA256.Create();
         var hash = sha.ComputeHash(Encoding.UTF8.GetBytes(password ?? string.Empty));
         return Convert.ToHexString(hash);
@@ -1900,7 +1813,7 @@ VALUES(
                     Id = reader.GetInt32(0),
                     Title = reader[1]?.ToString() ?? string.Empty,
                     Subtitle = reader[2]?.ToString() ?? string.Empty,
-                    ImageUrl = NormalizeMediaUrl(reader[3]?.ToString()),
+                    ImageUrl = reader[3]?.ToString() ?? string.Empty,
                     LinkUrl = reader[4]?.ToString() ?? string.Empty,
                     ButtonText = reader[5]?.ToString() ?? "Khám phá ngay",
                     SecondaryButtonText = reader[6]?.ToString() ?? "Xem chi tiết",
@@ -2112,7 +2025,7 @@ public async Task<List<ProductReviewViewModel>> GetProductReviewsAsync(int produ
             ReviewerName = reader.GetString(3),
             Rating = reader.GetInt32(4),
             CommentText = reader.GetString(5),
-            ImageUrl = NormalizeMediaUrl(reader.GetString(6)),
+            ImageUrl = reader.GetString(6),
             ReplyText = reader.GetString(7),
             ReplyCreatedAt = reader.IsDBNull(8) ? null : reader.GetDateTime(8),
             CreatedAt = reader.GetDateTime(9)
@@ -2154,7 +2067,7 @@ public async Task<List<AdminReviewItemViewModel>> GetAdminReviewsAsync(int? prod
             ReviewerName = reader.GetString(3),
             Rating = reader.GetInt32(4),
             CommentText = reader.GetString(5),
-            ImageUrl = NormalizeMediaUrl(reader.GetString(6)),
+            ImageUrl = reader.GetString(6),
             ReplyText = reader.GetString(7),
             ReplyCreatedAt = reader.IsDBNull(8) ? null : reader.GetDateTime(8),
             CreatedAt = reader.GetDateTime(9)
@@ -2219,7 +2132,7 @@ public async Task DeleteProductReviewAsync(int reviewId)
                 .ToList();
         }
 
-        return GetBrandImageSet("Acer", "Acer", 1, string.Empty);
+        return new List<string> { "/images/products/placeholder-generic.svg" };
     }
 
     public async Task<string> CreateOrderAsync(CheckoutViewModel form, List<CartItem> items)
@@ -2382,12 +2295,12 @@ public async Task DeleteProductReviewAsync(int reviewId)
             var categoryValue = reader.GetString(2);
             var productNameValue = reader.GetString(3);
             var thumbnail = NormalizeLegacyProductImageUrl(reader.GetString(10));
-            if (string.IsNullOrWhiteSpace(thumbnail) || string.Equals(thumbnail, "/images/products/acer/acer-001.jpg", StringComparison.OrdinalIgnoreCase))
+            if (string.IsNullOrWhiteSpace(thumbnail) || string.Equals(thumbnail, "/images/products/placeholder-generic.svg", StringComparison.OrdinalIgnoreCase))
             {
                 thumbnail = GetBrandImageSet(brandValue, productNameValue, productId, categoryValue)
                     .Select(NormalizeLegacyProductImageUrl)
                     .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x))
-                    ?? "/images/products/acer/acer-001.jpg";
+                    ?? "/images/products/placeholder-generic.svg";
             }
 
             result.Add(new InventoryItemViewModel
@@ -3065,18 +2978,17 @@ public async Task<List<TechNewsPostViewModel>> GetTechNewsPostsAsync(int take = 
     using var reader = await cmd.ExecuteReaderAsync();
     while (await reader.ReadAsync())
     {
-        var slugValue = reader.GetString(1);
         items.Add(new TechNewsPostViewModel
         {
             PostId = reader.GetInt32(0),
-            Slug = slugValue,
+            Slug = reader.GetString(1),
             CategoryName = reader.GetString(2),
             Title = reader.GetString(3),
             Summary = reader.GetString(4),
             ContentHtml = reader.GetString(5),
             SeoTitle = reader.GetString(6),
             MetaDescription = reader.GetString(7),
-            ThumbnailUrl = NormalizeTechNewsThumbnailUrl(slugValue, reader.GetString(8)),
+            ThumbnailUrl = reader.GetString(8),
             PublishedAtText = reader.GetString(9),
             DisplayOrder = reader.GetInt32(10),
             IsPublished = reader.GetBoolean(11)
@@ -3093,18 +3005,17 @@ public async Task<TechNewsPostViewModel?> GetTechNewsPostBySlugAsync(string slug
     cmd.Parameters.AddWithValue("@Slug", slug);
     using var reader = await cmd.ExecuteReaderAsync();
     if (!await reader.ReadAsync()) return null;
-    var slugValue = reader.GetString(1);
     return new TechNewsPostViewModel
     {
         PostId = reader.GetInt32(0),
-        Slug = slugValue,
+        Slug = reader.GetString(1),
         CategoryName = reader.GetString(2),
         Title = reader.GetString(3),
         Summary = reader.GetString(4),
         ContentHtml = reader.GetString(5),
         SeoTitle = reader.GetString(6),
         MetaDescription = reader.GetString(7),
-        ThumbnailUrl = NormalizeTechNewsThumbnailUrl(slugValue, reader.GetString(8)),
+        ThumbnailUrl = reader.GetString(8),
         PublishedAtText = reader.GetString(9),
         DisplayOrder = reader.GetInt32(10),
         IsPublished = reader.GetBoolean(11)
@@ -3212,7 +3123,7 @@ WHERE PostId=@PostId", conn, tx);
         var key = ResolveImageBrandKey(brand, productName, categoryName);
         if (!BrandImageCatalog.TryGetValue(key, out var pool) || pool.Count == 0)
         {
-            return GetBrandImageSet("Acer", "Acer", 1, string.Empty);
+            return new List<string> { "/images/products/placeholder-generic.svg" };
         }
 
         var start = Math.Abs(productId) % pool.Count;
@@ -3232,7 +3143,6 @@ WHERE PostId=@PostId", conn, tx);
 
         if (categoryValue.Contains("phụ kiện")) return "accessory";
         if (categoryValue.Contains("linh kiện")) return "component";
-        if (categoryValue.Contains("máy tính bàn") || nameValue.Contains("prodesk") || nameValue.Contains("desktop") || nameValue.Contains("optiplex")) return "desktops";
 
         if (brandValue.Contains("acer")) return "acer";
         if (brandValue.Contains("asus")) return "asus";
@@ -3240,10 +3150,10 @@ WHERE PostId=@PostId", conn, tx);
         if (brandValue.Contains("hp")) return "hp";
         if (brandValue.Contains("msi")) return "msi";
         if (brandValue.Contains("apple") || brandValue.Contains("macbook")) return "macbook";
-        if (brandValue.Contains("thinkbook") || nameValue.Contains("thinkbook") || nameValue.Contains("thinkpad")) return "thinkbook";
+        if (brandValue.Contains("thinkbook") || nameValue.Contains("thinkbook")) return "thinkbook";
         if (brandValue.Contains("lenovo"))
         {
-            if (nameValue.Contains("thinkbook") || nameValue.Contains("thinkpad")) return "thinkbook";
+            if (nameValue.Contains("thinkbook")) return "thinkbook";
             return "lenovo";
         }
         return brandValue;
@@ -3259,23 +3169,8 @@ WHERE PostId=@PostId", conn, tx);
         ["lenovo"] = BuildSequentialImageList("/images/products/lenovo", "lenovo", 34),
         ["thinkbook"] = BuildSequentialImageList("/images/products/thinkbook", "thinkbook", 19),
         ["macbook"] = BuildSequentialImageList("/images/products/macbook", "macbook", 29),
-        ["desktops"] = BuildSequentialImageList("/images/products/desktops", "desktops", 9),
-        ["accessory"] = BuildImageList("/uploads/products", new[]
-        {
-            "ban-phim-co-gaming-ek87-ea47cc97.png",
-            "chuot-logitech-g102-gen-2-9e309308.jpg",
-            "de-tan-nhiet-laptop-x6b-6-fan-48e05f77.jpg",
-            "ugreen-usb-c-hub-6-in-1-9-7876c2ce.jpg",
-            "s#U1ea1c-zin-laptop-dell-65w-48c68ee2.jpg",
-            "tai-nghe-ch#U1ee5p-tai-h3-3103e9fd.jpg"
-        }),
-        ["component"] = BuildImageList("/uploads/products", new[]
-        {
-            "ssd-m-2-nvme-512gb-548d4158.jpg",
-            "ram-pc-ddr4-8gb-2666mhz-cb3da6c1.jpg",
-            "ram-ddr4-laptop-16gb-samsung-3200mhz-3550965f.jpg",
-            "pin-laptop-hp-probook-ed2e5c3d.jpg"
-        })
+        ["accessory"] = BuildImageList("/images/accessories", new[] { "accessory-keyboard.svg", "accessory-mouse.svg", "accessory-headset.svg", "accessory-hub.svg", "accessory-cooler.svg" }),
+        ["component"] = BuildImageList("/images/accessories", new[] { "component-ram.svg", "component-ssd.svg", "component-charger.svg", "component-battery.svg" })
     };
 
     private static List<string> BuildSequentialImageList(string basePath, string prefix, int count, string extension = ".jpg")
@@ -3285,28 +3180,11 @@ WHERE PostId=@PostId", conn, tx);
         => fileNames.Select(file => $"{basePath}/{file}".Replace("//", "/")).ToList();
 
 
-    private static string NormalizeTechNewsThumbnailUrl(string? slug, string? url)
-    {
-        var normalized = NormalizeMediaUrl(url);
-        var slugValue = (slug ?? string.Empty).Trim();
-
-        if (slugValue.Equals("top-5-laptop-do-hoa-3d-cao-cap", StringComparison.OrdinalIgnoreCase) &&
-            normalized.Equals("/images/banners/campaign-gaming.jpg", StringComparison.OrdinalIgnoreCase))
-        {
-            return "/images/products/asus/asus-001.jpg";
-        }
-
-        return normalized;
-    }
-
     private static string NormalizeLegacyProductImageUrl(string? url)
     {
         if (string.IsNullOrWhiteSpace(url)) return string.Empty;
 
-        var trimmed = NormalizeMediaUrl(url);
-        if (string.IsNullOrWhiteSpace(trimmed))
-            return string.Empty;
-
+        var trimmed = url.Trim().Replace('\\', '/');
         if (!trimmed.StartsWith("/images/products/", StringComparison.OrdinalIgnoreCase))
             return trimmed;
 
@@ -3344,54 +3222,6 @@ WHERE PostId=@PostId", conn, tx);
 
         return trimmed;
     }
-
-    private static string NormalizeMediaUrl(string? url)
-    {
-        if (string.IsNullOrWhiteSpace(url))
-            return string.Empty;
-
-        var trimmed = url.Trim().Replace('\\', '/');
-
-        if (trimmed.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
-            trimmed.StartsWith("https://", StringComparison.OrdinalIgnoreCase) ||
-            trimmed.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
-        {
-            return trimmed;
-        }
-
-        var wwwrootIndex = trimmed.IndexOf("/wwwroot/", StringComparison.OrdinalIgnoreCase);
-        if (wwwrootIndex >= 0)
-        {
-            trimmed = trimmed[(wwwrootIndex + "/wwwroot".Length)..];
-        }
-
-        var uploadsIndex = trimmed.IndexOf("/uploads/", StringComparison.OrdinalIgnoreCase);
-        if (uploadsIndex >= 0)
-        {
-            trimmed = trimmed[uploadsIndex..];
-        }
-        else if (trimmed.StartsWith("uploads/", StringComparison.OrdinalIgnoreCase))
-        {
-            trimmed = "/" + trimmed;
-        }
-        else if (trimmed.StartsWith("images/", StringComparison.OrdinalIgnoreCase))
-        {
-            trimmed = "/" + trimmed;
-        }
-
-        if (LegacyTechNewsImageMap.TryGetValue(trimmed, out var mappedUrl))
-        {
-            trimmed = mappedUrl;
-        }
-
-        return trimmed.StartsWith("/", StringComparison.Ordinal) ? trimmed : "/" + trimmed;
-    }
-
-    private static readonly Dictionary<string, string> LegacyTechNewsImageMap = new(StringComparer.OrdinalIgnoreCase)
-    {
-        ["/images/accessories/accessory-keyboard.svg"] = "/uploads/products/ban-phim-co-gaming-ek87-ea47cc97.png",
-        ["/images/accessories/component-ram.svg"] = "/uploads/products/ram-ddr4-laptop-16gb-samsung-3200mhz-3550965f.jpg"
-    };
 
 
 

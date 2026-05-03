@@ -38,18 +38,13 @@
   const toggle = document.getElementById('categoryToggle');
   const panel = document.getElementById('megaMenuPanel');
   if(toggle && panel){
-    const syncMegaMenu = (open) => {
-      panel.classList.toggle('show', open);
-      panel.hidden = !open;
-      panel.setAttribute('aria-hidden', open ? 'false' : 'true');
-    };
-    syncMegaMenu(false);
+    panel.classList.remove('show');
     toggle.addEventListener('click', function(e){
       e.stopPropagation();
-      syncMegaMenu(!panel.classList.contains('show'));
+      panel.classList.toggle('show');
     });
     panel.addEventListener('click', function(e){ e.stopPropagation(); });
-    document.addEventListener('click', function(){ syncMegaMenu(false); });
+    document.addEventListener('click', function(){ panel.classList.remove('show'); });
   }
 
   if (window.sitePopupEnabled) {
@@ -182,7 +177,7 @@
 document.addEventListener('error', function(e){
   const target = e.target;
   if(target && target.tagName === 'IMG'){
-    const fallback = target.getAttribute('data-fallback') || '/images/products/acer/acer-001.jpg';
+    const fallback = target.getAttribute('data-fallback') || '/images/products/placeholder-generic.svg';
     if(target.getAttribute('src') !== fallback){
       target.setAttribute('src', fallback);
     }
@@ -405,14 +400,3 @@ document.addEventListener('DOMContentLoaded', function () {
 
   applyState();
 })();
-
-document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('img[data-fallback]').forEach(function (img) {
-    img.addEventListener('error', function () {
-      var fallback = img.getAttribute('data-fallback');
-      if (!fallback || img.src.indexOf(fallback) !== -1) return;
-      img.src = fallback;
-      img.classList.add('image-fallback-active');
-    });
-  });
-});

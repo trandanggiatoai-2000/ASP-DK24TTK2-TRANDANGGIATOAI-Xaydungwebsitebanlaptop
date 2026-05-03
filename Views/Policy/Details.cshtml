@@ -2,15 +2,12 @@
 @{
     ViewData["Title"] = ViewData["Title"] ?? Model.Title;
 }
-<section class="row justify-content-center my-4">
-    <div class="col-xl-9 col-lg-10">
-        <div class="card border-0 shadow-sm rounded-4">
-            <div class="card-body p-4 p-lg-5">
-                <div class="text-uppercase small fw-semibold text-primary mb-2">Hỗ trợ khách hàng</div>
-                <h1 class="display-6 fw-bold mb-3">@Model.Title</h1>
-                <p class="lead text-body-secondary mb-4">@Model.Summary</p>
-                <div class="policy-content">@Html.Raw(Model.ContentHtml)</div>
-            </div>
-        </div>
+<section class="policy-page card-surface">
+    <div class="policy-header">
+        <div class="policy-kicker">HỖ TRỢ KHÁCH HÀNG</div>
+        <h1>@Model.Title</h1>
+        <p class="policy-summary">@Model.Summary</p>
     </div>
+    <div class="policy-content">@Html.Raw(Model.ContentHtml)</div>
 </section>
+

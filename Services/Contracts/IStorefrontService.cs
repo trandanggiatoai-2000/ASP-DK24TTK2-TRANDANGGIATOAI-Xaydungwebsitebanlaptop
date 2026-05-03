@@ -6,7 +6,7 @@ public interface IStorefrontService
 {
     Task<HomePageViewModel> GetHomePageAsync();
     Task<WebsiteSettingsViewModel> GetWebsiteSettingsAsync();
-    Task<CatalogPageViewModel> GetCatalogPageAsync(CatalogQueryModel query, int pageSize);
+    Task<CatalogPageViewModel> SearchProductsAsync(string? keyword, string? brand, string? category, string? cpu, string? ram, string? ssd, bool official, bool fast, bool installment, int page, int pageSize);
     Task<ProductDetailsViewModel?> GetProductByIdAsync(int id, int? star = null);
     Task<List<ProductReviewViewModel>> GetProductReviewsAsync(int productId, int? star = null);
     Task AddProductReviewAsync(int productId, string reviewerName, int rating, string commentText, string imageUrl);

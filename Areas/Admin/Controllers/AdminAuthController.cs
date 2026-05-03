@@ -41,7 +41,7 @@ public class AdminAuthController : Controller
             return RedirectToLocal(returnUrl);
         }
 
-        model.ErrorMessage = "Sai tài khoản hoặc mật khẩu.";
+        model.ErrorMessage = "Sai tài khoản hoặc mật khẩu. Tài khoản mặc định: admin / 123456";
         return View(model);
     }
 
