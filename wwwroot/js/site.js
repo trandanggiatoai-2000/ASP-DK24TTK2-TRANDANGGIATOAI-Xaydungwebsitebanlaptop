@@ -405,14 +405,3 @@ document.addEventListener('DOMContentLoaded', function () {
 
   applyState();
 })();
-
-document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('img[data-fallback]').forEach(function (img) {
-    img.addEventListener('error', function () {
-      var fallback = img.getAttribute('data-fallback');
-      if (!fallback || img.src.indexOf(fallback) !== -1) return;
-      img.src = fallback;
-      img.classList.add('image-fallback-active');
-    });
-  });
-});

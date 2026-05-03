@@ -1454,47 +1454,11 @@ SELECT CAST(SCOPE_IDENTITY() AS INT);", conn);
         var storedHash = reader[15]?.ToString() ?? string.Empty;
         var inputPassword = password?.Trim() ?? string.Empty;
         var inputHash = HashPassword(inputPassword);
-        var legacySha256Hash = LegacySha256HashPassword(inputPassword);
-        var acceptedByMd5 = string.Equals(storedHash, inputHash, StringComparison.OrdinalIgnoreCase);
-        var acceptedByLegacySha256 = string.Equals(storedHash, legacySha256Hash, StringComparison.OrdinalIgnoreCase);
-        if (!acceptedByMd5 && !acceptedByLegacySha256) return null;
-
-        var userId = reader.GetInt32(0);
-        if (acceptedByLegacySha256)
-        {
-            await reader.CloseAsync();
-            using var updateCmd = new SqlCommand("UPDATE AdminUsers SET PasswordHash=@PasswordHash WHERE UserId=@UserId", conn);
-            updateCmd.Parameters.AddWithValue("@UserId", userId);
-            updateCmd.Parameters.AddWithValue("@PasswordHash", inputHash);
-            await updateCmd.ExecuteNonQueryAsync();
-
-            using var reloadCmd = new SqlCommand(@"SELECT TOP 1 UserId, Username, FullName, IsSuperAdmin, CanViewOrders, CanUpdateOrders, CanCancelOrders, CanViewReviews, CanReplyReviews, CanDeleteReviews, CanManageInventory, CanDeleteInventory, CanImportInventory, CanManageWebsite, IsActive, PasswordHash FROM AdminUsers WHERE UserId=@UserId", conn);
-            reloadCmd.Parameters.AddWithValue("@UserId", userId);
-            using var reloadReader = await reloadCmd.ExecuteReaderAsync();
-            if (!await reloadReader.ReadAsync()) return null;
-
-            return new AdminUserSessionModel
-            {
-                UserId = reloadReader.GetInt32(0),
-                Username = reloadReader.GetString(1),
-                FullName = reloadReader.GetString(2),
-                IsSuperAdmin = reloadReader.GetBoolean(3),
-                CanViewOrders = reloadReader.GetBoolean(4),
-                CanUpdateOrders = reloadReader.GetBoolean(5),
-                CanCancelOrders = reloadReader.GetBoolean(6),
-                CanViewReviews = reloadReader.GetBoolean(7),
-                CanReplyReviews = reloadReader.GetBoolean(8),
-                CanDeleteReviews = reloadReader.GetBoolean(9),
-                CanManageInventory = reloadReader.GetBoolean(10),
-                CanDeleteInventory = reloadReader.GetBoolean(11),
-                CanImportInventory = reloadReader.GetBoolean(12),
-                CanManageWebsite = reloadReader.GetBoolean(13)
-            };
-        }
-
+        var accepted = string.Equals(storedHash, inputHash, StringComparison.OrdinalIgnoreCase);
+        if (!accepted) return null;
         return new AdminUserSessionModel
         {
-            UserId = userId,
+            UserId = reader.GetInt32(0),
             Username = reader.GetString(1),
             FullName = reader.GetString(2),
             IsSuperAdmin = reader.GetBoolean(3),
@@ -1859,13 +1823,6 @@ VALUES(
     }
 
     private static string HashPassword(string password)
-    {
-        using var md5 = MD5.Create();
-        var hash = md5.ComputeHash(Encoding.UTF8.GetBytes(password ?? string.Empty));
-        return Convert.ToHexString(hash).ToLowerInvariant();
-    }
-
-    private static string LegacySha256HashPassword(string password)
     {
         using var sha = SHA256.Create();
         var hash = sha.ComputeHash(Encoding.UTF8.GetBytes(password ?? string.Empty));

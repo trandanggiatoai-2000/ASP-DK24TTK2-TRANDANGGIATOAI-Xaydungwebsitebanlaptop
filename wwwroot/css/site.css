@@ -1053,23 +1053,3 @@ h1, h2, h3, h4, h5, h6, .btn-primary, .btn-outline, .mega-links a, .lxt-nav-link
   .technews-thumb-wrap,
   .technews-thumb-image{min-height:190px;}
 }
-
-/* Cart badge alignment fix: keep quantity badge attached to cart icon */
-.lxt-search-wrap .lxt-mini-cart{
-  position:relative !important;
-  display:inline-grid !important;
-  place-items:center !important;
-  width:44px !important;
-  height:44px !important;
-  flex:0 0 44px !important;
-  overflow:visible !important;
-}
-.lxt-search-wrap .lxt-mini-cart .lxt-mini-cart-count{
-  position:absolute !important;
-  top:-7px !important;
-  right:-7px !important;
-  left:auto !important;
-  bottom:auto !important;
-  transform:none !important;
-  z-index:5 !important;
-}
